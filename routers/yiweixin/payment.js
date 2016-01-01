@@ -70,8 +70,10 @@ app.get('/payment', requireLogin, function(req, res) {
 
 })
 
-app.get('/pay', requireLogin, function(req, res) {
-    var customer = req.customer
+app.post('/pay', requireLogin, function(req, res) {
+    var customer = req.customer,
+        chargetype = (req.body.chargetype == "balance" ) ? models.Customer.CHARGETYPE.BALANCE : models.Customer.CHARGETYPE.SALARY
+
     async.waterfall([function(next){
       if(customer.levelId !== undefined){
         models.Level.findById(customer.levelId).then(function(level) {
@@ -80,7 +82,7 @@ app.get('/pay', requireLogin, function(req, res) {
       }
       next(null, customer)
     }, function(customer, next) {
-      models.PaymentMethod.findOne({ where: { code: req.query.paymentMethod.toLowerCase() } }).then(function(paymentMethod) {
+      models.PaymentMethod.findOne({ where: { code: req.body.paymentMethod.toLowerCase() } }).then(function(paymentMethod) {
         if(paymentMethod){
           next(null, paymentMethod);
         }else{
@@ -90,19 +92,19 @@ app.get('/pay', requireLogin, function(req, res) {
         next(err)
       })
     }, function(paymentMethod, next){
-      models.DataPlan.findById(req.query.dataPlanId).then(function(dataPlan){
-        if(dataPlan){
-          next(null, paymentMethod, dataPlan)
+      models.TrafficPlan.findById(req.body.flowId).then(function(trafficPlan){
+        if(trafficPlan){
+          next(null, trafficPlan)
         }else{
-          res.json({ err: 1, msg: "请选择合适的套餐" })
+          res.json({ err: 1, msg: "请选择正确的流量套餐" })
         }
       }).catch(function(err) {
         next(err)
       })
-    }, function(paymentMethod, dataPlan, next){
+    }, function(paymentMethod, trafficPlan, next){
       models.Coupon.findAll({
         where: {
-          dataPlanId: dataPlan.id,
+          trafficPlanId: trafficPlan.id,
           isActive: true,
           expiredAt: {
             $gt: (new Date()).begingOfDate()
@@ -112,58 +114,91 @@ app.get('/pay', requireLogin, function(req, res) {
                 ['updatedAt', 'DESC']
                ]
       }).then(function(coupons) {
-        dataPlan.coupon = coupons[0]
-        next(null, paymentMethod, dataPlan)
+        trafficPlan.coupon = coupons[0]
+        next(null, paymentMethod, trafficPlan)
       }).catch(function(err) {
         next(err)
       })
-    }, function(paymentMethod, dataPlan, next){
+    }, function(paymentMethod, trafficPlan, next){
       var discount = 1.00
-      if(dataPlan.coupon && dataPlan.coupon.ignoreLevel && dataPlan.coupon.discount > 0){
-        discount = discount - dataPlan.coupon.discount
+
+      if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
+        discount = discount - trafficPlan.coupon.discount
       }else if(customer.level && customer.level.discount > 0){
         discount = discount - customer.level.discount
       }
-      models.Order.build({
-        state: models.Order.STATE.INIT,
+      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.price * discount)){
+        res.json({ err: 1, msg: "分销奖励不足" })
+        return
+      }
+
+      models.ExtractOrder.build({
+        exchangerType: trafficPlan.className(),
+        exchangerId: trafficPlan.id,
+        phone: req.body.phone,
+        cost: trafficPlan.cost,
+        value: trafficPlan.value,
+        bid: trafficPlan.bid,
         customerId: customer.id,
-        dataPlanId: dataPlan.id,
+        chargeType: chargetype,
         paymentMethodId: paymentMethod.id,
-        total: dataPlan.price * discount
-      }).save().then(function(order){
-        next(null, paymentMethod, dataPlan, order)
-      }).catch(function(err){
+        total: trafficPlan.price * discount
+      }).save().then(function(extractOrder) {
+        next(null, paymentMethod, trafficPlan, extractOrder)
+      }).catch(function(err) {
         next(err)
       })
-    }], function(error, paymentMethod, dataPlan, order){
+    }], function(error, paymentMethod, trafficPlan, extractOrder){
       if(error){
         console.log(error)
         res.json({ err: 1, msg: "server error" })
       }else{
-        var ipstr = req.ip.split(':'),
+        //TODO salary
+        if(extractOrder.chargetype == models.Customer.CHARGETYPE.BALANCE){
+          var ipstr = req.ip.split(':'),
           ip = ipstr[ipstr.length -1]
 
-        var orderParams = {
-          body: '流量套餐 ' + dataPlan.name,
-          attach: order.id,
-          out_trade_no: 'yiliuliang' + (+new Date),
-          total_fee:  Math.round(order.total * 100),
-          spbill_create_ip: ip,
-          openid: customer.wechat,
-          trade_type: 'JSAPI'
-        };
+          var orderParams = {
+            body: '流量套餐 ' + trafficPlan.name,
+            attach: extractOrder.id,
+            out_trade_no: 'yiliuliang' + (+new Date),
+            total_fee:  Math.round(extractOrder.cost * 100),
+            spbill_create_ip: ip,
+            openid: customer.wechat,
+            trade_type: 'JSAPI'
+          };
 
-        console.log(orderParams)
-        payment.getBrandWCPayRequestParams(orderParams, function(err, payargs){
-          if(err){
-            console.log("payment fail")
+          console.log(orderParams)
+          payment.getBrandWCPayRequestParams(orderParams, function(err, payargs){
+            if(err){
+              console.log("payment fail")
+              console.log(err)
+              res.json({err: 1, msg: 'payment fail'})
+            }else{
+              console.log(payargs)
+              res.json(payargs);
+            }
+          });
+        }else{
+          // charge by salary
+          customer.reduceTraffic(models, extractOrder, function(){
+            res.json({err: 0, msg: '付款成功'})
+
+            extractOrder.updateAttributes({
+              state: models.ExtractOrder.STATE.PAID
+            }).then(function(extractOrder){
+              autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
+                if(err){
+                  console.log(err)
+                  // refund
+                }
+              })
+            })
+          }, function(err){
             console.log(err)
-            res.json({err: 1, msg: 'payment fail'})
-          }else{
-            console.log(payargs)
-            res.json(payargs);
-          }
-        });
+            res.json({err: 1, msg: '付款失败'})
+          })
+        }
       }
     })
 })
@@ -173,42 +208,50 @@ var middleware = require('wechat-pay').middleware;
 app.use('/paymentconfirm', middleware(initConfig).getNotify().done(function(message, req, res, next) {
   console.log(message)
 
-  var orderId = message.attach
+  var extractOrderId = message.attach
 
   async.waterfall([function(next) {
-    models.Order.findById(orderId).then(function(order) {
-      if(order){
-        next(null, order)
+    models.ExtractOrder.findById(extractOrderId).then(function(extractOrder) {
+      if(extractOrder){
+        next(null, extractOrder)
       }else{
         next(new Error('order not found'))
       }
     }).catch(function(err) {
       next(err)
     })
-  }, function(order, next){
-    if(message.result_code === 'SUCCESS' && !order.isPaid()){
-      order.updateAttributes({
-        state: models.Order.STATE.PAID,
+  }, function(extractOrder, next){
+    if(message.result_code === 'SUCCESS' && !extractOrder.isPaid()){
+      extractOrder.updateAttributes({
+        state: models.ExtractOrder.STATE.PAID,
         transactionId: message.transaction_id
-      }).then(function(order){
-        next(null, order)
+      }).then(function(extractOrder){
+        next(null, extractOrder)
       })
     }else{
       next(new Error("pass"))
     }
-  }, function(order, next) {
-    models.Customer.findById(order.customerId).then(function(customer) {
-      next(null, order, customer)
+  }, function(extractOrder, next) {
+    models.Customer.findById(extractOrder.customerId).then(function(customer) {
+      next(null, extractOrder, customer)
     }).catch(function(err) {
       next(err)
     })
-  }, function(order, customer, next) {
-    customer.addTraffic(models, order, function(customer, order, flowHistory){
-      next(null, order, customer)
-    }, function(err) {
+  }, function(extractOrder, customer, next) {
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, extractOrder, customer, flowHistory)
+    }).catch(function(err){
       next(err)
     })
-  }, doOrderTotal, autoVIP, doAffiliate, autoAffiliate], function(err, order, customer){
+  }, function(extractOrder, customer, flowHistory, next) {
+    //do history
+    customer.takeFlowHistory(models, extractOrder, extractOrder.total, "充值"+flowHistory.name+", 花费"+ extractOrder.total +"元，微信支付成功", models.FlowHistory.STATE.REDUCE, function(){
+      next(null, extractOrder, customer)
+    }, function(err){
+      next(err)
+    }, extractOrder.chargeType)
+
+  }, doOrderTotal, doAffiliate, autoAffiliate], function(err, order, customer){
     if(err){
       res.reply(err)
     }else{
@@ -217,17 +260,17 @@ app.use('/paymentconfirm', middleware(initConfig).getNotify().done(function(mess
   })
 }));
 
-function doAffiliate(order, customer, pass){
-  pass(null, order, customer)
+function doAffiliate(extractOrder, customer, pass){
+  pass(null, extractOrder, customer)
 
   async.waterfall([function(next) {
-    models.DataPlan.findById(order.dataPlanId).then(function(dataPlan) {
-      next(null, dataPlan)
-    }).catch(function(err) {
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, trafficPlan)
+    }).catch(function(err){
       next(err)
     })
-  }, function(dataPlan, next) {
-    models.AffiliateConfig.loadConfig(models, dataPlan, function(configs) {
+  }, function(trafficPlan, next) {
+    models.AffiliateConfig.loadConfig(models, trafficPlan, function(configs) {
       if(configs.length <= 0){
         return
       }
@@ -309,21 +352,21 @@ function doAffiliate(order, customer, pass){
 }
 
 
-function autoVIP(order, customer, pass) {
-  pass(null, order, customer)
+function autoVIP(extractOrder, customer, pass) {
+  pass(null, extractOrder, customer)
 
   if(customer.levelId){
     models.Level.findById(customer.levelId).then(function(level) {
       if( level === undefined ||  level.code == 'normal'){
-        setVip(order, customer)
+        setVip(extractOrder, customer)
       }
     })
   }else{
-    setVip(order, customer)
+    setVip(extractOrder, customer)
   }
 }
 
-function setVip(order, customer){
+function setVip(extractOrder, customer){
   models.DConfig.findOrCreate({
     where: {
       name: "vipLimit"
@@ -365,8 +408,8 @@ function setVip(order, customer){
 }
 
 
-function autoAffiliate(order, customer, pass) {
-  pass(null, order, customer)
+function autoAffiliate(extractOrder, customer, pass) {
+  pass(null, extractOrder, customer)
 
   async.waterfall([function(next) {
     models.DConfig.findOrCreate({
@@ -400,14 +443,62 @@ function autoAffiliate(order, customer, pass) {
   })
 }
 
-function doOrderTotal(order, customer, pass) {
-  pass(null, order, customer)
+function doOrderTotal(extractOrder, customer, pass) {
+  pass(null, extractOrder, customer)
 
   customer.updateAttributes({
-    orderTotal: customer.orderTotal + order.total
+    orderTotal: customer.orderTotal + extractOrder.total
   }).catch(function(err) {
     console.log(err)
   })
+}
+
+function autoCharge(extractOrder, trafficPlan, next){
+  extractOrder.autoRecharge(trafficPlan).then(function(res, data) {
+      console.log(data)
+      if(trafficPlan.type == 1){  // 正规空中充值
+        if(data.status == 1 || data.status == 2){
+          next(null, trafficPlan, extractOrder)
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.msg))
+        }
+      }else if(trafficPlan.type == 2){
+        if(data.Code == 0 && data.TaskID != 0){
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.Message))
+        }
+      }else{
+        if(data.state == 1){
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.msg))
+        }
+      }
+    }).catch(function(err){
+      next(err)
+    }).do()
 }
 
 module.exports = app;

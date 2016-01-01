@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    dataPlanId: {
+    trafficPlanId: {
       type: DataTypes.INTEGER,
       allowNull: true
     }
@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
           }).then(function(c) {
             if(c > 0){
               var params = {
-                              dataPlanId: dataPlan.id,
+                              trafficPlanId: trafficPlanId.id,
                               level: {
                                 $lte: maxDepth
                               }

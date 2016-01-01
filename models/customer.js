@@ -134,15 +134,15 @@ module.exports = function(sequelize, DataTypes) {
         }, function(extractOrder, trafficPlan, next){
 
           if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
-            var enough = (customer.remainingTraffic > trafficPlan.cost)
+            var enough = (customer.remainingTraffic > extractOrder.total)
           }else{
-            var enough = (customer.salary > trafficPlan.cost)
+            var enough = (customer.salary > extractOrder.total)
           }
 
           if(enough){
             if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
               customer.updateAttributes({
-                  remainingTraffic: customer.remainingTraffic - extractOrder.cost
+                  remainingTraffic: customer.remainingTraffic - extractOrder.total
                 }).then(function(customer){
                   next(null, customer, extractOrder, trafficPlan)
                 }).catch(function(err) {
@@ -150,7 +150,7 @@ module.exports = function(sequelize, DataTypes) {
                 })
             }else{
               customer.updateAttributes({
-                  salary: customer.salary - extractOrder.cost
+                  salary: customer.salary - extractOrder.total
                 }).then(function(customer){
                   next(null, customer, extractOrder, trafficPlan)
                 }).catch(function(err) {
@@ -161,7 +161,7 @@ module.exports = function(sequelize, DataTypes) {
             next(new Error("剩余流量币不足"))
           }
         }, function(customer, extractOrder, trafficPlan, next){
-          customer.takeFlowHistory(models, extractOrder, trafficPlan.cost, "提取流量" + trafficPlan.name + "至" + extractOrder.phone, models.FlowHistory.STATE.REDUCE, function(flowHistory){
+          customer.takeFlowHistory(models, extractOrder, extractOrder.total, "提取流量" + trafficPlan.name + "至" + extractOrder.phone, models.FlowHistory.STATE.REDUCE, function(flowHistory){
               next(null, customer, extractOrder, trafficPlan, flowHistory)
             }, function(err){
               next(err)
