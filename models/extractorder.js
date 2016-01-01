@@ -189,13 +189,16 @@ module.exports = function(sequelize, DataTypes) {
     exchangerType: { type: DataTypes.STRING, allowNull: false },
     exchangerId: { type: DataTypes.INTEGER, allowNull: false },
     phone: {  type: DataTypes.STRING, allowNull: true },
-    cost: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
+    cost: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 },
     extend: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     value: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     type: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     bid: { type: DataTypes.INTEGER, allowNull: true },
     customerId: { type: DataTypes.INTEGER, allowNull: true },
-    chargeType: { type: DataTypes.STRING, allowNull: false, defaultValue: "balance" }
+    chargeType: { type: DataTypes.STRING, allowNull: false, defaultValue: "balance" },
+    transactionId: { type: DataTypes.INTEGER },
+    paymentMethodId: { type: DataTypes.INTEGER },
+    total: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 }
   }, {
     classMethods: {
       associate: function(models) {
@@ -237,6 +240,12 @@ module.exports = function(sequelize, DataTypes) {
           return "成功"
         }else if(this.state === ExtractOrder.STATE.FAIL){
           return "失败"
+        }else if(this.state === ExtractOrder.STATE.PAID){
+          return "付款成功"
+        }else if(this.state === ExtractOrder.STATE.UNPAID){
+          return "付款失败"
+        }else if(this.state === ExtractOrder.STATE.REFUNDED){
+          return "退款"
         }
       },
       autoRecharge: function(trafficPlan){
@@ -247,14 +256,20 @@ module.exports = function(sequelize, DataTypes) {
         }else{
           return new Recharger(this.phone, this.value)
         }
+      },
+      isPaid: function(){
+        return (this.state === ExtractOrder.STATE.PAID)
       }
     }
   });
 
   ExtractOrder.STATE = {
     INIT: 0,
-    SUCCESS: 1,
-    FAIL: 2
+    PAID: 1,
+    UNPAID: 2,
+    SUCCESS: 3,
+    FAIL: 4,
+    REFUNDED: 5
   }
   return ExtractOrder;
 };

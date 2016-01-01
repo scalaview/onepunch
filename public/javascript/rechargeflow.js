@@ -218,31 +218,50 @@ function extractConfirm(){
     }
 
     if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
-       $.ajax({
-        url: '/extractFlow',
-        dataType: "JSON",
-        data: {
-          phone: phone,
-          flowId: flowId,
-          chargetype: choose.data('id')
-        },
-        method: "POST"
-       }).done(function(data){
-        showDialog(data.msg)
-        if(!data.err){
-          doDelay(function(){
-            window.location.href = data.url
-          }, 1)
-        }
-       }).fail(function(err){
-        console.log(err)
-        showDialog("服务器繁忙")
-       })
+      // chargetype: choose.data('id')
+      // wechat pay
+      if(true){
+        wechatPayment(flowId)
+      }else{
+        // salary
+      }
     }else{
       showDialog("请输入电话和选择正确的套餐")
     }
   })
 
+}
+
+function wechatPayment(flowId){
+  $.ajax({
+        url: '/pay',
+        method: "POST",
+        dataType: "JSON",
+        data: {
+          flowId: flowId,
+          paymentMethod: 'WechatPay',
+          chargetype: choose.data('id')
+        }
+      }).done(function(payargs) {
+        if(payargs.err){
+          showDialog(payargs.msg)
+        }else if(choose.data('id') == "balance"){
+          WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
+            if(res.err_msg == "get_brand_wcpay_request:ok"){
+              alert("支付成功");
+              // 这里可以跳转到订单完成页面向用户展示
+              // window.location.href = '/profile'
+            }else{
+              alert("支付失败，请重试");
+            }
+          });
+        }else{
+          alert(payargs.msg)
+        }
+      }).fail(function(err) {
+        console.log(err)
+        showDialog("服务器繁忙")
+      })
 }
 
 function RegistEvent() {

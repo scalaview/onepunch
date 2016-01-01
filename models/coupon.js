@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
     name: {
       type: DataTypes.STRING
     },
-    dataPlanId: {
+    trafficPlanId: {
       type: DataTypes.INTEGER
     },
     discount: {
