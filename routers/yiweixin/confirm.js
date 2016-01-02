@@ -191,7 +191,7 @@ app.post('/extractflowdefaultconfirm', function(req, res) {
       where: {
         id: id,
         phone: phone,
-        state: models.ExtractOrder.STATE.INIT
+        state: models.ExtractOrder.STATE.PAID
       }
     }).then(function(extractorder) {
       if(extractorder){

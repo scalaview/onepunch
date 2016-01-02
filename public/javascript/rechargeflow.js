@@ -221,7 +221,7 @@ function extractConfirm(){
       // chargetype: choose.data('id')
       // wechat pay
       if(true){
-        wechatPayment(flowId)
+        wechatPayment(phone, flowId)
       }else{
         // salary
       }
@@ -232,7 +232,7 @@ function extractConfirm(){
 
 }
 
-function wechatPayment(flowId){
+function wechatPayment(phone, flowId){
   $.ajax({
         url: '/pay',
         method: "POST",
@@ -240,7 +240,8 @@ function wechatPayment(flowId){
         data: {
           flowId: flowId,
           paymentMethod: 'WechatPay',
-          chargetype: choose.data('id')
+          chargetype: choose.data('id'),
+          phone: phone
         }
       }).done(function(payargs) {
         if(payargs.err){

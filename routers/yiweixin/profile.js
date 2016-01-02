@@ -154,7 +154,6 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
          ]
       }).then(function(trafficgroups) {
         async.map(trafficgroups, function(trafficgroup, next) {
-          console.log(trafficgroup)
           trafficgroup.getTrafficPlans({
             where: {
               display: true
