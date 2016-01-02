@@ -94,7 +94,7 @@ app.post('/pay', requireLogin, function(req, res) {
     }, function(paymentMethod, next){
       models.TrafficPlan.findById(req.body.flowId).then(function(trafficPlan){
         if(trafficPlan){
-          next(null, trafficPlan)
+          next(null, paymentMethod, trafficPlan)
         }else{
           res.json({ err: 1, msg: "请选择正确的流量套餐" })
         }
@@ -154,7 +154,7 @@ app.post('/pay', requireLogin, function(req, res) {
         res.json({ err: 1, msg: "server error" })
       }else{
         //TODO salary
-        if(extractOrder.chargetype == models.Customer.CHARGETYPE.BALANCE){
+        if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
           var ipstr = req.ip.split(':'),
           ip = ipstr[ipstr.length -1]
 
@@ -239,13 +239,13 @@ app.use('/paymentconfirm', middleware(initConfig).getNotify().done(function(mess
     })
   }, function(extractOrder, customer, next) {
     extractOrder.getExchanger().then(function(trafficPlan){
-      next(null, extractOrder, customer, flowHistory)
+      next(null, extractOrder, customer, trafficPlan)
     }).catch(function(err){
       next(err)
     })
-  }, function(extractOrder, customer, flowHistory, next) {
+  }, function(extractOrder, customer, trafficPlan, next) {
     //do history
-    customer.takeFlowHistory(models, extractOrder, extractOrder.total, "充值"+flowHistory.name+", 花费"+ extractOrder.total +"元，微信支付成功", models.FlowHistory.STATE.REDUCE, function(){
+    customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
     }, function(err){
       next(err)

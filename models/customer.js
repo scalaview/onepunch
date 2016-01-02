@@ -134,20 +134,14 @@ module.exports = function(sequelize, DataTypes) {
         }, function(extractOrder, trafficPlan, next){
 
           if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
-            var enough = (customer.remainingTraffic > extractOrder.total)
+            var enough = (extractOrder.state == models.ExtractOrder.STATE.PAID)
           }else{
             var enough = (customer.salary > extractOrder.total)
           }
 
           if(enough){
             if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
-              customer.updateAttributes({
-                  remainingTraffic: customer.remainingTraffic - extractOrder.total
-                }).then(function(customer){
-                  next(null, customer, extractOrder, trafficPlan)
-                }).catch(function(err) {
-                  next(err)
-                })
+              next(null, customer, extractOrder, trafficPlan)
             }else{
               customer.updateAttributes({
                   salary: customer.salary - extractOrder.total
@@ -161,7 +155,7 @@ module.exports = function(sequelize, DataTypes) {
             next(new Error("剩余流量币不足"))
           }
         }, function(customer, extractOrder, trafficPlan, next){
-          customer.takeFlowHistory(models, extractOrder, extractOrder.total, "提取流量" + trafficPlan.name + "至" + extractOrder.phone, models.FlowHistory.STATE.REDUCE, function(flowHistory){
+          customer.takeFlowHistory(models, extractOrder, extractOrder.total, "购买流量" + trafficPlan.name + "至" + extractOrder.phone + " 支付成功", models.FlowHistory.STATE.REDUCE, function(flowHistory){
               next(null, customer, extractOrder, trafficPlan, flowHistory)
             }, function(err){
               next(err)

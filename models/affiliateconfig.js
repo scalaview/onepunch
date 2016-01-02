@@ -24,23 +24,23 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         // associations can be defined here
       },
-      loadConfig: function(models, dataPlan, successCallBack, errCallBack) {
+      loadConfig: function(models, trafficPlan, successCallBack, errCallBack) {
         async.waterfall([function(next) {
           models.AffiliateConfig.count({
             where: {
-              dataPlanId: dataPlan.id
+              trafficPlanId: trafficPlan.id
             }
           }).then(function(c) {
             if(c > 0){
               var params = {
-                              trafficPlanId: trafficPlanId.id,
+                              trafficPlanId: trafficPlan.id,
                               level: {
                                 $lte: maxDepth
                               }
                             }
             }else{
               var params = {
-                              dataPlanId: {
+                              trafficPlanId: {
                                 $eq: null
                               },
                               level: {
