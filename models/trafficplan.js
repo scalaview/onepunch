@@ -60,7 +60,7 @@ module.exports = function(sequelize, DataTypes) {
     providerId: { type: DataTypes.INTEGER, allowNull: false },
     value: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     name: { type: DataTypes.STRING, allowNull: false },
-    cost: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0.00 },
+    cost: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.00 },
     sortNum: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     display: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     type: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },

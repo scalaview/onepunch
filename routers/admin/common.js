@@ -215,7 +215,8 @@ admin.get('/syncdata', function(req, res) {
                 trafficplan.updateAttributes({
                   value: plan.size,
                   name: name,
-                  trafficGroupId :trafficgroup.id
+                  trafficGroupId :trafficgroup.id,
+                  cost: plan.costprice,
                 })
               }else{
                 models.TrafficPlan.build({
@@ -224,7 +225,8 @@ admin.get('/syncdata', function(req, res) {
                   value: plan.size,
                   name: generateName(plan.name ,plan.size + "M"),
                   providerId: providerId,
-                  cost: plan.price * 100,
+                  cost: plan.costprice,
+                  price: plan.price,
                   display: true,
                   trafficGroupId :trafficgroup.id
                 }).save()

@@ -191,6 +191,8 @@ app.post('/pay', requireLogin, function(req, res) {
                 if(err){
                   console.log(err)
                   // refund
+                }else{
+                  console.log("充值成功")
                 }
               })
             })
@@ -247,11 +249,20 @@ app.use('/paymentconfirm', middleware(initConfig).getNotify().done(function(mess
     //do history
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
+
+      autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
+        if(err){
+          console.log(err)
+          // refund
+        }else{
+          console.log("充值成功")
+        }
+      })
     }, function(err){
       next(err)
     }, extractOrder.chargeType)
 
-  }, doOrderTotal, doAffiliate, autoAffiliate], function(err, order, customer){
+  }, doOrderTotal, doAffiliate, autoAffiliate], function(err, extractOrder, customer){
     if(err){
       res.reply(err)
     }else{
