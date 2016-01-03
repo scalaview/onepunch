@@ -168,18 +168,12 @@ module.exports = function(sequelize, DataTypes) {
           }
         })
       },
-      refundTraffic: function(models, extractOrder, message,successCallBack, errCallBack) {
+      refundTraffic: function(models, extractOrder, message, successCallBack, errCallBack) {
         var customer = this
         async.waterfall([function(next) {
 
           if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
-            customer.updateAttributes({
-              remainingTraffic: customer.remainingTraffic + extractOrder.cost
-            }).then(function(customer) {
-              next(null, customer, extractOrder)
-            }).catch(function(err) {
-              next(err)
-            })
+            next(null, customer, extractOrder)
           }else{
             customer.updateAttributes({
               salary: customer.salary + extractOrder.cost
@@ -197,7 +191,11 @@ module.exports = function(sequelize, DataTypes) {
             next(err)
           })
         },function(customer, extractOrder, trafficPlan, next) {
-          var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。E币已经退还账户，对你造成的不便我们万分抱歉"
+          if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
+            var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。对你造成的不便我们万分抱歉"
+          }else{
+            var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。分销奖励已经退还账户，对你造成的不便我们万分抱歉"
+          }
           customer.takeFlowHistory(models, extractOrder, extractOrder.cost, msg, models.FlowHistory.STATE.ADD, function(flowHistory){
               next(null, customer, extractOrder, flowHistory)
             }, function(err) {

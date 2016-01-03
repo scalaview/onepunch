@@ -118,37 +118,42 @@ var DefaultRecharger = function(phone, bid, orderId){
  return this
 }
 
-var HuawoRecharger = function(phone, bid, orderId){
+var HuawoRecharger = function(phone, packagesize, orderId){
   // type = 2
   this.phone = phone
-  this.bid = bid
+  this.packagesize = packagesize
   this.orderId = orderId
 
   this.account = config.huawo_account
-  this.huawo_api_key = config.huawo_api_key
+
   var host = 'http://' + config.huawo_hostname
+
+  this.signTime = helpers.strftime(new Date(), "YYYYMMDDHH")
+
+  var md5Params = '{"username":"'+ helpers.toUnicode(this.account) +'","mobile":"'+ this.phone +'","packagesize":"'+ this.packagesize +'","password":"'+ config.huawo_pwd +'","signTime":"'+ this.signTime +'"}'
+
+  this.sign = crypto.createHash('md5').update(md5Params).digest("hex")
+  console.log(this.sign)
+
   var params = {
-    account: this.account,
+    username: this.account,
     mobile: this.phone,
-    package: this.bid
+    packagesize: this.packagesize + "",
+    password: config.huawo_pwd,
+    signTime: helpers.strftime(new Date(), "YYYYMMDDHH"),
+    range: 0,
+    requestTime: helpers.strftime(new Date(), "YYYYMMDDHHmmss"),
+    sign: this.sign,
+    returnUrl: encodeURIComponent("http://" + config.hostname + "/huawoconfirm")
   }
-  var keys = Object.keys(params)
-  keys = keys.sort()
-  var sign_params = []
-  for(var i = 0; i < keys.length; i++) {
-    sign_params.push( keys[i] + "=" + params[keys[i]] )
-  }
-  sign_params.push("key=" + this.huawo_api_key)
-  params['v'] = '1.1'
-  params['action'] = 'charge'
-  params['range'] = 0
-  params['sign'] = crypto.createHash('md5').update(sign_params.join('&'), 'utf8').digest("hex")
 
   this.options = {
     uri: host,
     method: 'GET',
     qs: params
   }
+
+  console.log(this.options)
 
   this.then = function(callback){
     this.successCallback = callback
@@ -168,6 +173,7 @@ var HuawoRecharger = function(phone, bid, orderId){
   request(this.options, function (error, res) {
     if (!error && res.statusCode == 200) {
       if(inerSuccessCallback){
+        console.log(res.body)
         var data = JSON.parse(res.body)
         inerSuccessCallback.call(this, res, data)
       }
