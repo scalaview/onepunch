@@ -38,7 +38,7 @@ module.exports = function(sequelize, DataTypes) {
     salary: {
       type: DataTypes.DECIMAL,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0.0,
       set: function(val) {
         this.setDataValue('salary', parseFloat(val))
       }

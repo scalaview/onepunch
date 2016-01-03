@@ -3,14 +3,29 @@ window.showDialog = function(msg){
       $title = $("#my_title"),
       $msg = $("#popup_message")
 
-  $title.html("易流量提醒")
+  $title.html("信息")
   $msg.html(msg)
-  $modal.modal('show')
+  $modal.show()
+  $modal.find(".weui_btn_dialog").click(function(){
+    $modal.hide()
+  })
 }
 
+window.closeDialog = function(){
+  $("#myModal").hide()
+}
 
 window.doDelay = function(callback, second) {
   window.setTimeout(callback, second * 1000);
+}
+
+window.toast = function(msg){
+  $toast = $("#toast")
+  $("#toast .weui_toast_content").html(msg || "")
+  $toast.show();
+  setTimeout(function () {
+      $toast.hide();
+  }, 2000);
 }
 
 ///手机验证
