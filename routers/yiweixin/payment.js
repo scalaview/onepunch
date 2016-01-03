@@ -6,15 +6,7 @@ var async = require("async")
 var requireLogin = helpers.requireLogin
 var config = require("../../config")
 var fs        = require('fs');
-var Payment = require('wechat-pay').Payment;
-var initConfig = {
-  partnerKey: config.partnerKey,
-  appId: config.appId,
-  mchId: config.mchId,
-  notifyUrl: "http://" + config.hostname + "/paymentconfirm",
-  pfx: fs.readFileSync(process.env.PWD + '/cert/apiclient_cert.p12')
-};
-var payment = new Payment(initConfig);
+var payment = helpers.payment;
 var maxDepth = config.max_depth
 var _ = require('lodash')
 
@@ -191,6 +183,10 @@ app.post('/pay', requireLogin, function(req, res) {
                 if(err){
                   console.log(err)
                   // refund
+                  customer.refundTraffic(models, extractOrder, err, function(customer, extractOrder, flowHistory){
+                  }, function(err){
+                    console.log(err)
+                  })
                 }else{
                   console.log("充值成功")
                 }

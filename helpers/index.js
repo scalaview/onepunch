@@ -7,6 +7,16 @@ var handlebars = require('handlebars')
 var models  = require('../models')
 var async = require("async")
 var WechatAPI = require('wechat-api');
+var Payment = require('wechat-pay').Payment;
+
+var initConfig = {
+  partnerKey: config.partnerKey,
+  appId: config.appId,
+  mchId: config.mchId,
+  notifyUrl: "http://" + config.hostname + "/paymentconfirm",
+  pfx: fs.readFileSync(process.env.PWD + '/cert/apiclient_cert.p12')
+};
+var payment = new Payment(initConfig);
 
 String.prototype.htmlSafe = function(){
   return new handlebars.SafeString(this.toString())
@@ -730,6 +740,19 @@ var API = new WechatAPI(config.appId, config.appSecret, function (callback) {
   })
 });
 
+function toUnicode(theString) {
+  var unicodeString = '';
+  for (var i=0; i < theString.length; i++) {
+    var theUnicode = theString.charCodeAt(i).toString(16).toLowerCase();
+    while (theUnicode.length < 4) {
+      theUnicode = '0' + theUnicode;
+    }
+    theUnicode = '\\u' + theUnicode;
+    unicodeString += theUnicode;
+  }
+  return unicodeString;
+}
+
 
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -767,3 +790,5 @@ exports.withdrawalState = withdrawalState;
 exports.wechatMenus = wechatMenus;
 exports.getSlaves = getSlaves;
 exports.API = API;
+exports.toUnicode = toUnicode;
+exports.payment = payment;
