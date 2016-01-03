@@ -182,8 +182,8 @@ function extractConfirm(){
 
   $(".llb").on('click', 'a.exchanger', function() {
     var $this = $(this)
-    $(".dy-top a").removeClass('choose')
-    var choose = $("#chooseMoney .btn.selected")
+    $(".llb a").removeClass('choose')
+    var choose = $("#chooseMoney .weui_btn.selected")
     var lessE = choose.data('less')
 
     if( parseFloat(lessE) < parseFloat($this.data('cost')) ){
@@ -199,15 +199,16 @@ function extractConfirm(){
     phone = $.trim($("#mobile").val())
     $("#maskflow").html($this.data('name'))
     $("#maskmobile").html(phone)
+    $("#maskcost").html($this.data('cost'))
     $("#mask").show()
   })
 
   $(".sure").click(function(){
-    var selectedFlow = $(".dy-top a.choose")
+    var selectedFlow = $(".llb a.exchanger.choose")
         phone = $.trim($("#mobile").val()),
         flowId = selectedFlow.data("value"),
         source   = $("#trafficplans-template").html(),
-        choose = $("#chooseMoney .btn.selected")
+        choose = $("#chooseMoney .weui_btn.selected")
 
     if(source === undefined || source == ''){
       return
@@ -218,13 +219,7 @@ function extractConfirm(){
     }
 
     if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
-      // chargetype: choose.data('id')
-      // wechat pay
-      if(true){
-        wechatPayment(phone, flowId)
-      }else{
-        // salary
-      }
+      wechatPayment(phone, flowId)
     }else{
       showDialog("请输入电话和选择正确的套餐")
     }
@@ -249,11 +244,12 @@ function wechatPayment(phone, flowId){
         }else if(choose.data('id') == "balance"){
           WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok"){
-              alert("支付成功");
+              $("#mask").hide();
+              toast("支付成功")
               // 这里可以跳转到订单完成页面向用户展示
               // window.location.href = '/profile'
             }else{
-              alert("支付失败，请重试");
+              showDialog("支付失败，请重试")
             }
           });
         }else{
