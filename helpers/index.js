@@ -792,3 +792,4 @@ exports.getSlaves = getSlaves;
 exports.API = API;
 exports.toUnicode = toUnicode;
 exports.payment = payment;
+exports.initConfig = initConfig;
