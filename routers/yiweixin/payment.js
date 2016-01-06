@@ -203,7 +203,7 @@ app.post('/pay', requireLogin, function(req, res) {
 
 
 var middleware = require('wechat-pay').middleware;
-app.use('/paymentconfirm', middleware(initConfig).getNotify().done(function(message, req, res, next) {
+app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(function(message, req, res, next) {
   console.log(message)
 
   var extractOrderId = message.attach
