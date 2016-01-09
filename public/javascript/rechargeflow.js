@@ -23,6 +23,7 @@ $(document).ready(function () {
       submitIsEnable(true);
     }
   });
+  changePayment()
 });
 
 
@@ -379,5 +380,16 @@ function withdrawal(){
     }else{
       return false
     }
+  })
+}
+
+function changePayment(){
+  $("#chooseMoney .weui_btn").click(function(){
+    $("#chooseMoney .weui_btn").removeClass("weui_btn_primary").removeClass('selected').addClass("weui_btn_default")
+    $(this).removeClass("weui_btn_default").addClass("weui_btn_primary").addClass('selected')
+    var $this = $(this),
+        _id = $this.data("id")
+    $(".tel-title").hide()
+    $("#" + _id).show()
   })
 }

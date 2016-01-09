@@ -214,3 +214,17 @@ p {
     bottom: 0;
     z-index: 99999
 }
+
+.hd {
+    padding: 2em 0;
+}
+
+.page_title {
+    text-align: center;
+    font-size: 34px;
+    color: #3CC51F;
+    font-weight: 400;
+    margin: 0 15%;
+}
+
+

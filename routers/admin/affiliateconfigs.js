@@ -33,7 +33,7 @@ admin.get('/affiliateconfigs', function(req, res) {
     models.AffiliateConfig.findOrCreate({
       where: {
         level: level,
-        dataPlanId: null
+        trafficPlanId: null
       },
       defaults: {
         level: level
@@ -92,24 +92,24 @@ admin.post('/affiliateconfig/:id', function(req, res) {
 
 })
 
-admin.get('/affiliateconfig/dataplan/:id/edit', function(req, res) {
+admin.get('/affiliateconfig/trafficplan/:id/edit', function(req, res) {
 
   async.waterfall([function(next) {
-    models.DataPlan.findById(req.params.id).then(function(dataplan) {
-      next(null, dataplan)
+    models.TrafficPlan.findById(req.params.id).then(function(trafficPlan) {
+      next(null, trafficPlan)
     }).catch(function(err){
       next(err)
     })
-  }, function(dataplan, pass) {
+  }, function(trafficPlan, pass) {
     async.map([1, 2, 3], function(level, next) {
       models.AffiliateConfig.findOrCreate({
         where: {
           level: level,
-          dataPlanId: dataplan.id
+          trafficPlanId: trafficPlan.id
         },
         defaults: {
           level: level,
-          dataPlanId: dataplan.id
+          trafficPlanId: trafficPlan.id
         }
       }).spread(function(aConfig) {
         next(null, aConfig)
@@ -120,43 +120,43 @@ admin.get('/affiliateconfig/dataplan/:id/edit', function(req, res) {
       if(err){
         pass(err)
       }else{
-        pass(null, result, dataplan)
+        pass(null, result, trafficPlan)
       }
     })
 
-  }], function(err, result, dataplan) {
+  }], function(err, result, trafficPlan) {
     if(err){
       console.log(err)
       res.redirect('/500')
     }else{
-      res.render('admin/affiliateconfigs/edit', { result: result, dataplan: dataplan } )
+      res.render('admin/affiliateconfigs/edit', { result: result, trafficPlan: trafficPlan } )
     }
   })
 
 
 })
 
-admin.post('/affiliateconfig/dataplan/:id', function(req, res) {
+admin.post('/affiliateconfig/trafficplan/:id', function(req, res) {
   console.log(req.body)
   async.waterfall([function(next) {
-    models.DataPlan.findById(req.params.id).then(function(dataplan) {
-      next(null, dataplan)
+    models.TrafficPlan.findById(req.params.id).then(function(trafficPlan) {
+      next(null, trafficPlan)
     }).catch(function(err) {
       next(err)
     })
-  }, function(dataplan, next) {
+  }, function(trafficPlan, next) {
 
     models.AffiliateConfig.findAll({
       where: {
-        dataPlanId: dataplan.id
+        trafficPlanId: trafficPlan.id
       }
     }).then(function(aConfigs) {
-      next(null, aConfigs, dataplan)
+      next(null, aConfigs, trafficPlan)
     }).catch(function(err) {
       next(err)
     })
 
-  }, function(aConfigs, dataplan, pass) {
+  }, function(aConfigs, trafficPlan, pass) {
 
     async.each(aConfigs, function(aConfig, next) {
       aConfig.updateAttributes({
@@ -170,17 +170,17 @@ admin.post('/affiliateconfig/dataplan/:id', function(req, res) {
       if(err){
         pass(err)
       }else{
-        pass(null, result, dataplan)
+        pass(null, result, trafficPlan)
       }
     })
 
-  }], function(err, result, dataplan) {
+  }], function(err, result, trafficPlan) {
     if(err){
       console.log(err)
       res.redirect('/500')
     }else{
       req.flash("info", "update succes")
-      res.redirect('/admin/affiliateconfig/dataplan/' + dataplan.id + '/edit')
+      res.redirect('/admin/affiliateconfig/trafficplan/' + trafficPlan.id + '/edit')
     }
   })
 

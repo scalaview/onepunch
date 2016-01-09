@@ -1,88 +1,46 @@
 <div class="page cell">
-      <div class="bd">
-        <div class="weui_cells_title"><span style="color: red">先输入手机号码，智能推荐套餐</span></div>
-        <div class="weui_cells weui_cells_form">
-          <div class="weui_cell">
-              <div class="weui_cell_hd"><label class="weui_label">手机号</label></div>
-              <div class="weui_cell_bd weui_cell_primary">
-                  <input class="weui_input" type="tel" placeholder="请输入手机号" id="mobile" maxlength="11">
-              </div>
-          </div>
-        </div>
-        <div class="weui_cells_title" id="phone-detail" style="color: green; display: none"></div>
-        <hr>
-        <div class="container">
-          <div class="row" id="chooseMoney">
-            <span data-id="balance" href="javascript:;" class="col-xs-6 weui_btn weui_btn_mini weui_btn_primary selected">微信支付</span>
-            <span data-id="salary" href="javascript:;" data-less='{{customer.salary}}' class="col-xs-6 weui_btn weui_btn_mini weui_btn_default" style="margin-top: 0px;">分销奖励</span>
-          </div>
-        </div>
-        <div id="salary" class="weui_cells_title tel-title" style="display: none">选择流量包（您当前可用<span style="color:orange;"> {{customer.salary}}  </span>元）</div>
-         <div id="balance" class="weui_cells_title tel-title">选择流量包（<span style="color:orange;">微信安全支付</span>）</div>
-        <hr>
-        <div class="llb">
-
-        </div>
-        <div class="ml">
-          <div class="zw-tips"><a href="../about/tiquguize.html">提取规则说明</a></div>
-          <div class="inform">
-            <p>【有效期】广东移动国内流量包当月有效，月底自动清零（建议月初1-10号充）。</p>
-            <p>广东移动200M省内流量包，充值到账后有效期为20天，月结日不影响。</p>
-            <p>【流量类型】2/3/4G通用（不含港澳台,全天不分时段）</p>
-            <p>【充值限制】可无限次充值【停机或转主套餐未生效以及随心王套餐不能办理】</p>
-            <p>【查询方式】发cxll到10086查询省内通用流量，也可以登录本《孚云网络》微信公众号查看充值进度</p>
-            <p>【使用方式】查询到流量即可使用</p>
-            <p>—— 重点注意以下——</p>
-            【常见问题】充值成功后，10086会有短信提示成功（广东移动国内流量包晚上10点后不会有信息提醒，广东移动省内200M流量包，晚上8点后不会有信息提醒）。可以<p>发送cxll到10086查询【特殊情况会延迟到账，一般不超过1小时】或登录本《孚云网络》微信公众号查看充值进度</p>
-          </div>
-      </div>
-      </div>
-    </div>
-
-{{!-- <div class="content">
-  <div class="form-group">
-      <div class="tel-name">充值号码:</div>
-      <div class="tel-name">(<span style="color: red">先输入手机号码，系统智能推荐套餐</span>)</div>
-      <div class="tel-input">
-          <input type="text" class="form-control" placeholder="先输入手机号码，自动适配运营商" id="mobile" maxlength="11">
-      </div>
-      <div id="phone-detail" class="correct" style="display: none" >   </div>
+  <div class="hd">
+    <h1 class="page_title">流量充值</h1>
   </div>
-  <div class="form-group">
-    <div class="row" id="chooseMoney">
-      <div class="col-xs-6">
-        <button type="button" data-id="balance" class="selected btn btn-warning col-xs-12">微信支付</button>
+    <div class="bd">
+      <div class="weui_cells_title"><span style="color: red">先输入手机号码，智能推荐套餐</span></div>
+      <div class="weui_cells weui_cells_form">
+        <div class="weui_cell">
+            <div class="weui_cell_hd"><label class="weui_label">手机号</label></div>
+            <div class="weui_cell_bd weui_cell_primary">
+                <input class="weui_input" type="tel" placeholder="请输入手机号" id="mobile" maxlength="11">
+            </div>
+        </div>
       </div>
-      <div class="col-xs-6">
-        <button type="button" data-id="salary" data-less='{{customer.salary}}' class="btn btn-default col-xs-12">分销奖励</button>
+      <div class="weui_cells_title" id="phone-detail" style="color: green; display: none"></div>
+      <hr>
+      <div class="container">
+        <div class="row" id="chooseMoney">
+          <span data-id="balance" href="javascript:;" class="col-xs-6 weui_btn weui_btn_primary selected">微信支付</span>
+          <span data-id="salary" href="javascript:;" data-less='{{customer.salary}}' class="col-xs-6 weui_btn weui_btn_default" style="margin-top: 0px;">分销奖励</span>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="form-group">
-      <div class="tel-name tel-title" id="balance">选择流量包（您当前可充值流量<span style="color:orange;"> {{customer.remainingTraffic}}  </span>E币）</div>
-      <div class="tel-name tel-title" style="display: none;" id="salary">选择流量包（您当前可用<span style="color:orange;"> {{customer.salary}}  </span>E币）</div>
+      <div id="salary" class="weui_cells_title tel-title" style="display: none">选择流量包（您当前可用<span style="color:orange;"> {{customer.salary}}  </span>元）</div>
+       <div id="balance" class="weui_cells_title tel-title">选择流量包（<span style="color:orange;">微信安全支付</span>）</div>
       <hr>
       <div class="llb">
+
       </div>
-      <div class="error" style="display: none;"></div>
+      <div class="ml">
+        <div class="zw-tips"><a href="../about/tiquguize.html">提取规则说明</a></div>
+        <div class="inform">
+          <p>【有效期】广东移动国内流量包当月有效，月底自动清零（建议月初1-10号充）。</p>
+          <p>广东移动200M省内流量包，充值到账后有效期为20天，月结日不影响。</p>
+          <p>【流量类型】2/3/4G通用（不含港澳台,全天不分时段）</p>
+          <p>【充值限制】可无限次充值【停机或转主套餐未生效以及随心王套餐不能办理】</p>
+          <p>【查询方式】发cxll到10086查询省内通用流量，也可以登录本《孚云网络》微信公众号查看充值进度</p>
+          <p>【使用方式】查询到流量即可使用</p>
+          <p>—— 重点注意以下——</p>
+          【常见问题】充值成功后，10086会有短信提示成功（广东移动国内流量包晚上10点后不会有信息提醒，广东移动省内200M流量包，晚上8点后不会有信息提醒）。可以<p>发送cxll到10086查询【特殊情况会延迟到账，一般不超过1小时】或登录本《孚云网络》微信公众号查看充值进度</p>
+        </div>
+    </div>
+    </div>
   </div>
-  <div class="sale-price">
-      <div class="right">应付E币：<span id="needmyflow" class="orange">0</span>个</div>
-  </div>
-  <div class="ml">
-      <div class="zw-tips"><a href="../about/tiquguize.html">提取规则说明</a></div>
-      <div class="inform">
-        <p>【有效期】广东移动国内流量包当月有效，月底自动清零（建议月初1-10号充）。</p>
-        <p>广东移动200M省内流量包，充值到账后有效期为20天，月结日不影响。</p>
-        <p>【流量类型】2/3/4G通用（不含港澳台,全天不分时段）</p>
-        <p>【充值限制】可无限次充值【停机或转主套餐未生效以及随心王套餐不能办理】</p>
-        <p>【查询方式】发cxll到10086查询省内通用流量，也可以登录本《孚云网络》微信公众号查看充值进度</p>
-        <p>【使用方式】查询到流量即可使用</p>
-        <p>—— 重点注意以下——</p>
-        【常见问题】充值成功后，10086会有短信提示成功（广东移动国内流量包晚上10点后不会有信息提醒，广东移动省内200M流量包，晚上8点后不会有信息提醒）。可以<p>发送cxll到10086查询【特殊情况会延迟到账，一般不超过1小时】或登录本《孚云网络》微信公众号查看充值进度</p>
-      </div>
-  </div>
-</div> --}}
 
 {{> alertmodal }}
 {{> extractConfirm }}
@@ -105,18 +63,4 @@
     </div>
   </div>
 \{{/each}}
-</script>
-
-<script type="text/javascript">
-$(function(){
-  $("#chooseMoney .weui_btn").click(function(){
-    $("#chooseMoney .weui_btn").removeClass("weui_btn_primary").removeClass('selected').addClass("weui_btn_default")
-    $(this).removeClass("weui_btn_default").addClass("weui_btn_primary").addClass('selected')
-    var $this = $(this),
-        _id = $this.data("id")
-    $(".tel-title").hide()
-    $("#" + _id).show()
-  })
-})
-
 </script>
