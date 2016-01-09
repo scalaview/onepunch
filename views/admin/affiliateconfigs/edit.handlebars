@@ -9,25 +9,25 @@
     <div class="col-lg-6">
       <div class="form-group">
           <label>套餐</label>
-          <input class="form-control" disabled value="{{ dataplan.name }}">
+          <input class="form-control" disabled value="{{ trafficPlan.name }}">
       </div>
     </div>
     <div class="col-lg-6">
       <div class="form-group">
           <label>价格</label>
-          <input class="form-control" disabled value="{{ dataplan.price }}">
+          <input class="form-control" disabled value="{{ trafficPlan.price }}">
       </div>
     </div>
 
     <div class="col-lg-6">
       <div class="form-group">
-          <label>E币</label>
-          <input class="form-control" disabled value="{{ dataplan.value }}">
+          <label>cost</label>
+          <input class="form-control" disabled value="{{ trafficPlan.value }}">
       </div>
     </div>
   </div>
 
-<form role="form" accept-charset="UTF-8" action="/admin/affiliateconfig/dataplan/{{ dataplan.id }}" method="POST">
+<form role="form" accept-charset="UTF-8" action="/admin/affiliateconfig/trafficplan/{{ trafficPlan.id }}" method="POST">
   <div class='row'>
     {{#each result }}
       <div class="col-lg-6">

@@ -9,7 +9,7 @@ var _ = require('lodash')
 admin.get("/orders", function(req, res) {
   var result,
       paymentMethodCollection = [],
-      dataPlanCollection = []
+      trafficPlanCollection = []
   async.waterfall([function(next) {
     var customerParams = {}
     if(req.query.phone !== undefined && req.query.phone.present()){
@@ -19,8 +19,8 @@ admin.get("/orders", function(req, res) {
     if(req.query.state !== undefined && req.query.state.present()){
       params = _.merge(params, { state: req.query.state } )
     }
-    if(req.query.dataPlanId !== undefined && req.query.dataPlanId.present()){
-      params = _.merge(params, { dataPlanId: req.query.dataPlanId } )
+    if(req.query.trafficPlanId !== undefined && req.query.trafficPlanId.present()){
+      params = _.merge(params, { trafficPlanId: req.query.trafficPlanId } )
     }
     if(req.query.paymentMethodId !== undefined && req.query.paymentMethodId.present()){
       params = _.merge(params, { paymentMethodId: req.query.paymentMethodId } )
@@ -66,17 +66,17 @@ admin.get("/orders", function(req, res) {
       }
     })
   }, function(orders, next){
-    models.DataPlan.findAll().then(function(dataPlans) {
-      for (var i = 0; i < dataPlans.length; i++) {
-        dataPlanCollection.push([dataPlans[i].id, dataPlans[i].name])
+    models.TrafficPlan.findAll().then(function(trafficPlans) {
+      for (var i = 0; i < trafficPlans.length; i++) {
+        trafficPlanCollection.push([trafficPlans[i].id, trafficPlans[i].name])
       };
-      next(null, orders, dataPlans)
+      next(null, orders, trafficPlans)
     })
-  }, function(orders, dataPlans, outnext) {
+  }, function(orders, trafficPlans, outnext) {
     async.map(orders, function(order, next) {
-      for (var i = dataPlans.length - 1; i >= 0; i--) {
-        if(dataPlans[i].id == order.dataPlanId){
-          order.dataPlan = dataPlans[i]
+      for (var i = trafficPlans.length - 1; i >= 0; i--) {
+        if(trafficPlans[i].id == order.trafficPlanId){
+          order.trafficPlan = trafficPlans[i]
           break;
         }
       };
@@ -108,7 +108,7 @@ admin.get("/orders", function(req, res) {
       console.log(err)
       res.send(500)
     }else{
-      var dataPlanOptions = { name: 'dataPlanId', id: 'dataPlanId', class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
+      var trafficPlanOptions = { name: 'trafficPlanId', id: 'trafficPlanId', class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
           paymentMethodOptions = { name: 'paymentMethodId', id: 'paymentMethodId', class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
           stateOptions = { name: 'state', id: 'state', class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
           stateCollection = []
@@ -120,9 +120,9 @@ admin.get("/orders", function(req, res) {
       result = helpers.setPagination(result, req)
       res.render("admin/orders/index", {
         orders: result,
-        dataPlanCollection: dataPlanCollection,
+        trafficPlanCollection: trafficPlanCollection,
         paymentMethodCollection: paymentMethodCollection,
-        dataPlanOptions: dataPlanOptions,
+        trafficPlanOptions: trafficPlanOptions,
         paymentMethodOptions: paymentMethodOptions,
         stateOptions: stateOptions,
         stateCollection: stateCollection,
@@ -148,8 +148,8 @@ admin.get("/orders/:id", function(req, res) {
       next(err)
     })
   }, function(order, next) {
-    models.DataPlan.findById(order.dataPlanId).then(function(dataPlan) {
-      order.dataPlan = dataPlan
+    models.TrafficPlan.findById(order.trafficPlanId).then(function(trafficPlan) {
+      order.trafficPlan = trafficPlan
       next(null, order)
     }).catch(function(err) {
       next(err)

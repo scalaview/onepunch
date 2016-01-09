@@ -55,9 +55,6 @@ admin.get("/flowhistories", function(req, res){
 
             if(source){
               switch(source.className()){
-                case "Order":
-                  flowHistory.order = source
-                  break;
                 case "ExtractOrder":
                   flowHistory.extractOrder = source
                   break;
@@ -101,7 +98,7 @@ admin.get("/flowhistories", function(req, res){
           stateOptions = { name: 'state', class: 'select2 col-xs-12 col-lg-12', includeBlank: true },
           stateCollection = [ [models.FlowHistory.STATE.ADD, "增加"], [models.FlowHistory.STATE.REDUCE, "减少"] ],
           typeOptions = { name: 'type', class: 'select2 col-xs-12 col-lg-12', includeBlank: true },
-          typeCollection = [ ["Order", "充值流量币"], ["ExtractOrder", "提取流量"] ]
+          typeCollection = [ ["ExtractOrder", "流量订单"] ]
 
       result.rows = flowhistories
       result = helpers.setPagination(result, req)

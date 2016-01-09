@@ -39,20 +39,20 @@ app.get('/payment', requireLogin, function(req, res) {
     if(err){
       console.log(err)
     }else{
-      models.DataPlan.allOptions(function(dataPlans){
+      models.TrafficPlan.allOptions(function(trafficPlans){
 
         for (var i = coupons.length - 1; i >= 0; i--) {
-          for (var j = dataPlans.length - 1; j >= 0; j--) {
-            if(coupons[i].dataPlanId == dataPlans[j].id){
-              if(dataPlans[j].coupon === undefined){
-                dataPlans[j].coupon = coupons[i]
-              }else if(dataPlans[j].coupon.updatedAt < coupons[i].updatedAt){
-                dataPlans[j].coupon = coupons[i]
+          for (var j = trafficPlans.length - 1; j >= 0; j--) {
+            if(coupons[i].trafficPlanId == trafficPlans[j].id){
+              if(trafficPlans[j].coupon === undefined){
+                trafficPlans[j].coupon = coupons[i]
+              }else if(trafficPlans[j].coupon.updatedAt < coupons[i].updatedAt){
+                trafficPlans[j].coupon = coupons[i]
               }
             }
           };
         };
-        res.render('yiweixin/orders/payment', { customer: customer, dataPlans: dataPlans })
+        res.render('yiweixin/orders/payment', { customer: customer, trafficPlans: trafficPlans })
       }, function(err) {
         console.log(err)
       })
@@ -327,7 +327,7 @@ function doAffiliate(extractOrder, customer, pass){
           var one =  obj.customer
           var confLine = obj.config
 
-          var salary = (parseInt(confLine.percent) / 100) * dataPlan.value
+          var salary = (parseInt(confLine.percent) / 100) * trafficPlan.cost
           one.updateAttributes({
             salary: one.salary + salary
           }).then(function(o) {
