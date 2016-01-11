@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     salt: { type: DataTypes.STRING, allowNull: false },
     wechat: { type: DataTypes.STRING, allowNull: true },
-    phone: { type: DataTypes.STRING, allowNull: false },
+    phone: { type: DataTypes.STRING, allowNull: true },
     lastLoginAt: { type: DataTypes.DATE, allowNull: true },
     remainingTraffic: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     sex: { type: DataTypes.STRING, allowNull: true },
