@@ -58,13 +58,13 @@ app.get('/register', function(req, res) {
         wechat: openid
       }
     }).then(function (customer) {
-      if(customer && customer.bindPhone){
+      if(customer){
         req.session.customer_id = customer.id
         if(req.query.to){
           var backTo = new Buffer(req.query.to, "base64").toString()
           res.redirect(backTo)
         }else{
-          res.redirect('/profile')
+          res.redirect('/myaccount')
         }
         return
       }else{
@@ -81,9 +81,36 @@ app.get('/register', function(req, res) {
       next(null, accessToken, openid, userInfo)
     });
   }, function(accessToken, openid, userInfo, next) {
-    req.session.userInfo = userInfo
-    req.session.openid = openid
-    next(null)
+    models.Customer.build({
+      password: '1234567',
+      username: userInfo.nickname,
+      wechat: openid,
+      sex: userInfo.sex + '',
+      city: userInfo.city,
+      province: userInfo.province,
+      country: userInfo.country,
+      headimgurl: userInfo.headimgurl,
+      bindPhone: true
+    }).save().then(function(customer){
+      if(customer){
+        customer.updateAttributes({
+          lastLoginAt: new Date()
+        }).then(function(customer){
+        })
+        req.session.customer_id = customer.id
+        if(req.query.to){
+          var backTo = new Buffer(req.query.to, "base64").toString()
+          res.redirect(backTo)
+        }else{
+          res.redirect('/myaccount')
+        }
+        return
+      }else{
+        next({errors: "create fail"})
+      }
+    }).catch(function(err){
+      next(err)
+    })
   }], function(err) {
     if(err){
       console.log(err)
