@@ -129,7 +129,7 @@ admin.post('/withdrawals/:id/reject', function(req, res) {
         salary: parseFloat(customer.salary) + parseFloat(withdrawal.cost)
       }).then(function(customer) {
 
-        customer.takeFlowHistory(models, withdrawal, withdrawal.cost, "提取￥" + withdrawal.amount + "失败，返还" + withdrawal.cost + "E币", models.FlowHistory.STATE.ADD , function() {
+        customer.takeFlowHistory(models, withdrawal, withdrawal.cost, "提取￥" + withdrawal.amount + "失败，返还" + withdrawal.cost + "元（￥）", models.FlowHistory.STATE.ADD , function() {
               }, function(err) {
               }, models.FlowHistory.TRAFFICTYPE.SALARY)
 

@@ -5,7 +5,7 @@
         <div class="info">
            <h5>{{ customer.username }}</h5>
            <p><small>关注时间： {{ strftime customer.subscribeTime "YYYY-MM-DD" }}</small></p>
-           <p><small>推荐人： {{#if parent }} {{ parent.username }} {{else}} 浮云网络 {{/if}}</small></p>
+           <p><small>推荐人： {{#if parent.username }} {{ parent.username }} {{else}} 星客万维 {{/if}}</small></p>
            {{#if customer.isAffiliate }}<p><small style='color:red'>恭喜你已经成为供应商</small></p>{{/if}}
         </div>
      </div>
@@ -13,8 +13,7 @@
    <div class='row'>
      <div class="item total col-xs-12">
         <div style="width:100%;">
-           <div style="width:50%;">分销收入：{{ customer.salary }}E币</div>
-           <div style="width:50%;">账户余额：{{ customer.remainingTraffic }}E币</div>
+           <div style="width:100%;">分销收入：{{ customer.salary }}￥</div>
         </div>
      </div>
    </div>
@@ -62,14 +61,6 @@
       <a href="/salary">
         <div class="item col-xs-12">
           <h3><i style="color: blue;" class="glyphicon glyphicon-home"></i>  我的收入</h3>
-        </div>
-      </a>
-    </div>
-
-    <div class="row">
-      <a href="/givento">
-        <div class="item col-xs-12">
-          <h3><i style="color: green;" class="glyphicon glyphicon-header"></i>  转赠</h3>
         </div>
       </a>
     </div>
