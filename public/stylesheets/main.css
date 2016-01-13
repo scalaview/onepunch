@@ -3,7 +3,6 @@
 body{font-size:1.4em;font-family: "arial","微软雅黑"; margin:0; padding:0; color:#424242; background:#eee;}
 html,body,form,fieldset,p,div,h1,h2,h3,h4,h5,h6 {-webkit-text-size-adjust:none}
 a,body {-webkit-tap-highlight-color:rgba(0,0,0,0); color:#444;}/*去掉输入框选择背景颜色*/
-a,a:hover,.a:link,a:active,a:visited{ text-decoration:none; color:#444;}
 ul,li{ list-style:none;}
 select,input,textarea{font-family: "arial","微软雅黑"; outline:none;}
 .gray{color:#888;}

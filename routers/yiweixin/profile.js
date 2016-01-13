@@ -141,8 +141,8 @@ app.post("/extractFlow", requireLogin, function(req, res){
 })
 
 app.get('/getTrafficplans', requireLogin, function(req, res){
-  if(models.TrafficPlan.Provider[req.query.catName] !== undefined){
-    var providerId = models.TrafficPlan.Provider[req.query.catName]
+  if(models.TrafficPlan.Provider[req.query.catName] !== undefined || req.query.catName == "all"){
+    var providerId = req.query.catName == "all" ?  Object.keys(models.TrafficPlan.ProviderName) : models.TrafficPlan.Provider[req.query.catName]
     async.waterfall([function(outnext) {
       models.TrafficGroup.findAll({
         where: {
