@@ -15,7 +15,11 @@ $(document).ready(function () {
     var cost = $this.data("cost");
     $("#needmyflow").html(cost);
   })
-
+  var source   = $("#trafficplans-template").html();
+  if(source !== undefined && source !== ''){
+    getTrafficplan(source, "all")
+    submitIsEnable(true);
+  }
   mobileBlur(function(result) {
     var source   = $("#trafficplans-template").html();
     if(source !== undefined && source !== ''){
@@ -182,6 +186,11 @@ function getTrafficplan(source, catName){
 function extractConfirm(){
 
   $(".llb").on('click', 'a.exchanger', function() {
+    var mobile = $.trim($("#mobile").val());
+    if (!isMobile(mobile)){
+      showDialog("请输入正确的手机号码")
+      return
+    }
     var $this = $(this)
     $(".llb a").removeClass('choose')
     var choose = $("#chooseMoney .weui_btn.selected")
