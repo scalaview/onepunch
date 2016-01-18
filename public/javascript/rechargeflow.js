@@ -2,6 +2,7 @@
 var lastSubmitdate = new Date().getTime();
 //页面加载
 $(document).ready(function () {
+  applylimit()
   extractConfirm()
   givenTo()
   withdrawal()
@@ -400,5 +401,11 @@ function changePayment(){
         _id = $this.data("id")
     $(".tel-title").hide()
     $("#" + _id).show()
+  })
+}
+
+function applylimit(){
+  $(".applylimit").click(function(){
+    showDialog("分销奖励未超过100元，无法提现")
   })
 }

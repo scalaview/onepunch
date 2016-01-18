@@ -36,7 +36,7 @@
     "moment": "^2.10.6",
     "mysql": "^2.8.0",
     "request": "^2.60.0",
-    "sequelize": "^3.4.1",
+    "sequelize": "~3.4.1",
     "sequelize-cli": "^1.7.4",
     "wechat": "^2.0.1",
     "wechat-api": "^1.19.0",
