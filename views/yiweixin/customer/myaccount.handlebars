@@ -50,7 +50,7 @@
     </div>
 
     <div class="row">
-      <a href="/apply">
+      <a {{ applylimit customer.salary }} >
         <div class="item col-xs-12">
           <h3><i style="color: red;" class="glyphicon glyphicon-folder-close"></i>  佣金提现</h3>
         </div>
@@ -73,3 +73,5 @@
       </a>
     </div>
 </div>
+
+{{> alertmodal }}

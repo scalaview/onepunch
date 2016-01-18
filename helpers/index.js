@@ -755,7 +755,15 @@ function toUnicode(theString) {
   return unicodeString;
 }
 
+function applylimit(salary){
+  if(salary >= 100){
+    return "href='/apply'".htmlSafe()
+  }else{
+    return "href='javascript:void(0);' class='applylimit'".htmlSafe()
+  }
+}
 
+exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
 exports.isExpired = isExpired;
