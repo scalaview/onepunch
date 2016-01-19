@@ -473,7 +473,7 @@ function autoCharge(extractOrder, trafficPlan, next){
           next(new Error(data.msg))
         }
       }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃红包'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃全国'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃广东']){
-        if(data.code == 0 && data.taskid != 0){
+        if(data.code == 1 && data.taskid != 0){
           extractOrder.updateAttributes({
             state: models.ExtractOrder.STATE.SUCCESS,
             taskid: data.taskid
