@@ -314,7 +314,7 @@ function confirmOrder(report, pass){
       models.ExtractOrder.findOne({
         where: {
           taskid: report.taskid,
-          state: models.ExtractOrder.STATE.INIT
+          state: models.ExtractOrder.STATE.SUCCESS
         }
       }).then(function(extractorder) {
         if(extractorder){
@@ -339,7 +339,7 @@ function confirmOrder(report, pass){
     }, function(extractorder, customer, next){
       var status = models.ExtractOrder.STATE.FAIL
       if(report.status == 3){ //status success  fail 4
-        status = models.ExtractOrder.STATE.SUCCESS
+        status = models.ExtractOrder.STATE.FINISH
         next(null, extractorder, status)
       }else{
         if(customer){
@@ -379,7 +379,7 @@ function confirmOrder(report, pass){
         next(err)
       })
     }, function(extractorder, trafficPlan, next) {
-      if(extractorder.status === models.ExtractOrder.STATE.SUCCESS){
+      if(extractorder.status === models.ExtractOrder.STATE.FINISH){
         models.MessageQueue.sendRechargeMsg(models, trafficPlan, extractorder.phone, function(messageQueue) {
           next(null, extractorder)
         }, function(err) {
