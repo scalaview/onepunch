@@ -463,7 +463,7 @@ function doOrderTotal(extractOrder, customer, pass) {
 function autoCharge(extractOrder, trafficPlan, next){
   extractOrder.autoRecharge(trafficPlan).then(function(res, data) {
       console.log(data)
-      if(trafficPlan.type == 1){  // 正规空中充值
+      if(trafficPlan.type == models.TrafficPlan.TYPE['空中平台']){  // 正规空中充值
         if(data.status == 1 || data.status == 2){
           next(null, trafficPlan, extractOrder)
         }else{
@@ -472,10 +472,11 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.msg))
         }
-      }else if(trafficPlan.type == 2){
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃红包'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃全国'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃广东']){
         if(data.Code == 0 && data.TaskID != 0){
           extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS
+            state: models.ExtractOrder.STATE.SUCCESS,
+            taskid: data.taskid
           }).then(function(extractOrder){
             next(null, trafficPlan, extractOrder)
           }).catch(function(err) {
