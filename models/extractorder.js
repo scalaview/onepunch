@@ -244,7 +244,7 @@ module.exports = function(sequelize, DataTypes) {
         if(this.state === ExtractOrder.STATE.INIT){
           return "待处理"
         }else if(this.state === ExtractOrder.STATE.SUCCESS){
-          return "成功"
+          return "充值任务提交成功"
         }else if(this.state === ExtractOrder.STATE.FAIL){
           return "失败"
         }else if(this.state === ExtractOrder.STATE.PAID){
@@ -253,6 +253,8 @@ module.exports = function(sequelize, DataTypes) {
           return "付款失败"
         }else if(this.state === ExtractOrder.STATE.REFUNDED){
           return "退款"
+        }else if(this.state === ExtractOrder.STATE.FINISH){
+          return "充值成功"
         }
       },
       autoRecharge: function(trafficPlan){
@@ -281,7 +283,8 @@ module.exports = function(sequelize, DataTypes) {
     UNPAID: 2,
     SUCCESS: 3,
     FAIL: 4,
-    REFUNDED: 5
+    REFUNDED: 5,
+    FINISH: 6
   }
   return ExtractOrder;
 };
