@@ -91,14 +91,14 @@ function mobileBlur(successCallback){
       if ($.trim(mobile) == "") {
           $(".correct").hide();
           $(".correct").html("");
-          $(".llb").html("");
+          $(".llb").html(window.plans || "");
           // showDialog("请输入手机号码");
           return;
       }
       if (!isMobile(mobile)) {
           $(".correct").hide();
           $(".correct").html("");
-          $(".llb").html("");
+          $(".llb").html(window.plans || "");
           showDialog("请输入正确的手机号码");
           return;
       }
@@ -177,6 +177,9 @@ function getTrafficplan(source, catName){
     method: "GET"
   }).done(function(data){
     var html = template({trafficgroups: data})
+    if(catName == "all"){
+      window.plans = html
+    }
     $(".llb").html(html)
   }).fail(function(err){
     console.log(err)
