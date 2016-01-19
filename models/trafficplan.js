@@ -82,6 +82,9 @@ module.exports = function(sequelize, DataTypes) {
       },
       provider: function(){
         return TrafficPlan.ProviderName[this.providerId]
+      },
+      typeJson: function(){
+        return TrafficPlan.TYPE;
       }
     },
     scopes: {
