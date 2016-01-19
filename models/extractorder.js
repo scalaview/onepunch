@@ -255,13 +255,14 @@ module.exports = function(sequelize, DataTypes) {
         }
       },
       autoRecharge: function(trafficPlan){
-        if(trafficPlan.type == models.TrafficPlan.TYPE['空中平台']){
+        var typeJson = trafficPlan.typeJson()
+        if(trafficPlan.type == typeJson['空中平台']){
           return new DefaultRecharger(this.phone, this.bid, this.id)
-        }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃广东']){
+        }else if(trafficPlan.type == typeJson['华沃广东']){
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_province_account, config.huawo_province_pwd)
-        }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃全国']){
+        }else if(trafficPlan.type == typeJson['华沃全国']){
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_account, config.huawo_pwd)
-        }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃红包']){
+        }else if(trafficPlan.type == typeJson['华沃红包']){
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd)
         }else{
           return new Recharger(this.phone, this.value)
