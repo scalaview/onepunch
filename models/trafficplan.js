@@ -107,10 +107,18 @@ module.exports = function(sequelize, DataTypes) {
     1: '中国联通',
     2: '中国电信'
   }
+
   TrafficPlan.TYPE = {
-    '非正式' : 0,
-    '正式' : 1
+    '非正式': 0,
+    '空中平台': 1,
+    '华沃红包': 2,
+    '华沃广东': 3,
+    '华沃全国': 4
   }
+
+  TrafficPlan.TYPEARRAY = Object.keys(TrafficPlan.TYPE).map(function(k) { return [TrafficPlan.TYPE[k], k] });
+
+
 
   return TrafficPlan;
 };
