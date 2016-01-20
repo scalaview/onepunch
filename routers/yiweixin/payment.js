@@ -488,6 +488,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.Message))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['曦和流量']){
+        if(data.errcode == 0){
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.SUCCESS,
+            taskid: data.order.transaction_id
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.errmsg))
+        }
       }else{
         if(data.state == 1){
           extractOrder.updateAttributes({
