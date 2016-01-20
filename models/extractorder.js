@@ -141,7 +141,7 @@ var HuawoRecharger = function(phone, packagesize, orderId, account, pwd, range){
     packagesize: this.packagesize + "",
     password: pwd || config.huawo_pwd,
     signTime: helpers.strftime(new Date(), "YYYYMMDDHH"),
-    range: range || 1,
+    range: range,
     requestTime: helpers.strftime(new Date(), "YYYYMMDDHHmmss"),
     sign: this.sign,
     returnUrl: encodeURIComponent("http://" + config.hostname + "/huawoconfirm")
