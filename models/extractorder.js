@@ -189,6 +189,102 @@ var HuawoRecharger = function(phone, packagesize, orderId, account, pwd, range){
  return this
 }
 
+var ChongRecharger = function(phone, packagesize, orderId, account, pwd, range){
+
+  function formatQueryParams(params, urlencode){
+    var keys = Object.keys(params),
+        i, len = keys.length;
+    var tmpParams = []
+    keys.sort();
+
+    for (i = 0; i < len; i++) {
+      var key = keys[i],
+          value = params[key]
+      if(urlencode){
+        value = encodeURI(value)
+      }
+      tmpParams.push(key + "=" + value)
+    }
+    return tmpParams.join("&")
+  }
+
+  function sign(params){
+    var formatParams = formatQueryParams(params, false),
+        sha1Str = crypto.createHmac('sha1', '').update(formatParams).digest('hex')
+    return sha1Str.toUpperCase()
+  }
+
+  // type = 2
+  this.phone = phone
+  this.packagesize = packagesize
+  this.orderId = orderId
+
+  this.account = account || config.huawo_account
+
+  var host = 'http://' + config.huawo_hostname
+
+  this.signTime = helpers.strftime(new Date(), "YYYYMMDDHH")
+
+  var md5Params = '{"username":"'+ helpers.toUnicode(this.account) +'","mobile":"'+ this.phone +'","packagesize":"'+ this.packagesize +'","password":"'+ config.huawo_pwd +'","signTime":"'+ this.signTime +'"}'
+
+  this.sign = crypto.createHash('md5').update(md5Params).digest("hex")
+  console.log(this.sign)
+
+  var params = {
+    username: this.account,
+    mobile: this.phone,
+    packagesize: this.packagesize + "",
+    password: pwd || config.huawo_pwd,
+    signTime: helpers.strftime(new Date(), "YYYYMMDDHH"),
+    range: range,
+    requestTime: helpers.strftime(new Date(), "YYYYMMDDHHmmss"),
+    sign: this.sign,
+    returnUrl: encodeURIComponent("http://" + config.hostname + "/huawoconfirm")
+  }
+
+  this.options = {
+    uri: host,
+    method: 'GET',
+    qs: params
+  }
+
+  console.log(this.options)
+
+  this.then = function(callback){
+    this.successCallback = callback
+    return this
+  }
+
+  this.catch = function(callback){
+   this.errCallback = callback
+   return this
+  }
+
+  this.do = function(){
+
+  var inerSuccessCallback = this.successCallback;
+  var inerErrCallback = this.errCallback;
+
+  request(this.options, function (error, res) {
+    if (!error && res.statusCode == 200) {
+      if(inerSuccessCallback){
+        console.log(res.body)
+        var data = JSON.parse(res.body)
+        inerSuccessCallback.call(this, res, data)
+      }
+     }else{
+      if(inerErrCallback){
+        inerErrCallback.call(this, error)
+      }
+     }
+   });
+
+   return this
+ }
+ return this
+}
+
+
 module.exports = function(sequelize, DataTypes) {
   var ExtractOrder = sequelize.define('ExtractOrder', {
     state: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
