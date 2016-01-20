@@ -118,7 +118,7 @@ var DefaultRecharger = function(phone, bid, orderId){
  return this
 }
 
-var HuawoRecharger = function(phone, packagesize, orderId, account, pwd){
+var HuawoRecharger = function(phone, packagesize, orderId, account, pwd, range){
   // type = 2
   this.phone = phone
   this.packagesize = packagesize
@@ -141,7 +141,7 @@ var HuawoRecharger = function(phone, packagesize, orderId, account, pwd){
     packagesize: this.packagesize + "",
     password: pwd || config.huawo_pwd,
     signTime: helpers.strftime(new Date(), "YYYYMMDDHH"),
-    range: 0,
+    range: range || 1,
     requestTime: helpers.strftime(new Date(), "YYYYMMDDHHmmss"),
     sign: this.sign,
     returnUrl: encodeURIComponent("http://" + config.hostname + "/huawoconfirm")
@@ -262,11 +262,11 @@ module.exports = function(sequelize, DataTypes) {
         if(trafficPlan.type == typeJson['空中平台']){
           return new DefaultRecharger(this.phone, this.bid, this.id)
         }else if(trafficPlan.type == typeJson['华沃广东']){
-          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_province_account, config.huawo_province_pwd)
+          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_province_account, config.huawo_province_pwd, 1)
         }else if(trafficPlan.type == typeJson['华沃全国']){
-          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_account, config.huawo_pwd)
+          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_account, config.huawo_pwd, 0)
         }else if(trafficPlan.type == typeJson['华沃红包']){
-          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd)
+          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd, 0)
         }else{
           return new Recharger(this.phone, this.value)
         }
