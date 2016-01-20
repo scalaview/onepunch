@@ -51,6 +51,14 @@ var config = {
                 'huawo_lucky_pwd': '',
                 'huawo_province_account': '',
                 'huawo_province_pwd': '',
+                'chong': {
+                  'development': {
+
+                  },
+                  'production': {
+
+                  }
+                }
               };
 
 module.exports = config;
