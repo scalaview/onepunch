@@ -53,10 +53,14 @@ var config = {
                 'huawo_province_pwd': '',
                 'chong': {
                   'development': {
-
+                    'hostname': 'api.liuliangshop.com',
+                    'client_id': 'flow3355e802d44ay95yeev2',
+                    'client_secret': 'eal0ycl5argvq8v3cthm5qnzq1ljqf1429506832'
                   },
                   'production': {
-
+                    'hostname': 'api.liuliangshop.com',
+                    'client_id': 'flow3355e802d44ay95yeev2',
+                    'client_secret': 'eal0ycl5argvq8v3cthm5qnzq1ljqf1429506832'
                   }
                 }
               };
