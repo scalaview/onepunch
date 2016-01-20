@@ -234,6 +234,7 @@ module.exports = function(sequelize, DataTypes) {
             sourceable: 'Customer'
           }
         });
+        models.ExtractOrder.ChongRecharger = new ChongRecharger(models, config.chong[process.env.NODE_ENV || "development"].client_id, config.chong[process.env.NODE_ENV || "development"].client_secret, recharger.storeCallback, recharger.accessCallback)
       }
     },
     instanceMethods: {
@@ -274,7 +275,7 @@ module.exports = function(sequelize, DataTypes) {
         }else if(trafficPlan.type == typeJson['华沃红包']){
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd, 0)
         }else if(trafficPlan.type == typeJson['曦和流量']){
-          return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "")
+          return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "http://protchar.cn/fortest")
         }else{
           return new Recharger(this.phone, this.value)
         }
@@ -295,6 +296,5 @@ module.exports = function(sequelize, DataTypes) {
     FINISH: 6
   }
 
-  ExtractOrder.ChongRecharger = new ChongRecharger(config.chong[process.env.NODE_ENV || "development"].client_id, config.chong[process.env.NODE_ENV || "development"].client_secret, recharger.storeCallback, recharger.accessCallback)
   return ExtractOrder;
 };
