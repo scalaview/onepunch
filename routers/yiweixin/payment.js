@@ -119,7 +119,7 @@ app.post('/pay', requireLogin, function(req, res) {
       }else if(customer.level && customer.level.discount > 0){
         discount = discount - customer.level.discount
       }
-      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.price * discount)){
+      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.cost * discount)){
         res.json({ err: 1, msg: "分销奖励不足" })
         return
       }
@@ -128,13 +128,13 @@ app.post('/pay', requireLogin, function(req, res) {
         exchangerType: trafficPlan.className(),
         exchangerId: trafficPlan.id,
         phone: req.body.phone,
-        cost: trafficPlan.cost,
+        cost: trafficPlan.cost ,
         value: trafficPlan.value,
         bid: trafficPlan.bid,
         customerId: customer.id,
         chargeType: chargetype,
         paymentMethodId: paymentMethod.id,
-        total: trafficPlan.price * discount
+        total: trafficPlan.cost * discount
       }).save().then(function(extractOrder) {
         next(null, paymentMethod, trafficPlan, extractOrder)
       }).catch(function(err) {
@@ -153,7 +153,7 @@ app.post('/pay', requireLogin, function(req, res) {
           var orderParams = {
             body: '流量套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
-            out_trade_no: 'yiliuliang' + (+new Date),
+            out_trade_no: config.hostname + (+new Date),
             total_fee:  Math.round(extractOrder.cost * 100),
             spbill_create_ip: ip,
             openid: customer.wechat,
@@ -487,6 +487,22 @@ function autoCharge(extractOrder, trafficPlan, next){
             state: models.ExtractOrder.STATE.FAIL
           })
           next(new Error(data.Message))
+        }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['曦和流量']){
+        if(data.errcode == 0){
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.SUCCESS,
+            taskid: data.order.transaction_id
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.errmsg))
         }
       }else{
         if(data.state == 1){
