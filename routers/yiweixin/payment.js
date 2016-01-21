@@ -115,9 +115,9 @@ app.post('/pay', requireLogin, function(req, res) {
       var discount = 1.00
 
       if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
-        discount = discount - trafficPlan.coupon.discount
+        discount = trafficPlan.coupon.discount
       }else if(customer.level && customer.level.discount > 0){
-        discount = discount - customer.level.discount
+        discount = customer.level.discount
       }
       if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.cost * discount)){
         res.json({ err: 1, msg: "分销奖励不足" })

@@ -24,20 +24,6 @@
        <div id="balance" class="weui_cells_title tel-title">选择流量包（<span style="color:orange;">微信安全支付</span>）</div>
       <hr>
       <div class="llb">
-        {{#each trafficgroups}}
-          <div>
-            <div class="weui_cells_title">{{name}}</div>
-            <div class="weui_cells">
-              {{#each trafficplans}}
-                <div class="weui_cell">
-                  <div class="weui_cell_bd weui_cell_primary">
-                      <a class="weui_btn weui_btn_primary exchanger" data-name="{{name}}" data-value="{{id}}" data-cost="{{cost}}">{{name}} {{cost}}元</a>
-                  </div>
-                </div>
-              {{/each}}
-            </div>
-          </div>
-        {{/each}}
       </div>
       <div class="ml">
         <div class="zw-tips"><a href="../about/tiquguize.html">流量充值说明</a></div>
@@ -66,7 +52,13 @@
       \{{#each trafficplans}}
         <div class="weui_cell">
           <div class="weui_cell_bd weui_cell_primary">
-              <a class="weui_btn weui_btn_primary exchanger" data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}">\{{name}} \{{cost}}元</a>
+              <a class="weui_btn weui_btn_primary exchanger" data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}">
+                \{{#if withOutDiscount }}
+                  \{{name}} <strike>\{{withOutDiscount}}元</strike> <font size="3" color="red"><b>\{{cost}}元</b></font>
+                \{{else}}
+                  \{{name}} <b>\{{cost}}元</b>
+                \{{/if}}
+              </a>
           </div>
         </div>
       \{{/each}}
