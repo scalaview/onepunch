@@ -9,6 +9,13 @@ module.exports = {
         type: Sequelize.STRING
       }
     );
+    queryInterface.changeColumn(
+      'ExtractOrders',
+      'taskid',
+      {
+        type: Sequelize.STRING
+      }
+    );
     return queryInterface.changeColumn(
       'ExtractOrders',
       'bid',
@@ -22,6 +29,13 @@ module.exports = {
     queryInterface.changeColumn(
       'TrafficPlans',
       'bid',
+      {
+        type: Sequelize.INTEGER
+      }
+    );
+    queryInterface.changeColumn(
+      'ExtractOrders',
+      'taskid',
       {
         type: Sequelize.INTEGER
       }

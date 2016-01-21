@@ -211,7 +211,7 @@ module.exports = function(sequelize, DataTypes) {
     transactionId: { type: DataTypes.INTEGER },
     paymentMethodId: { type: DataTypes.INTEGER },
     total: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 },
-    taskid: { type: DataTypes.INTEGER, allowNull: true }
+    taskid: { type: DataTypes.STRING, allowNull: true }
   }, {
     classMethods: {
       associate: function(models) {
