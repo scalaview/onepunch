@@ -82,7 +82,7 @@ var ChongRecharger = function(models, client_id, client_secret, storeCallback, a
         if(successCallback){
           console.log(res.body)
           var data = JSON.parse(res.body)
-          successCallback.call(this, res, data)
+          successCallback.call(this, data)
         }
       }else{
         if(errCallback){
@@ -97,7 +97,7 @@ var ChongRecharger = function(models, client_id, client_secret, storeCallback, a
 
   this.getProducts = function(successCallback, errCallback){
     this.getAccessToken(this.client_id, this.client_secret, this.storeCallback, this.accessCallback, function(token){
-      this._getProducts(token.accessToken, successCallback, errCallback)
+      _getProducts(token.accessToken, successCallback, errCallback)
     }, function(err){
       errCallback(err)
     })
