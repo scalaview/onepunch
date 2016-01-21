@@ -280,7 +280,8 @@ body {
     overflow: hidden;
 }
 .llb .weui_cells_title{
-    font-size: 20px;
+    font-size: 16px;
+    color: blue;
 }
     .llb .an {
         position: absolute;
