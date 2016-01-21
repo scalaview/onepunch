@@ -153,7 +153,7 @@ app.post('/pay', requireLogin, function(req, res) {
           var orderParams = {
             body: '流量套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
-            out_trade_no: config.hostname + (+new Date),
+            out_trade_no: config.token + (+new Date),
             total_fee:  Math.round(extractOrder.cost * 100),
             spbill_create_ip: ip,
             openid: customer.wechat,
