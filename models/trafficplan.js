@@ -121,6 +121,8 @@ module.exports = function(sequelize, DataTypes) {
     '曦和流量': 5
   }
 
+  TrafficPlan.PROVIDERARRAY = Object.keys(TrafficPlan.Provider).map(function(k) { return [TrafficPlan.Provider[k], k] });
+
   TrafficPlan.TYPEARRAY = Object.keys(TrafficPlan.TYPE).map(function(k) { return [TrafficPlan.TYPE[k], k] });
 
 

@@ -25,6 +25,8 @@
                   <th>花费</th>
                   <th>流量(M)</th>
                   <th>是否显示</th>
+                  <th>提供商</th>
+                  <th>分组</th>
                   <th></th>
               </tr>
             </thead>
@@ -35,11 +37,23 @@
                     <td>{{ provider }}</td>
                     <td>{{ cost }}</td>
                     <td>{{ value }}</td>
-                    <td>{{ display }}</td>
                     <td>
-                    <a href="/admin/trafficplans/{{id}}/edit" class="list-group-item">
-                      <i class="glyphicon glyphicon-pencil"></i>
-                    </a>
+                      <label>
+                        <input type="checkbox" class="displaySwich" name="display" data-id="{{id}}" {{ isChecked display }} >
+                        {{ display }}
+                      </label>
+                    </td>
+                    <td data-id="{{id}}" class="col-lg-2">
+                      {{ selectTag ../providerOptions ../providerCollection providerId }}
+                    </td>
+                    <td data-id="{{id}}" class="col-lg-2">
+                      {{ selectTag ../trafficgroupsOptions ../trafficgroupsCollection trafficGroupId }}
+                    </td>
+                    <td>
+                      <a href="/admin/trafficplans/{{id}}/edit" class="list-group-item">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
+                    </td>
                   </td>
                 </tr>
               {{/each}}
