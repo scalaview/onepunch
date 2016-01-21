@@ -3,6 +3,8 @@
 var request = require("request")
 var async = require("async")
 var helpers = require("../helpers")
+var recharger = require("../recharger")
+var ChongRecharger = recharger.ChongRecharger
 var config = require("../config")
 var crypto = require('crypto')
 
@@ -189,6 +191,10 @@ var HuawoRecharger = function(phone, packagesize, orderId, account, pwd, range){
  return this
 }
 
+
+
+
+
 module.exports = function(sequelize, DataTypes) {
   var ExtractOrder = sequelize.define('ExtractOrder', {
     state: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
@@ -199,13 +205,13 @@ module.exports = function(sequelize, DataTypes) {
     extend: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     value: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     type: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
-    bid: { type: DataTypes.INTEGER, allowNull: true },
+    bid: { type: DataTypes.STRING, allowNull: true },
     customerId: { type: DataTypes.INTEGER, allowNull: true },
     chargeType: { type: DataTypes.STRING, allowNull: false, defaultValue: "balance" },
     transactionId: { type: DataTypes.INTEGER },
     paymentMethodId: { type: DataTypes.INTEGER },
     total: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 },
-    taskid: { type: DataTypes.INTEGER, allowNull: true }
+    taskid: { type: DataTypes.STRING, allowNull: true }
   }, {
     classMethods: {
       associate: function(models) {
@@ -228,6 +234,7 @@ module.exports = function(sequelize, DataTypes) {
             sourceable: 'Customer'
           }
         });
+        models.ExtractOrder.ChongRecharger = new ChongRecharger(models, config.chong[process.env.NODE_ENV || "development"].client_id, config.chong[process.env.NODE_ENV || "development"].client_secret, recharger.storeCallback, recharger.accessCallback)
       }
     },
     instanceMethods: {
@@ -267,6 +274,8 @@ module.exports = function(sequelize, DataTypes) {
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_account, config.huawo_pwd, 0)
         }else if(trafficPlan.type == typeJson['华沃红包']){
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd, 0)
+        }else if(trafficPlan.type == typeJson['曦和流量']){
+          return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "http://protchar.cn/fortest")
         }else{
           return new Recharger(this.phone, this.value)
         }
@@ -286,5 +295,6 @@ module.exports = function(sequelize, DataTypes) {
     REFUNDED: 5,
     FINISH: 6
   }
+
   return ExtractOrder;
 };
