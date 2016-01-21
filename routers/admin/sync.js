@@ -8,136 +8,69 @@ var crypto = require('crypto')
 var config = require("../../config")
 var request = require("request")
 
+admin.get('/syncliuliangshop', function(req ,res) {
 
-admin.get('/synchuawo', function(req ,res) {
-  var host = 'http://' + config.huawo_hostname
-
-  var params = {
-        account: config.huawo_account,
-        type: 0
-      }
-
-  var keys = Object.keys(params)
-  keys.sort()
-  var sign_params = []
-  for(var i = 0; i < keys.length; i++) {
-    sign_params.push( keys[i] + "=" + params[keys[i]] )
-  }
-  sign_params.push("key=" + config.huawo_api_key)
-  params['v'] = '1.1'
-  params['action'] = 'getPackage'
-  params['sign'] = crypto.createHash('md5').update(sign_params.join('&'), 'utf8').digest("hex")
-  var options = {
-    uri: host,
-    method: 'GET',
-    qs: params
-  }
-  console.log(options)
-
-  request(options, function (error, responce) {
-    if (!error && responce.statusCode == 200) {
-      var data = JSON.parse(responce.body)
-      console.log(data)
-      if(data.Code == 0){
-        syncData(data, res)
-      }
-    }else{
-      res.send(error)
-    }
-   });
-
-})
-
-// TrafficPlan.Provider = {
-//     '中国移动': 0,
-//     '中国联通': 1,
-//     '中国电信': 2
-//   }
-
-function syncData(data, res){
-
-  function getProviderType(type){
-    switch(type)
-    {
-      case 1:  //1:移动
-        return models.TrafficPlan.Provider['中国移动']
-      case 2:  //2:联通
-        return models.TrafficPlan.Provider['中国联通']
-      case 3:  //2:联通
-        return models.TrafficPlan.Provider['中国电信']
+  function getProviderId(providerType){
+    //运营商类型 1：电信 2：移动 3：联通
+    switch(providerType) {
+      case "1":
+        return models.TrafficPlan.Provider["中国电信"]
+      case "2":
+        return models.TrafficPlan.Provider["中国移动"]
+      case "3":
+        return models.TrafficPlan.Provider["中国联通"]
     }
   }
 
-  function getValue(string){
-    var y = /[M|G]/,
-        end = y.exec(string)
-    if(end.index + 1 <= string.length){
-      var unit = string.substring(end.index, end.index + 1)
-    }else{
-      var unit = 'M'
-    }
-    var size = string.replace(/[^0-9]/ig,"")
-    if(unit.toLowerCase() == 'g' ){
-      return parseInt(size) * 1024
-    }else{
-      return parseInt(size)
-    }
-  }
-
-  var packages = data.Packages
-/*
-{
-  "Type": 1,
-  "Package": 3000,
-  "Name": "3G",
-  "Price": 100
-},
-*/
-
-  async.map(packages, function(pg, pass) {
-    var params = {
-          providerId: getProviderType(pg.Type),
-          value: getValue(pg.Name),
-          name: pg.Name,
-          cost: pg.Price * 100,
-          type: 2,
-          bid: pg.Package
-        }
-    console.log(params)
-    models.TrafficPlan.findOne({
-      where: {
-        providerId: getProviderType(pg.Type),
-        type: 2,
-        bid: pg.Package
-      }
-    }).then(function(plan){
-      if(plan){
-
-        plan.updateAttributes(params).then(function(plan){
-          pass(null, plan)
+  models.ExtractOrder.ChongRecharger.getProducts(function(data){
+    if(data.errcode == 0){
+      async.each(data.products, function(product, next){
+        models.TrafficPlan.findOrCreate({
+          where: {
+            bid: product.product_id
+          },
+          defaults: {
+            providerId: getProviderId(product.provider_type),
+            value: product.flow_value,
+            name: product.name,
+            cost: product.price,
+            display: false,
+            type: models.TrafficPlan.TYPE["曦和流量"],
+            bid: product.product_id,
+            purchasePrice: product.cost
+          }
+        }).spread(function(trafficPlan) {
+          trafficPlan.updateAttributes({
+            providerId: getProviderId(product.provider_type),
+            value: product.flow_value,
+            name: product.name,
+            cost: product.price,
+            display: false,
+            type: models.TrafficPlan.TYPE["曦和流量"],
+            bid: product.product_id,
+            purchasePrice: product.cost
+          }).then(function(trafficPlan){
+            next(null)
+          }).catch(function(err){
+            next(err)
+          })
         }).catch(function(err) {
           next(err)
         })
-
-      }else{
-
-        models.TrafficPlan.build(params).save().then(function(plan) {
-          pass(null, plan)
-        }).catch(function(err) {
-          pass(err)
-        })
-
-      }
-    })
-  }, function(err, result) {
-    if(err){
-      console.log(err)
-      res.send("err")
+      }, function(err){
+        if(err){
+          res.send(err)
+        }else{
+          res.send("success")
+        }
+      })
     }else{
-      res.send("ok")
+      res.send(data.errmsg)
     }
+  }, function(err){
+    res.send(err)
   })
-}
+})
 
 
 module.exports = admin;

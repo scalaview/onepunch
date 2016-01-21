@@ -119,7 +119,7 @@ app.post('/pay', requireLogin, function(req, res) {
       }else if(customer.level && customer.level.discount > 0){
         discount = discount - customer.level.discount
       }
-      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.price * discount)){
+      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.cost * discount)){
         res.json({ err: 1, msg: "分销奖励不足" })
         return
       }
@@ -128,13 +128,13 @@ app.post('/pay', requireLogin, function(req, res) {
         exchangerType: trafficPlan.className(),
         exchangerId: trafficPlan.id,
         phone: req.body.phone,
-        cost: trafficPlan.cost,
+        cost: trafficPlan.cost ,
         value: trafficPlan.value,
         bid: trafficPlan.bid,
         customerId: customer.id,
         chargeType: chargetype,
         paymentMethodId: paymentMethod.id,
-        total: trafficPlan.price * discount
+        total: trafficPlan.cost * discount
       }).save().then(function(extractOrder) {
         next(null, paymentMethod, trafficPlan, extractOrder)
       }).catch(function(err) {

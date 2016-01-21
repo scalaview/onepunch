@@ -205,7 +205,7 @@ module.exports = function(sequelize, DataTypes) {
     extend: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     value: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     type: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
-    bid: { type: DataTypes.INTEGER, allowNull: true },
+    bid: { type: DataTypes.STRING, allowNull: true },
     customerId: { type: DataTypes.INTEGER, allowNull: true },
     chargeType: { type: DataTypes.STRING, allowNull: false, defaultValue: "balance" },
     transactionId: { type: DataTypes.INTEGER },
