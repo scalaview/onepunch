@@ -66,7 +66,8 @@ module.exports = function(sequelize, DataTypes) {
     type: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     bid: { type: DataTypes.STRING, allowNull: true },
     trafficGroupId: { type: DataTypes.INTEGER, allowNull: true },
-    purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 }
+    purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 },
+    withOutDiscount: { type: DataTypes.VIRTUAL }
   }, {
     classMethods: {
       associate: function(models) {

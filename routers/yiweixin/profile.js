@@ -141,9 +141,26 @@ app.post("/extractFlow", requireLogin, function(req, res){
 })
 
 app.get('/getTrafficplans', requireLogin, function(req, res){
+  var customer = req.customer
   if(models.TrafficPlan.Provider[req.query.catName] !== undefined || req.query.catName == "all"){
     var providerId = req.query.catName == "all" ?  Object.keys(models.TrafficPlan.ProviderName) : models.TrafficPlan.Provider[req.query.catName]
-    async.waterfall([function(outnext) {
+    async.waterfall([function(outnext){
+      models.Coupon.findAll({
+        where: {
+          isActive: true,
+          expiredAt: {
+            $gt: (new Date()).begingOfDate()
+          }
+        },
+        order: [
+                ['updatedAt', 'DESC']
+               ]
+      }).then(function(coupons) {
+        outnext(null, coupons)
+      }).catch(function(err) {
+        outnext(err)
+      })
+    }, function(coupons, outnext) {
       models.TrafficGroup.findAll({
         where: {
           providerId: providerId,
@@ -166,6 +183,9 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
           }).then(function(trafficplans) {
             var data = null
             if(trafficplans.length > 0){
+              if(coupons.length > 0){
+                trafficplans = applyCoupon(coupons, trafficplans, customer)
+              }
               data = {
                 name: trafficgroup.name,
                 trafficplans: trafficplans
@@ -243,5 +263,22 @@ app.get('/salary', requireLogin, function(req, res) {
   })
 })
 
+
+function applyCoupon(coupons, trafficPlans, customer){
+  for (var i = coupons.length - 1; i >= 0; i--) {
+    for (var j = trafficPlans.length - 1; j >= 0; j--) {
+      if(coupons[i].trafficPlanId == trafficPlans[j].id){
+        if(trafficPlans[j].coupon === undefined){
+          trafficPlans[j].coupon = coupons[i]
+        }else if(trafficPlans[j].coupon.updatedAt < coupons[i].updatedAt){
+          trafficPlans[j].coupon = coupons[i]
+        }
+        trafficPlans[j].withOutDiscount = trafficPlans[j].cost
+        trafficPlans[j].cost = helpers.discount(customer, trafficPlans[j])
+      }
+    };
+  };
+  return trafficPlans
+}
 
 module.exports = app;
