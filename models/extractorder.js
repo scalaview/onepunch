@@ -275,7 +275,7 @@ module.exports = function(sequelize, DataTypes) {
         }else if(trafficPlan.type == typeJson['华沃红包']){
           return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd, 0)
         }else if(trafficPlan.type == typeJson['曦和流量']){
-          return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "http://protchar.cn/fortest")
+          return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "http://protchar.cn/liuliangshopconfirm")
         }else{
           return new Recharger(this.phone, this.value)
         }
