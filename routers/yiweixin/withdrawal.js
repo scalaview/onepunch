@@ -46,17 +46,27 @@ app.get('/myaccount', requireLogin, function(req, res) {
   })
 })
 
-app.get('/myticket', requireLogin,function(req, res) {
-  var customer = req.customer
-  if(customer.myticket){
-    res.render('yiweixin/withdrawal/myticket', { url: customer.myticket })
-    return
-  }
-
-  async.waterfall([function(next) {
+app.get('/myticket/:id', function(req, res) {
+  var id = new Buffer(req.params.id, "hex").toString("utf8")
+  async.waterfall([function(next){
+    models.Customer.findById(id).then(function(customer){
+      if(customer){
+        if(customer.myticket){
+          res.render('yiweixin/withdrawal/myticket', { url: customer.myticket })
+          return
+        }else{
+          next(null, customer)
+        }
+      }else{
+        next(new Error("not found"))
+      }
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(customer, next) {
     if(customer.ticket){
       var url = api.showQRCodeURL(customer.ticket);
-      next(null, url)
+      next(null, url, customer)
     }else{
       api.createLimitQRCode(customer.id, function(err, data, res){
         if(err){
@@ -67,34 +77,34 @@ app.get('/myticket', requireLogin,function(req, res) {
             ticket: data.ticket
           }).then(function(customer) {
             var url = api.showQRCodeURL(customer.ticket);
-            next(null, url)
+            next(null, url, customer)
           }).catch(function(err) {
             next(err)
           })
         }
       });
     }
-  }, function(url, next) {
+  }, function(url, customer, next) {
     var filename = customer.id + (Math.round((new Date().valueOf() * Math.random()))) +'.png'
-    var tmp_file = __dirname + "/../../public/uploads/tmp/" + filename
-    var save_file_path =  __dirname + "/../../public/uploads/tickets/" + filename
+    var tmp_file = process.env.PWD + "/public/uploads/tmp/" + filename
+    var save_file_path =  process.env.PWD + "/public/uploads/tickets/" + filename
     console.log(tmp_file)
     var file = fs.createWriteStream(tmp_file)
 
     request(url).pipe(file)
     file.on('finish', function() {
-      images(__dirname + "/../../public/images/myticket-bg.JPG").draw(images(tmp_file).size(211), 82, 177).save(save_file_path, {quality : 30 });
+      images(process.env.PWD + "/public/images/myticket-bg.JPG").draw(images(tmp_file).size(211), 82, 177).save(save_file_path, {quality : 30 });
 
       fs.unlink(tmp_file, function(err) {
           if (err){
             next(err)
           }else{
-            next(null, filename)
+            next(null, filename, customer)
           }
       });
     });
 
-  }, function(myticket, next) {
+  }, function(myticket, customer, next) {
     customer.updateAttributes({
       myticket: myticket
     }).then(function(customer){
