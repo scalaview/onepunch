@@ -8,21 +8,6 @@ var _ = require('lodash')
 var async = require("async")
 var config = require("../../config")
 
-admin.use(function(req, res, next){
-  res.originrender = res.render
-  res.render = function(path, options, fn){
-    res.originrender(path, _.merge(options, { info: req.flash('info'), err: req.flash('err') }))
-  }
-  next();
-});
-
-admin.use(function(req, res, next){
-  helpers.compact(req.body)
-  helpers.compact(req.query)
-  helpers.compact(req.params)
-  next();
-});
-
 admin.get('/', function (req, res) {
   res.render('admin/home');
 });

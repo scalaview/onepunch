@@ -28,7 +28,10 @@ module.exports = function(sequelize, DataTypes) {
         async.waterfall([function(next) {
           models.AffiliateConfig.count({
             where: {
-              trafficPlanId: trafficPlan.id
+              trafficPlanId: trafficPlan.id,
+              percent: {
+                $gt: 0
+              }
             }
           }).then(function(c) {
             if(c > 0){

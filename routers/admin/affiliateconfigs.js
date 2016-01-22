@@ -4,6 +4,7 @@ var models  = require('../../models')
 var helpers = require("../../helpers")
 var formidable = require('formidable')
 var async = require("async")
+var _ = require('lodash')
 
 // login filter
 var skipUrls = [ '^\/wechat[\/|\?|\#]\?.*', '^\/admin\/login[\/|\?|\#]\?.*', '^\/admin\/register[\/|\?|\#]\?.*']
@@ -25,6 +26,21 @@ admin.all("*", function(req, res, next) {
     return res.redirect("/admin/login?to=" + encodeUrl);
   }
 })
+
+admin.use(function(req, res, next){
+  res.originrender = res.render
+  res.render = function(path, options, fn){
+    res.originrender(path, _.merge(options, { info: req.flash('info'), err: req.flash('err') }))
+  }
+  next();
+});
+
+admin.use(function(req, res, next){
+  helpers.compact(req.body)
+  helpers.compact(req.query)
+  helpers.compact(req.params)
+  next();
+});
 
 
 admin.get('/affiliateconfigs', function(req, res) {
