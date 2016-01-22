@@ -29,26 +29,48 @@ admin.all("*", function(req, res, next) {
 
 admin.get('/affiliateconfigs', function(req, res) {
 
-  async.map([1, 2, 3], function(level, next) {
-    models.AffiliateConfig.findOrCreate({
-      where: {
-        level: level,
-        trafficPlanId: null
-      },
-      defaults: {
-        level: level
+  async.waterfall([function(pass){
+    async.map([1, 2, 3], function(level, next) {
+      models.AffiliateConfig.findOrCreate({
+        where: {
+          level: level,
+          trafficPlanId: null
+        },
+        defaults: {
+          level: level
+        }
+      }).spread(function(aConfig) {
+        next(null, aConfig)
+      }).catch(function(err) {
+        next(err)
+      })
+    }, function(err, result) {
+      if(err){
+        pass(err)
+      }else{
+        pass(null, res)
       }
-    }).spread(function(aConfig) {
-      next(null, aConfig)
-    }).catch(function(err) {
+    })
+  }, function(result, next){
+    models.AffiliateConfig.findAll({
+      trafficPlanId: "is not null"
+    }).then(function(aConfigs){
+      next(null, result, aConfigs)
+    }).catch(function(err){
       next(err)
     })
-  }, function(err, result) {
+  }], function(err, result, aConfigs){
     if(err){
       console.log(err)
       res.redirect('/500')
     }else{
-      res.render('admin/affiliateconfigs/index', { affiliateconfigs: result })
+      helpers.getAllTrafficPlans(true, function(err, trafficPlanCollection, trafficPlanOptions) {
+        res.render('admin/affiliateconfigs/index', {
+          aConfigs: aConfigs,
+          trafficPlanCollection: trafficPlanCollection,
+          trafficPlanOptions: trafficPlanOptions
+        })
+      })
     }
   })
 

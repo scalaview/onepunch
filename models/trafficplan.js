@@ -64,9 +64,10 @@ module.exports = function(sequelize, DataTypes) {
     sortNum: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     display: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     type: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
-    bid: { type: DataTypes.INTEGER, allowNull: true },
+    bid: { type: DataTypes.STRING, allowNull: true },
     trafficGroupId: { type: DataTypes.INTEGER, allowNull: true },
-    price: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 }
+    purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 },
+    withOutDiscount: { type: DataTypes.VIRTUAL }
   }, {
     classMethods: {
       associate: function(models) {
@@ -82,6 +83,9 @@ module.exports = function(sequelize, DataTypes) {
       },
       provider: function(){
         return TrafficPlan.ProviderName[this.providerId]
+      },
+      typeJson: function(){
+        return TrafficPlan.TYPE;
       }
     },
     scopes: {
@@ -113,8 +117,11 @@ module.exports = function(sequelize, DataTypes) {
     '空中平台': 1,
     '华沃红包': 2,
     '华沃广东': 3,
-    '华沃全国': 4
+    '华沃全国': 4,
+    '曦和流量': 5
   }
+
+  TrafficPlan.PROVIDERARRAY = Object.keys(TrafficPlan.Provider).map(function(k) { return [TrafficPlan.Provider[k], k] });
 
   TrafficPlan.TYPEARRAY = Object.keys(TrafficPlan.TYPE).map(function(k) { return [TrafficPlan.TYPE[k], k] });
 

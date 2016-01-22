@@ -115,11 +115,11 @@ app.post('/pay', requireLogin, function(req, res) {
       var discount = 1.00
 
       if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
-        discount = discount - trafficPlan.coupon.discount
+        discount = trafficPlan.coupon.discount
       }else if(customer.level && customer.level.discount > 0){
-        discount = discount - customer.level.discount
+        discount = customer.level.discount
       }
-      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.price * discount)){
+      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.cost * discount)){
         res.json({ err: 1, msg: "分销奖励不足" })
         return
       }
@@ -128,13 +128,13 @@ app.post('/pay', requireLogin, function(req, res) {
         exchangerType: trafficPlan.className(),
         exchangerId: trafficPlan.id,
         phone: req.body.phone,
-        cost: trafficPlan.cost,
+        cost: trafficPlan.purchasePrice ,
         value: trafficPlan.value,
         bid: trafficPlan.bid,
         customerId: customer.id,
         chargeType: chargetype,
         paymentMethodId: paymentMethod.id,
-        total: trafficPlan.price * discount
+        total: trafficPlan.cost * discount
       }).save().then(function(extractOrder) {
         next(null, paymentMethod, trafficPlan, extractOrder)
       }).catch(function(err) {
@@ -153,8 +153,8 @@ app.post('/pay', requireLogin, function(req, res) {
           var orderParams = {
             body: '流量套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
-            out_trade_no: 'yiliuliang' + (+new Date),
-            total_fee:  Math.round(extractOrder.cost * 100),
+            out_trade_no: config.token + (+new Date),
+            total_fee:  Math.round(extractOrder.total * 100),
             spbill_create_ip: ip,
             openid: customer.wechat,
             trade_type: 'JSAPI'
@@ -165,7 +165,7 @@ app.post('/pay', requireLogin, function(req, res) {
             if(err){
               console.log("payment fail")
               console.log(err)
-              res.json({err: 1, msg: 'payment fail'})
+              res.json({err: 1, msg: '付款失败'})
             }else{
               console.log(payargs)
               res.json(payargs);
@@ -201,13 +201,11 @@ app.post('/pay', requireLogin, function(req, res) {
     })
 })
 
-
 var middleware = require('wechat-pay').middleware;
 app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(function(message, req, res, next) {
   console.log(message)
 
   var extractOrderId = message.attach
-
   async.waterfall([function(next) {
     models.ExtractOrder.findById(extractOrderId).then(function(extractOrder) {
       if(extractOrder){
@@ -299,7 +297,6 @@ function doAffiliate(extractOrder, customer, pass){
       for (var i = ll.length - 1; i >= end; i--) {
         ancestryArr.push(ll[i])
       };
-
       async.waterfall([function(next) {
         models.Customer.findAll({
           where: {
@@ -308,6 +305,7 @@ function doAffiliate(extractOrder, customer, pass){
             }
           }
         }).then(function(ancestries) {
+
           var objHash = ancestries.map(function (value, index) {
             if(configHash[customer.ancestryDepth - value.ancestryDepth]){
               return {
@@ -327,7 +325,7 @@ function doAffiliate(extractOrder, customer, pass){
           var one =  obj.customer
           var confLine = obj.config
 
-          var salary = (parseInt(confLine.percent) / 100) * trafficPlan.cost
+          var salary = (parseInt(confLine.percent) / 100) * extractOrder.total
           one.updateAttributes({
             salary: one.salary + salary
           }).then(function(o) {
@@ -473,7 +471,7 @@ function autoCharge(extractOrder, trafficPlan, next){
           next(new Error(data.msg))
         }
       }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃红包'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃全国'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃广东']){
-        if(data.Code == 0 && data.TaskID != 0){
+        if(data.code == 1 && data.taskid != 0){
           extractOrder.updateAttributes({
             state: models.ExtractOrder.STATE.SUCCESS,
             taskid: data.taskid
@@ -487,6 +485,22 @@ function autoCharge(extractOrder, trafficPlan, next){
             state: models.ExtractOrder.STATE.FAIL
           })
           next(new Error(data.Message))
+        }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['曦和流量']){
+        if(data.errcode == 0){
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.SUCCESS,
+            taskid: data.order.transaction_id
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.errmsg))
         }
       }else{
         if(data.state == 1){

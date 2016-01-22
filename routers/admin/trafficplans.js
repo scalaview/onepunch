@@ -16,13 +16,33 @@ admin.get('/trafficplans', function(req, res) {
     }).catch(function(err) {
       next(err)
     })
-  }], function(err, trafficPlans) {
+  }, function(trafficPlans, next){
+    models.TrafficGroup.findAll().then(function(trafficgroups) {
+      var trafficgroupsCollection = [];
+      for (var i = 0; i < trafficgroups.length; i++) {
+        trafficgroupsCollection.push([ trafficgroups[i].id, trafficgroups[i].name ])
+      };
+      next(null, trafficPlans, trafficgroupsCollection)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, trafficPlans, trafficgroupsCollection) {
     if(err){
       console.log(err)
       res.redirect('/500')
     }else{
+      var providerOptions = { name: "providerId", class: 'select2 editChoose col-lg-12 col-xs-12' },
+        providerCollection = models.TrafficPlan.PROVIDERARRAY,
+        trafficgroupsOptions = { name: "trafficGroupId", class: 'select2 editChoose col-lg-12 col-xs-12', includeBlank: true }
+
       result = helpers.setPagination(trafficPlans, req)
-      res.render('admin/trafficplans/index', { trafficPlans: result})
+      res.render('admin/trafficplans/index', {
+        trafficPlans: result,
+        providerOptions: providerOptions,
+        providerCollection: providerCollection,
+        trafficgroupsOptions: trafficgroupsOptions,
+        trafficgroupsCollection: trafficgroupsCollection
+      })
     }
   })
 })
@@ -45,9 +65,9 @@ admin.get('/trafficplans/new', function(req, res) {
     }else{
       var trafficPlan = models.TrafficPlan.build(),
           providerOptions = { name: "providerId", class: 'select2 col-lg-12 col-xs-12' },
-          providerCollection = [ [0, '中国移动'], [1, '中国联通'], [2, '中国电信'] ],
+          providerCollection = models.TrafficPlan.PROVIDERARRAY,
           typeOptions = { name: "type", class: 'select2 col-lg-12 col-xs-12' },
-          typeCollection = [ [0, '非正式'], [1, '正式']],
+          typeCollection = models.TrafficPlan.TYPEARRAY,
           trafficgroupsOptions = { name: "trafficGroupId", class: 'select2 col-lg-12 col-xs-12', includeBlank: true }
 
       res.render('admin/trafficplans/new', {
@@ -119,7 +139,7 @@ admin.get('/trafficplans/:id/edit', function(req, res) {
       res.redirect('/500')
     }else{
       var providerOptions = { name: "providerId", class: 'select2 col-lg-12 col-xs-12' },
-          providerCollection = [ [0, '中国移动'], [1, '中国联通'], [2, '中国电信'] ],
+          providerCollection = models.TrafficPlan.PROVIDERARRAY,
           typeOptions = { name: "type", class: 'select2 col-lg-12 col-xs-12' },
           typeCollection = models.TrafficPlan.TYPEARRAY,
           trafficgroupsOptions = { name: "trafficGroupId", class: 'select2 col-lg-12 col-xs-12', includeBlank: true }
@@ -137,6 +157,27 @@ admin.get('/trafficplans/:id/edit', function(req, res) {
     }
   })
 })
+
+admin.get('/trafficplans/:id', function(req, res) {
+
+  async.waterfall([function(next) {
+    models.TrafficPlan.findById(req.params.id).then(function(trafficPlan) {
+      next(null, trafficPlan)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, trafficPlan) {
+    if(err){
+      console.log(err)
+      res.json({ err: 1, message: err })
+    }else{
+      res.json({ err: 0, message: "", data: trafficPlan })
+    }
+  })
+
+
+})
+
 
 admin.post('/trafficplan/:id', function(req, res){
   var params = req.body
@@ -160,11 +201,25 @@ admin.post('/trafficplan/:id', function(req, res){
   }], function(err, trafficPlan) {
     if(err){
       console.log(err)
-      req.flash("info", "update fail")
-      res.redirect('/500')
+      res.format({
+        html: function(){
+          req.flash("info", "update fail")
+          res.redirect('/500')
+        },
+        json: function(){
+          res.send({ message: 'update fail', err: 1 });
+        }
+      });
     }else{
-      req.flash("info", "update success")
-      res.redirect('/admin/trafficplans/' + trafficPlan.id + '/edit')
+      res.format({
+        html: function(){
+          req.flash("info", "update success")
+          res.redirect('/admin/trafficplans/' + trafficPlan.id + '/edit')
+        },
+        json: function(){
+          res.send({ message: 'update success', err: 0 });
+        }
+      });
     }
   })
 })

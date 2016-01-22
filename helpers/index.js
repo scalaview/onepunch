@@ -261,15 +261,18 @@ function taskLink(task) {
 }
 
 
-function discount(customer, dataPlan){
+function discount(customer, trafficPlan){
   var discount = 1.00
-  if(dataPlan.coupon && dataPlan.coupon.ignoreLevel && dataPlan.coupon.discount > 0){
-    discount = discount - dataPlan.coupon.discount
+  if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
+    discount = trafficPlan.coupon.discount
   }else if(customer.level != undefined && customer.level.discount > 0){
-    discount = discount - customer.level.discount
+    discount = customer.level.discount
   }
+
   if(discount < 1.00){
-    return dataPlan.price * discount
+    return (trafficPlan.cost * discount).toFixed(2)
+  }else{
+    return trafficPlan.cost
   }
 }
 
@@ -756,11 +759,28 @@ function toUnicode(theString) {
 }
 
 function applylimit(salary){
-  if(salary >= 100){
+  if(salary >= (config.applylimit || 100.00) ){
     return "href='/apply'".htmlSafe()
   }else{
     return "href='javascript:void(0);' class='applylimit'".htmlSafe()
   }
+}
+
+function toHex(str){
+  return new Buffer(""+str).toString("hex")
+}
+
+function getAllTrafficPlans(includeBlank, pass){
+  models.TrafficPlan.findAll().then(function(trafficPlans){
+    var trafficPlanCollection = []
+    for (var i = 0; i < trafficPlans.length; i++ ) {
+      trafficPlanCollection.push([trafficPlans[i].id, trafficPlans[i].name])
+    };
+    var trafficPlanOptions = { name: 'trafficPlanId', class: "select2 col-lg-12 col-xs-12", includeBlank: includeBlank || true  }
+    pass(null, trafficPlanCollection, trafficPlanOptions)
+  }).catch(function(err) {
+    pass(err)
+  })
 }
 
 exports.applylimit = applylimit;
@@ -803,3 +823,5 @@ exports.API = API;
 exports.toUnicode = toUnicode;
 exports.payment = payment;
 exports.initConfig = initConfig;
+exports.toHex = toHex;
+exports.getAllTrafficPlans = getAllTrafficPlans;

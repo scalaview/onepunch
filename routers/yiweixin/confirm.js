@@ -62,7 +62,7 @@ app.get("/taskconfirm/:id", function(req, res) {  //流量任务confirm接口
       exchangerType: flowtask.className(),
       exchangerId: flowtask.id,
       phone: phone,
-      cost: 0,
+      cost: trafficPlan.purchasePrice,
       value: trafficPlan.value,
       bid: trafficPlan.bid
     }).save().then(function(extractOrder) {
@@ -299,7 +299,10 @@ app.post('/huawoconfirm', function(req, res){
   }
 
   async.each(reports, function(report, pass) {
-    confirmOrder(report, pass)
+    confirmOrder({
+       taskid: report.taskid,
+       state: models.ExtractOrder.STATE.SUCCESS
+    }, report.status == 3, report.msg, pass)
   }, function(err){
     if(err){
       console.log(err)
@@ -309,13 +312,10 @@ app.post('/huawoconfirm', function(req, res){
 })
 
 
-function confirmOrder(report, pass){
+function confirmOrder(params, isDone, msg, pass){
     async.waterfall([function(next) {
       models.ExtractOrder.findOne({
-        where: {
-          taskid: report.taskid,
-          state: models.ExtractOrder.STATE.INIT
-        }
+        where: params
       }).then(function(extractorder) {
         if(extractorder){
           next(null, extractorder)
@@ -338,15 +338,15 @@ function confirmOrder(report, pass){
       }
     }, function(extractorder, customer, next){
       var status = models.ExtractOrder.STATE.FAIL
-      if(report.status == 3){ //status success  fail 4
-        status = models.ExtractOrder.STATE.SUCCESS
+      if(isDone){
+        status = models.ExtractOrder.STATE.FINISH
         next(null, extractorder, status)
       }else{
         if(customer){
-          customer.refundTraffic(models, extractorder, report.msg, function(customer, extractorder, flowHistory) {
+          customer.refundTraffic(models, extractorder, msg, function(customer, extractorder, flowHistory) {
 
             // send notice
-            sendRefundNotice(customer, extractorder, report.msg)
+            sendRefundNotice(customer, extractorder, msg)
 
             next(null, extractorder, status)
           }, function(err) {
@@ -379,7 +379,7 @@ function confirmOrder(report, pass){
         next(err)
       })
     }, function(extractorder, trafficPlan, next) {
-      if(extractorder.status === models.ExtractOrder.STATE.SUCCESS){
+      if(extractorder.status === models.ExtractOrder.STATE.FINISH){
         models.MessageQueue.sendRechargeMsg(models, trafficPlan, extractorder.phone, function(messageQueue) {
           next(null, extractorder)
         }, function(err) {
@@ -421,7 +421,7 @@ function sendRefundNotice(customer, extractOrder, resean){
           content: content
         }
       }).spread(function(template) {
-        var content = template.content.format({ orderid: extractOrder.id, name: trafficPlan.name, phone: extractOrder.phone, resean: resean, value: extractOrder.cost })
+        var content = template.content.format({ orderid: extractOrder.id, name: trafficPlan.name, phone: extractOrder.phone, resean: resean, value: extractOrder.total })
         next(null, content)
       }).catch(function(err) {
         next(err)
@@ -445,5 +445,38 @@ function sendRefundNotice(customer, extractOrder, resean){
 
 
 }
+
+app.post('/liuliangshopconfirm', function(req, res){
+  console.log(req.body)
+  var bodyStr = req.body
+  if(!bodyStr){
+    res.json({status: 0, msg: "error"})
+    return
+  }
+  var body = bodyStr,
+      notify_type = body.notify_type,
+      code = body.errcode,
+      msg = body.errmsg,
+      order = body.order
+      console.log(body)
+
+  if(notify_type !== 'recharge_result' || code !== 0 ){
+    res.json({status: 0, msg: "error"})
+    return
+  }
+
+  confirmOrder({
+    state: models.ExtractOrder.STATE.SUCCESS,
+    phone: order.number,
+    taskid: order.transaction_id
+  }, code == 0, msg, function(err){
+    if(err){
+      console.log(err)
+      res.json({status: 1, msg: "success"})
+    }else{
+      res.json({status: 1, msg: "success"})
+    }
+  })
+})
 
 module.exports = app;
