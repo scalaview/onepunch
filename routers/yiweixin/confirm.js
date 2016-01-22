@@ -447,9 +447,8 @@ function sendRefundNotice(customer, extractOrder, resean){
 }
 
 app.post('/liuliangshopconfirm', function(req, res){
-  console.log(req.rawBody)
   console.log(req.body)
-  var bodyStr = req.rawBody || req.body
+  var bodyStr = req.body
   if(!bodyStr){
     res.json({status: 0, msg: "error"})
     return
@@ -461,7 +460,7 @@ app.post('/liuliangshopconfirm', function(req, res){
       order = body.order
       console.log(body)
 
-  if(notify_type !== 'recharge_result' || code !== '0' ){
+  if(notify_type !== 'recharge_result' || code !== 0 ){
     res.json({status: 0, msg: "error"})
     return
   }
@@ -470,7 +469,7 @@ app.post('/liuliangshopconfirm', function(req, res){
     state: models.ExtractOrder.STATE.SUCCESS,
     phone: order.number,
     taskid: order.transaction_id
-  }, code == '0', msg, function(err){
+  }, code == 0, msg, function(err){
     if(err){
       console.log(err)
       res.json({status: 1, msg: "success"})

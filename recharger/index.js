@@ -133,7 +133,7 @@ var ChongRecharger = function(models, client_id, client_secret, storeCallback, a
       callback_url: callbackUrl,
       client_id: config.chong[process.env.NODE_ENV || "development"].client_id,
       number: phone,
-      product_id: '6_200' || productId
+      product_id: productId
     }
     var sign = sign(signParams)
 
