@@ -62,7 +62,7 @@ app.get("/taskconfirm/:id", function(req, res) {  //流量任务confirm接口
       exchangerType: flowtask.className(),
       exchangerId: flowtask.id,
       phone: phone,
-      cost: 0,
+      cost: trafficPlan.purchasePrice,
       value: trafficPlan.value,
       bid: trafficPlan.bid
     }).save().then(function(extractOrder) {
@@ -421,7 +421,7 @@ function sendRefundNotice(customer, extractOrder, resean){
           content: content
         }
       }).spread(function(template) {
-        var content = template.content.format({ orderid: extractOrder.id, name: trafficPlan.name, phone: extractOrder.phone, resean: resean, value: extractOrder.cost })
+        var content = template.content.format({ orderid: extractOrder.id, name: trafficPlan.name, phone: extractOrder.phone, resean: resean, value: extractOrder.total })
         next(null, content)
       }).catch(function(err) {
         next(err)
