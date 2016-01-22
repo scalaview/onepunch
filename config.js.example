@@ -44,6 +44,7 @@ var config = {
                 'hostname': '',
                 'maxfileuploadsize': 10240000, // 10m
                 'max_depth': 3,
+                'applylimit': ,
                 'huawo_account': '',
                 'huawo_pwd': '',
                 'huawo_hostname': '',

@@ -152,6 +152,12 @@ app.get('/myslaves', requireLogin, function(req, res){
 
 app.get('/apply', requireLogin, function(req, res) {
   var customer = req.customer
+
+  if(customer.salary < (config.applylimit || 100.00)){
+    res.render('yiweixin/withdrawal/errmsg', { message: "分销奖励未达到提现要求" })
+    return
+  }
+
   models.DConfig.findOrCreate({
     where: {
       name: "exchangeRate"
