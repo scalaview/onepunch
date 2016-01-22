@@ -31,7 +31,10 @@
                 <tr>
                   <td>{{ level }}</td>
                   <td>{{ percent }}</td>
-                  <td>{{ trafficPlanId }}</td>
+                  <td class="row">
+                    <div class="col-lg-6 col-xs-12">
+                      {{#if trafficPlanId }} {{ selectTag ../../trafficPlanOptions ../../trafficPlanCollection trafficPlanId }} {{/if}}</td>
+                    </div>
                   <td>
                     <a href="{{#if trafficPlanId}} /admin/affiliateconfig/trafficplan/{{trafficPlanId}}/edit {{else}} /admin/affiliateconfigs/{{id}}/edit {{/if}}" class="list-group-item col-xs-6">
                       <i class="glyphicon glyphicon-pencil"></i>
@@ -60,11 +63,8 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-lg-12">
-            <div class="form-group">
-              <label>流量套餐</label>
+          <div id="trafficplan-select2" class="col-lg-12">
               {{ selectTag trafficPlanOptions trafficPlanCollection }}
-            </div>
           </div>
         </div>
         <div id="detail"></div>
