@@ -229,7 +229,7 @@ app.get('/slave', requireLogin, function(req, res) {
     models.Customer.findById(req.query.id).then(function(one) {
       next(null, one)
     })
-  }, getSlaves], function(err, one, result) {
+  }, helpers.getSlaves], function(err, one, result) {
     if(err){
       console.log(err)
       res.redirect('/500')
