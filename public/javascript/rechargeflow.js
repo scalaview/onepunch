@@ -51,7 +51,7 @@ function givenTo(){
       }
 
       if(isNaN(amount) || amount > total) {
-        showDialog("您的E币不足以支出转赠数量")
+        showDialog("您的余额不足以支出转赠数量")
         return
       }
     }catch(e){
@@ -202,9 +202,9 @@ function extractConfirm(){
 
     if( parseFloat(lessE) < parseFloat($this.data('cost')) ){
       if(choose.data('id') == 'balance'){
-        showDialog("账户剩余E币不足")
+        showDialog("账户剩余余额不足")
       }else{
-        showDialog("账户返利E币不足")
+        showDialog("账户返利余额不足")
       }
       return
     }
@@ -259,7 +259,7 @@ function wechatPayment(phone, flowId){
           WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok"){
               $("#mask").hide();
-              toast("支付成功")
+              showDialog("支付成功")
               // 这里可以跳转到订单完成页面向用户展示
               // window.location.href = '/profile'
             }else{
@@ -373,7 +373,7 @@ function withdrawal(){
 
     if(!isNaN(amount)){
       if(amount > parseFloat(total) ){
-        showDialog("你所拥有的E币不足")
+        showDialog("你所拥有的余额不足")
       }
     }else{
       showDialog("请输入正确的数目")

@@ -44,6 +44,7 @@ var config = {
                 'hostname': '',
                 'maxfileuploadsize': 10240000, // 10m
                 'max_depth': 3,
+                'applylimit': ,
                 'huawo_account': '',
                 'huawo_pwd': '',
                 'huawo_hostname': '',
@@ -51,6 +52,18 @@ var config = {
                 'huawo_lucky_pwd': '',
                 'huawo_province_account': '',
                 'huawo_province_pwd': '',
+                'chong': {
+                  'development': {
+                    'hostname': '',
+                    'client_id': '',
+                    'client_secret': ''
+                  },
+                  'production': {
+                    'hostname': '',
+                    'client_id': '',
+                    'client_secret': ''
+                  }
+                }
               };
 
 module.exports = config;

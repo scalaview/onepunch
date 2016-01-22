@@ -107,7 +107,7 @@ admin.get('/coupons/:id/edit', function(req, res) {
         coupon: coupon,
         trafficPlanOptions: trafficPlanOptions,
         trafficPlanCollection: trafficPlanCollection,
-        path: "/admin/coupons/" + coupon.id + '/edit'
+        path: "/admin/coupons/" + coupon.id
       })
     }
   })
