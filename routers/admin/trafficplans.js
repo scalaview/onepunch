@@ -158,6 +158,27 @@ admin.get('/trafficplans/:id/edit', function(req, res) {
   })
 })
 
+admin.get('/trafficplans/:id', function(req, res) {
+
+  async.waterfall([function(next) {
+    models.TrafficPlan.findById(req.params.id).then(function(trafficPlan) {
+      next(null, trafficPlan)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, trafficPlan) {
+    if(err){
+      console.log(err)
+      res.json({ err: 1, message: err })
+    }else{
+      res.json({ err: 0, message: "", data: trafficPlan })
+    }
+  })
+
+
+})
+
+
 admin.post('/trafficplan/:id', function(req, res){
   var params = req.body
   if(params['display'] == 'on'){

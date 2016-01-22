@@ -18,7 +18,7 @@ function ajaxUpdateTrafficplan(_id, params){
 
 $(function(){
   $(".select2").each(function(i, e) {
-    $(e).select2()
+    var $select2 = $(e).select2()
   })
 
   $('.remove').each(function(i, e) {
@@ -50,6 +50,40 @@ $(function(){
       params[$this.attr("name")] = "on"
     }
     ajaxUpdateTrafficplan(_id, params)
+  })
+
+
+  var source = $("#detail-template").html()
+  if(source !== undefined && source !== ''){
+    window.template = Handlebars.compile(source);
+  }
+
+  $("select[name='trafficPlanId']").on("change", function(e){
+    var $this = $(this)
+    $.ajax({
+      url: '/admin//trafficplans/' + $this.val(),
+      dataType: 'JSON',
+      method: "GET"
+    }).done(function(data){
+      if(!data.err){
+        var html = template(data.data)
+        $("#detail").html(html)
+      }else{
+        toastr.error(data.message)
+      }
+    }).fail(function(err){
+      console.log(err)
+      toastr.error('服务器错误')
+    })
+  })
+
+  $("#editOrNew").click(function(){
+    var id = $("select[name='trafficPlanId']").val()
+    if(id !== undefined && id !== ''){
+      window.location.href = '/admin/affiliateconfig/trafficplan/'+ id +'/edit'
+    }else{
+      toastr.warning("choose a traffic plan")
+    }
   })
 
 })
