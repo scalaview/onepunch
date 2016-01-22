@@ -66,7 +66,6 @@ admin.get('/affiliateconfigs', function(req, res) {
     }else{
       helpers.getAllTrafficPlans(true, function(err, trafficPlanCollection, trafficPlanOptions) {
         res.render('admin/affiliateconfigs/index', {
-          affiliateconfigs: result,
           aConfigs: aConfigs,
           trafficPlanCollection: trafficPlanCollection,
           trafficPlanOptions: trafficPlanOptions

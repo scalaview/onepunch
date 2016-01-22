@@ -27,26 +27,13 @@
               </tr>
             </thead>
             <tbody>
-              {{#each affiliateconfigs }}
-                <tr>
-                  <td>{{ level }}</td>
-                  <td>{{ percent }}</td>
-                  <td>{{ trafficPlanId }}</td>
-                  <td>
-                    <a href="/admin/affiliateconfigs/{{id}}/edit" class="list-group-item col-xs-6">
-                      <i class="glyphicon glyphicon-pencil"></i>
-                    </a>
-                  </td>
-                </tr>
-              {{/each}}
-
               {{#each aConfigs }}
                 <tr>
                   <td>{{ level }}</td>
                   <td>{{ percent }}</td>
                   <td>{{ trafficPlanId }}</td>
                   <td>
-                    <a href="/admin/affiliateconfig/trafficplan/{{id}}/edit" class="list-group-item col-xs-6">
+                    <a href="{{#if trafficPlanId}} /admin/affiliateconfig/trafficplan/{{id}}/edit {{else}} /admin/affiliateconfigs/{{id}}/edit {{/if}}" class="list-group-item col-xs-6">
                       <i class="glyphicon glyphicon-pencil"></i>
                     </a>
                   </td>
@@ -58,9 +45,6 @@
         <!-- /.table-responsive -->
       </div>
       <!-- /.panel-body -->
-      <div class="panel-footer">
-          {{pagination affiliateconfigs '/admin/affiliateconfigs' }}
-      </div>
     </div>
       <!-- /.panel -->
   </div>
