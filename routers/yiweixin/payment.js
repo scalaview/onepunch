@@ -165,7 +165,7 @@ app.post('/pay', requireLogin, function(req, res) {
             if(err){
               console.log("payment fail")
               console.log(err)
-              res.json({err: 1, msg: 'payment fail'})
+              res.json({err: 1, msg: '付款失败'})
             }else{
               console.log(payargs)
               res.json(payargs);

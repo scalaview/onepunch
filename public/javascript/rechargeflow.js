@@ -259,7 +259,7 @@ function wechatPayment(phone, flowId){
           WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok"){
               $("#mask").hide();
-              toast("支付成功")
+              showDialog("支付成功")
               // 这里可以跳转到订单完成页面向用户展示
               // window.location.href = '/profile'
             }else{
