@@ -766,6 +766,10 @@ function applylimit(salary){
   }
 }
 
+function toHex(str){
+  return new Buffer(""+str).toString("hex")
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -806,3 +810,4 @@ exports.API = API;
 exports.toUnicode = toUnicode;
 exports.payment = payment;
 exports.initConfig = initConfig;
+exports.toHex = toHex;
