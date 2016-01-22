@@ -18,7 +18,10 @@ function ajaxUpdateTrafficplan(_id, params){
 
 $(function(){
   $(".select2").each(function(i, e) {
-    var $select2 = $(e).select2()
+    var $select2 = $(e).select2({ width: 'resolve' });
+    if($(e).find("option").is(":selected") && $(e).find("option:selected").val() != '' ){
+      $select2.prop("disabled", $(e).hasClass("disabled"));
+    }
   })
 
   $('.remove').each(function(i, e) {

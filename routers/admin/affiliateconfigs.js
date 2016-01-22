@@ -81,6 +81,8 @@ admin.get('/affiliateconfigs', function(req, res) {
       res.redirect('/500')
     }else{
       helpers.getAllTrafficPlans(true, function(err, trafficPlanCollection, trafficPlanOptions) {
+        trafficPlanOptions["class"] = "select2 col-lg-12 col-xs-12 disabled"
+        trafficPlanOptions["style"] = "width: 100%"
         res.render('admin/affiliateconfigs/index', {
           aConfigs: aConfigs,
           trafficPlanCollection: trafficPlanCollection,
