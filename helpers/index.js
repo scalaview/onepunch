@@ -759,7 +759,7 @@ function toUnicode(theString) {
 }
 
 function applylimit(salary){
-  if(salary >= 100){
+  if(salary >= (config.applylimit || 100.00) ){
     return "href='/apply'".htmlSafe()
   }else{
     return "href='javascript:void(0);' class='applylimit'".htmlSafe()
