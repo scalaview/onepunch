@@ -770,6 +770,19 @@ function toHex(str){
   return new Buffer(""+str).toString("hex")
 }
 
+function getAllTrafficPlans(includeBlank, pass){
+  models.TrafficPlan.findAll().then(function(trafficPlans){
+    var trafficPlanCollection = []
+    for (var i = 0; i < trafficPlans.length; i++ ) {
+      trafficPlanCollection.push([trafficPlans[i].id, trafficPlans[i].name])
+    };
+    var trafficPlanOptions = { name: 'trafficPlanId', class: "select2 col-lg-12 col-xs-12", includeBlank: includeBlank || true  }
+    pass(null, trafficPlanCollection, trafficPlanOptions)
+  }).catch(function(err) {
+    pass(err)
+  })
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -811,3 +824,4 @@ exports.toUnicode = toUnicode;
 exports.payment = payment;
 exports.initConfig = initConfig;
 exports.toHex = toHex;
+exports.getAllTrafficPlans = getAllTrafficPlans;
