@@ -66,11 +66,12 @@ app.post("/extractFlow", requireLogin, function(req, res){
       exchangerType: trafficPlan.className(),
       exchangerId: trafficPlan.id,
       phone: req.body.phone,
-      cost: trafficPlan.cost,
+      cost: trafficPlan.purchasePrice,
       value: trafficPlan.value,
       bid: trafficPlan.bid,
       customerId: customer.id,
-      chargeType: chargetype
+      chargeType: chargetype,
+      total: trafficPlan.cost
     }).save().then(function(extractOrder) {
       next(null, trafficPlan, extractOrder)
     }).catch(function(err) {

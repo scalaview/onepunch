@@ -36,6 +36,9 @@ module.exports = function(sequelize, DataTypes) {
                               trafficPlanId: trafficPlan.id,
                               level: {
                                 $lte: maxDepth
+                              },
+                              percent: {
+                                $gt: 0
                               }
                             }
             }else{

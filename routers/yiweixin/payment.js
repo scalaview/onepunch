@@ -128,7 +128,7 @@ app.post('/pay', requireLogin, function(req, res) {
         exchangerType: trafficPlan.className(),
         exchangerId: trafficPlan.id,
         phone: req.body.phone,
-        cost: trafficPlan.cost ,
+        cost: trafficPlan.purchasePrice ,
         value: trafficPlan.value,
         bid: trafficPlan.bid,
         customerId: customer.id,
@@ -154,7 +154,7 @@ app.post('/pay', requireLogin, function(req, res) {
             body: '流量套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
             out_trade_no: config.token + (+new Date),
-            total_fee:  Math.round(extractOrder.cost * 100),
+            total_fee:  Math.round(extractOrder.total * 100),
             spbill_create_ip: ip,
             openid: customer.wechat,
             trade_type: 'JSAPI'
@@ -201,13 +201,11 @@ app.post('/pay', requireLogin, function(req, res) {
     })
 })
 
-
 var middleware = require('wechat-pay').middleware;
 app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(function(message, req, res, next) {
   console.log(message)
 
   var extractOrderId = message.attach
-
   async.waterfall([function(next) {
     models.ExtractOrder.findById(extractOrderId).then(function(extractOrder) {
       if(extractOrder){
@@ -299,7 +297,6 @@ function doAffiliate(extractOrder, customer, pass){
       for (var i = ll.length - 1; i >= end; i--) {
         ancestryArr.push(ll[i])
       };
-
       async.waterfall([function(next) {
         models.Customer.findAll({
           where: {
@@ -308,6 +305,7 @@ function doAffiliate(extractOrder, customer, pass){
             }
           }
         }).then(function(ancestries) {
+
           var objHash = ancestries.map(function (value, index) {
             if(configHash[customer.ancestryDepth - value.ancestryDepth]){
               return {
@@ -327,7 +325,7 @@ function doAffiliate(extractOrder, customer, pass){
           var one =  obj.customer
           var confLine = obj.config
 
-          var salary = (parseInt(confLine.percent) / 100) * trafficPlan.cost
+          var salary = (parseInt(confLine.percent) / 100) * extractOrder.total
           one.updateAttributes({
             salary: one.salary + salary
           }).then(function(o) {
