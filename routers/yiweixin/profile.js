@@ -3,6 +3,7 @@ var app = express.Router();
 var models  = require('../../models')
 var helpers = require("../../helpers")
 var async = require("async")
+var config = require("../../config")
 var requireLogin = helpers.requireLogin
 
 app.get('/profile', requireLogin, function(req, res) {
@@ -160,7 +161,21 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
       }).catch(function(err){
         next(err)
       })
-    },function(outnext){
+    }, function(next) {
+      if(customer.levelId !== undefined){
+        models.Level.findById(customer.levelId).then(function(level) {
+          if(level.discount >= (config.blacklist || 3.00 )){
+            res.json({ err: 4, msg: "服务器维护中" })
+            return
+          }else{
+            customer.level = level
+            next(null)
+          }
+        })
+      }else{
+        next(null)
+      }
+    }, function(outnext){
       models.Coupon.findAll({
         where: {
           isActive: true,
@@ -281,18 +296,21 @@ app.get('/salary', requireLogin, function(req, res) {
 
 
 function applyCoupon(coupons, trafficPlans, customer){
-  for (var i = coupons.length - 1; i >= 0; i--) {
-    for (var j = trafficPlans.length - 1; j >= 0; j--) {
+  for (var j = trafficPlans.length - 1; j >= 0; j--) {
+    for (var i = coupons.length - 1; i >= 0; i--) {
       if(coupons[i].trafficPlanId == trafficPlans[j].id){
         if(trafficPlans[j].coupon === undefined){
           trafficPlans[j].coupon = coupons[i]
         }else if(trafficPlans[j].coupon.updatedAt < coupons[i].updatedAt){
           trafficPlans[j].coupon = coupons[i]
         }
-        trafficPlans[j].withOutDiscount = trafficPlans[j].cost
-        trafficPlans[j].cost = helpers.discount(customer, trafficPlans[j])
       }
     };
+    var cost = helpers.discount(customer, trafficPlans[j])
+    if(cost != trafficPlans[j].cost){
+      trafficPlans[j].withOutDiscount = trafficPlans[j].cost
+      trafficPlans[j].cost = cost
+    }
   };
   return trafficPlans
 }
