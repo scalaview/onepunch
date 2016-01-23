@@ -269,7 +269,7 @@ function discount(customer, trafficPlan){
     discount = customer.level.discount
   }
 
-  if(discount >= (config.discountmin || 0.60) ){
+  if(discount >= (config.mindiscount || 0.60) ){
     return (trafficPlan.cost * discount).toFixed(2)
   }else{
     return trafficPlan.cost
