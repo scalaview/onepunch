@@ -33,11 +33,6 @@ color:#fff; text-align:center; border:1px solid #ff5000; border-radius:3px;heigh
 .tab li a:hover,.tab li.cur a{ background:#ff5000; color:#fff;}
 #popup_message {padding: 12% 2em; line-height: 21px; font-size: 1.2em; color: #666;}
 body { background-color: #fff; padding-bottom: 70px }
-p {
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
-}
 .space-6 {
   padding-top: 6px;
 }

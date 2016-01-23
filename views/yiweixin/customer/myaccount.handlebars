@@ -1,3 +1,12 @@
+<style type="text/css">
+.icon-left {
+  width: 20px;
+  margin-right: 5px;
+  margin-left: 5px;
+  display: block;
+}
+</style>
+
 <div class="container dtb_distribution">
   <div class='row'>
      <div class="item uinfo col-xs-12">
@@ -18,61 +27,76 @@
         </div>
      </div>
    </div>
-   <div class="row">
-    <a href="/myticket/{{ toHex customer.id }}">
-      <div class="item col-xs-12">
-        <h3><i style="color: brown;" class="glyphicon glyphicon-th-large"></i>我的二维码</h3>
-      </div>
-    </a>
-   </div>
-
-   <div class='row'>
-    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-     <div class="item col-xs-12">
-        <h3><i style="color: yellow;" class="glyphicon glyphicon-cog"></i>我的会员<em>{{ sum }}人</em></h3>
-      </div>
-    </a>
-    <div id="collapseOne" class="col-xs-12 panel-collapse collapse">
-      <div class="panel-body" style="padding: 10px; background-color: #ffffff;">
-          <ul class="slaves">
+   <div class="page cell">
+    <div class="bd">
+      <div class="weui_cells weui_cells_access">
+        <a class="weui_cell" href="/myticket/{{ toHex customer.id }}">
+          <div class="weui_cell_hd">
+            <i style="color: brown;" class="icon-left glyphicon glyphicon-qrcode"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的二维码</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          <div class="weui_cell_hd">
+            <i style="color: green;" class="icon-left glyphicon glyphicon-user"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的会员</p>
+          </div>
+          <div class="weui_cell_ft item"><em>{{ sum }}人</em></div>
+        </a>
+        <div id="collapseOne" class="col-xs-12 panel-collapse collapse">
+          <div class="panel-body" style="padding: 10px; background-color: #ffffff;">
             {{#each result }}
-              <li>
-                <a href="/myslaves?depth={{ @index }}">
-                  <span>
-                    <i class="glyphicon glyphicon-user" ></i>{{ name }}
-                  </span>
-                  <span class="badge pull-right orange-bg">{{ count }}</span>
-                </a>
-              </li>
+              <a href="/myslaves?depth={{ @index }}">
+                <div class="weui_cell">
+                  <div class="weui_cell_hd">
+                    <i class="icon-left glyphicon glyphicon-user" ></i>
+                  </div>
+                  <div class="weui_cell_bd weui_cell_primary">
+                      <p>{{ name }}</p>
+                  </div>
+                  <div class="weui_cell_ft">
+                    <span class="badge pull-right orange-bg">{{ count }}</span>
+                  </div>
+                </div>
+              </a>
             {{/each}}
-          </ul>
+          </div>
         </div>
+        <a class="weui_cell" href="/salary">
+          <div class="weui_cell_hd">
+            <i style="color: orange;" class="icon-left glyphicon glyphicon-usd"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的收入</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" {{ applylimit customer.salary }}>
+          <div class="weui_cell_hd">
+            <i style="color: blue;" class="icon-left glyphicon glyphicon-log-out"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>佣金提现</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" href="/withdrawals">
+          <div class="weui_cell_hd">
+            <i style="color: red;" class="icon-left glyphicon glyphicon-duplicate"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>提现记录</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
       </div>
     </div>
-
-    <div class="row">
-      <a {{ applylimit customer.salary }} >
-        <div class="item col-xs-12">
-          <h3><i style="color: red;" class="glyphicon glyphicon-folder-close"></i>  佣金提现</h3>
-        </div>
-      </a>
-    </div>
-
-    <div class="row">
-      <a href="/salary">
-        <div class="item col-xs-12">
-          <h3><i style="color: blue;" class="glyphicon glyphicon-home"></i>  我的收入</h3>
-        </div>
-      </a>
-    </div>
-
-    <div class="row">
-      <a href="/withdrawals">
-        <div class="item col-xs-12">
-          <h3><i style="color: orange;" class="glyphicon glyphicon-list-alt"></i>  提现记录</h3>
-        </div>
-      </a>
-    </div>
+   </div>
 </div>
 
 {{> alertmodal }}

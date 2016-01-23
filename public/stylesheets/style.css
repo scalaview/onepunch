@@ -1043,10 +1043,8 @@ table{
  background-position: 25px;
  position: relative;
  }
-.dtb_distribution .item h3 i{
-  padding-right: 10px;
-}
- .dtb_distribution .item h3 em{
+
+ .dtb_distribution .item em{
  width: auto;
  height: 24px;
  line-height: 24px;
@@ -1059,6 +1057,7 @@ table{
  right: 10px;
  top: 13px;
  border-radius: 15px;
+ margin-right: 15px
  }
  .dtb_distribution .item ul{
  margin: 0;
@@ -1078,3 +1077,21 @@ table{
  background-size: 13px 13px;
  color: #000000;
  }
+ .weui_cell_bd p {
+    margin: 0;
+ }
+
+ .panel-body .weui_cell_ft:after {
+    display: none;
+ }
+
+ a:focus, a:hover {
+  text-decoration: initial;
+}
+
+.icon-left {
+  width: 20px;
+  margin-right: 5px;
+  margin-left: 5px;
+  display: block;
+}
