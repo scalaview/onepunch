@@ -52,7 +52,7 @@ app.get('/myticket/:id', function(req, res) {
     models.Customer.findById(id).then(function(customer){
       if(customer){
         if(customer.myticket){
-          res.render('yiweixin/withdrawal/myticket', { url: customer.myticket })
+          res.render('yiweixin/withdrawal/myticket', { url: customer.myticket, customer: customer, layout: 'ticket' })
           return
         }else{
           next(null, customer)
@@ -112,12 +112,12 @@ app.get('/myticket/:id', function(req, res) {
     }).catch(function(err) {
       next(err)
     })
-  }], function(err, url) {
+  }], function(err, url, customer) {
     if(err){
       console.log(err)
       res.redirect('/myaccount')
     }else{
-      res.render('yiweixin/withdrawal/myticket', { url: url })
+      res.render('yiweixin/withdrawal/myticket', { url: url, customer: customer, layout: 'ticket' })
     }
   })
 })
