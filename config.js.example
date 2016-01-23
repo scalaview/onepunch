@@ -20,7 +20,7 @@ var config = {
                 'max_depth': 3,
                 'applylimit': ,
                 'blacklist': ,
-                'discountmin': ,
+                'mindiscount': ,
                 'huawo_account': '',
                 'huawo_pwd': '',
                 'huawo_hostname': '',
