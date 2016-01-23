@@ -176,11 +176,22 @@ function getTrafficplan(source, catName){
     },
     method: "GET"
   }).done(function(data){
-    var html = template({trafficgroups: data})
-    if(catName == "all"){
-      window.plans = html
+    if(data.err == 4){  //服务器维护中
+      var err_source = $("#err-template").html()
+      if(err_source != undefined && err_source != ''){
+        var err_template = Handlebars.compile(err_source);
+        var err_html = err_template({msg: data.msg})
+        $(".no_data").html(err_html)
+        $(".no_data").show()
+      }
+    }else{
+      $(".no_data").hide()
+      var html = template({trafficgroups: data})
+      if(catName == "all"){
+        window.plans = html
+      }
+      $(".llb").html(html)
     }
-    $(".llb").html(html)
   }).fail(function(err){
     console.log(err)
     showDialog("服务器错误")

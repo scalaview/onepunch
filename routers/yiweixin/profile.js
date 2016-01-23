@@ -145,7 +145,22 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
   var customer = req.customer
   if(models.TrafficPlan.Provider[req.query.catName] !== undefined || req.query.catName == "all"){
     var providerId = req.query.catName == "all" ?  Object.keys(models.TrafficPlan.ProviderName) : models.TrafficPlan.Provider[req.query.catName]
-    async.waterfall([function(outnext){
+    async.waterfall([function(next) {
+      models.DConfig.findOne({
+        where: {
+          name: 'disable'
+        }
+      }).then(function(dConfig) {
+        if(dConfig && dConfig.value == "true"){
+          res.json({ err: 4, msg: "服务器维护中" })
+          return
+        }else{
+          next(null)
+        }
+      }).catch(function(err){
+        next(err)
+      })
+    },function(outnext){
       models.Coupon.findAll({
         where: {
           isActive: true,

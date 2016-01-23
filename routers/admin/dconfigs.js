@@ -7,16 +7,7 @@ var async = require("async")
 // 配置信息
 
 function initDConfig(req, res, pass){
-  var dConfigs = [{
-    name: 'vipLimit',
-    value: '1'
-  },{
-    name: 'exchangeRate',
-    value: '1'
-  },{
-    name: 'affiliate',
-    value: '1'
-  }]
+  var dConfigs = models.DConfig.dConfigs
 
   async.each(dConfigs, function(DC, next) {
     models.DConfig.findOrCreate({
@@ -67,6 +58,14 @@ admin.get('/configs', initDConfig, function(req, res) {
         }
       }
 
+      if(dconfigs[i].name == 'disable'){
+        result['disable'] = {
+          name: '开启平台维护',
+          key: 'disable',
+          value: dconfigs[i].value
+        }
+      }
+
     };
 
     res.render('admin/dconfigs/show', { result: result })
@@ -77,36 +76,25 @@ admin.get('/configs', initDConfig, function(req, res) {
 
 admin.post('/configs', function(req, res) {
   models.DConfig.findAll({}).then(function(dconfigs) {
-
+    var dConfigsArray = models.DConfig.dConfigs
     async.map(dconfigs, function(dconfig, next){
-      if(dconfig.name == 'vipLimit'){
-        dconfig.updateAttributes({
-          value: req.body.vipLimit
-        }).then(function(dconfig) {
-          next(null, dconfig)
-        }).catch(function(err) {
-          next(err)
-        })
+      var done = false
+      for (var i = 0; i < dConfigsArray.length; i ++) {
+        if(dconfig.name == dConfigsArray[i].name){
+          dconfig.updateAttributes({
+          value: req.body[dConfigsArray[i].name]
+          }).then(function(dconfig) {
+            done = true
+            next(null, dconfig)
+          }).catch(function(err) {
+            done = true
+            next(err)
+          })
+        }
+      };
+      if(!done){
+        next(null)
       }
-      if(dconfig.name == 'exchangeRate' ){
-        dconfig.updateAttributes({
-          value: req.body.exchangeRate
-        }).then(function(dconfig) {
-          next(null, dconfig)
-        }).catch(function(err) {
-          next(err)
-        })
-      }
-      if(dconfig.name == 'affiliate' ){
-        dconfig.updateAttributes({
-          value: req.body.affiliate
-        }).then(function(dconfig) {
-          next(null, dconfig)
-        }).catch(function(err) {
-          next(err)
-        })
-      }
-
     }, function(err, result) {
       if(err){
         console.log(err)

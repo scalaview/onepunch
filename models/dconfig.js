@@ -15,5 +15,20 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
+
+  DConfig.dConfigs = [{
+    name: 'vipLimit',
+    value: '1'
+  },{
+    name: 'exchangeRate',
+    value: '1'
+  },{
+    name: 'affiliate',
+    value: '1'
+  },{
+    name: 'disable',
+    value: 'false'
+  }]
+
   return DConfig;
 };
