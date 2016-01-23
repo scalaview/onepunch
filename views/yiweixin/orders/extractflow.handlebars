@@ -25,6 +25,7 @@
       <hr>
       <div class="llb">
       </div>
+      <div class="no_data" style="display: none"></div>
       <div class="ml">
         <div class="zw-tips"><a href="../about/tiquguize.html">流量充值说明</a></div>
         <div class="inform">
@@ -65,4 +66,20 @@
     </div>
   </div>
 \{{/each}}
+</script>
+
+<script id="err-template" type="text/x-handlebars-template">
+<div class="container-fluid" style="padding-top: 10px;">
+  <div class="row">
+    <div class="col-lg-10 col-lg-offset-1 col-sm-8">
+      <div class="panel panel-info">
+        <div class="panel-body">
+            <h5 class="no_data_found_h">
+              \{{msg}}
+            </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </script>
