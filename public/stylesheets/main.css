@@ -32,7 +32,7 @@ color:#fff; text-align:center; border:1px solid #ff5000; border-radius:3px;heigh
 .tab li a{font-size:1.3em;!important; display:block; color:#ff5000;}
 .tab li a:hover,.tab li.cur a{ background:#ff5000; color:#fff;}
 #popup_message {padding: 12% 2em; line-height: 21px; font-size: 1.2em; color: #666;}
-body { background-color: #fff }
+body { background-color: #fff; padding-bottom: 70px }
 p {
   white-space: normal;
   word-wrap: break-word;
@@ -224,6 +224,16 @@ p {
     color: #3CC51F;
     font-weight: 400;
     margin: 0 15%;
+}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.fixer-container {
+  float: left;
+  position: relative;
+  left: 40%;
 }
 
 
