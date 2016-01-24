@@ -8,3 +8,4 @@ cert/
 config/config.json
 config.js
 public/kindeditor
+builtAssets/

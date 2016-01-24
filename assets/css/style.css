@@ -269,8 +269,7 @@ body {
     color: #28a000;
     background-size: 20px 20px;
     color: #ff5005;
-    font-size: 1em;
-    !important;
+    font-size: 1em !important;
     line-height: 20px;
 }
 
@@ -354,8 +353,7 @@ body {
         height: 34px;
         line-height: 34px;
         display: block;
-        font-size: 1.3em;
-        !important;
+        font-size: 1.3em !important;
     }
 
 .message {
@@ -474,8 +472,7 @@ body {
         line-height: 42px;
         background: #0269c2;
         border-radius: 4px 4px 0 0;
-        font-size: 1.4em;
-        !important;
+        font-size: 1.4em !important;
     color:#fff;
     }
 
@@ -488,26 +485,22 @@ body {
     }
 
         .tk .con .tit {
-            font-size: 16px;
-            !important;
+            font-size: 16px !important;
         }
 
         .tk .con span {
-            font-size: 16px;
-            !important;
+            font-size: 16px !important;
         }
 
         .tk .con .xinxi {
             padding: 0 20px;
             line-height: 24px;
-            font-size: 1.4em;
-            !important;
+            font-size: 1.4em !important;
         }
 
             .tk .con .xinxi .blue {
                 color: #008cff;
-                font-size: 1.2em;
-                !important;
+                font-size: 1.2em !important;
             }
 
     .tk .bot {
@@ -536,8 +529,7 @@ body {
             height: 36px;
             line-height: 36px;
             display: block;
-            font-size: 1.4em;
-            !important;
+            font-size: 1.4em !important;
         }
 
     .tk .sure {
@@ -559,8 +551,7 @@ body {
             display: block;
             box-shadow: 0px 1px 2px #fccea0;
             box-shadow: inset 0px 0px 1px #fccea0;
-            font-size: 1.4em;
-            !important;
+            font-size: 1.4em !important;
         }
 
     .tk .btn-no {
@@ -582,8 +573,7 @@ body {
             display: block;
             box-shadow: 0px 1px 2px #fccea0;
             box-shadow: inset 0px 0px 1px #fccea0;
-            font-size: 1.4em;
-            !important;
+            font-size: 1.4em !important;
         }
 
 .inform {
@@ -617,8 +607,7 @@ a.btn-gray {
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#eef2f7),to(#edeff0));
     box-shadow: inset 0px 0px 1px #fff;
     display: block;
-    font-size: 1.4em;
-    !important;
+    font-size: 1.4em !important;
     border: 1px solid #dcdce0;
 }
 
@@ -629,8 +618,7 @@ a:hover.btn-gray {
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#eef2f7),to(#edeff0));
     box-shadow: inset 0px 0px 1px #fff;
     display: block;
-    font-size: 1.4em;
-    !important;
+    font-size: 1.4em !important;
     border: 1px solid #ff5000;
 }
 
@@ -794,8 +782,7 @@ a:hover.btn-gray {
     background-size: 18px 18px;
     padding-left:24px;
     line-height: 18px;
-    font-size: 1em;
-    !important;
+    font-size: 1em !important;
 }
 
 .icon-error {
@@ -933,7 +920,7 @@ table{
 }
 .myaccount-title span {
   margin-bottom: 10px;
-  color: #ffffff;"
+  color: #ffffff;
 }
 
 .aline {

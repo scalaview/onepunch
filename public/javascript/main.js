@@ -1,12 +1,6 @@
-require(['jquery', 'bootstrap'], function ($) {
-
-});
-
-require.config({
-  paths: {
-    jquery: '/bower_components/jquery/dist/jquery.min',
-    bootstrap: '/bower_components/bootstrap/dist/js/bootstrap.min',
-    bootstrap_datepicker: '/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min',
-    kindeditor: '/bower_components/kindeditor/kindeditor-min'
-  }
-});
+//=  require  jquery/dist/jquery.min.js
+//=  require  bootstrap/dist/js/bootstrap.min.js
+//=  require  js/base.js
+//=  require  handlebars/handlebars.min.js
+//=  require  js/rechargeflow.js
+//=  require  js/register.js
