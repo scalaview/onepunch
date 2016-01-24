@@ -43,7 +43,8 @@ connectAssets = require("connect-assets")({
     __dirname + '/public/stylesheets',
     __dirname + '/public/bower_components',
     "assets"
-  ]
+  ],
+  buildDir: "public/assets"
 });
 app.use(connectAssets);
 
