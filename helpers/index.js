@@ -759,12 +759,12 @@ function toUnicode(theString) {
 }
 
 function applylimit(salary, _class){
+  if(typeof _class === 'string'){
+    var cla = _class
+  }
   if(salary >= (config.applylimit || 100.00) ){
-    return "href='/apply'".htmlSafe()
+    return "href='/apply' class='{{#if cla}}{{cla}}{{/if}}'".format({cla: cla}).htmlSafe()
   }else{
-    if(typeof _class === 'string'){
-      var cla = _class
-    }
     return "href='javascript:void(0);' class='applylimit{{#if cla}} {{cla}}{{/if}}'".format({cla: cla}).htmlSafe()
   }
 }
