@@ -162,7 +162,7 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
         next(err)
       })
     }, function(next) {
-      if(customer.levelId !== undefined){
+      if(customer.levelId){
         models.Level.findById(customer.levelId).then(function(level) {
           if(level.discount >= (config.blacklist || 3.00 )){
             res.json({ err: 4, msg: "服务器维护中" })
