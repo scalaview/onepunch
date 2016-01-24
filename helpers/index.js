@@ -504,9 +504,9 @@ function errTips(err) {
 // ===================login=====================
 
 function requireLogin(req, res, next) {
-  // if(process.env.NODE_ENV == "development"){
+  if(process.env.NODE_ENV == "development"){
     req.session.customer_id = 1
-  // }
+  }
   var url = req.originalUrl
   var encodeUrl = new Buffer(url).toString('base64');
 
