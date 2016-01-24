@@ -504,9 +504,9 @@ function errTips(err) {
 // ===================login=====================
 
 function requireLogin(req, res, next) {
-  if(process.env.NODE_ENV == "development"){
+  // if(process.env.NODE_ENV == "development"){
     req.session.customer_id = 1
-  }
+  // }
   var url = req.originalUrl
   var encodeUrl = new Buffer(url).toString('base64');
 
@@ -786,6 +786,21 @@ function getAllTrafficPlans(includeBlank, pass){
   })
 }
 
+function css() {
+  var css = connectAssets.options.helperContext.css.apply(this, arguments);
+  return new handlebars.SafeString(css);
+};
+
+function js() {
+  var js = connectAssets.options.helperContext.js.apply(this, arguments);
+  return new handlebars.SafeString(js);
+};
+
+function assetPath() {
+  var assetPath = connectAssets.options.helperContext.assetPath.apply(this, arguments);
+  return new handlebars.SafeString(assetPath);
+};
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -828,3 +843,6 @@ exports.payment = payment;
 exports.initConfig = initConfig;
 exports.toHex = toHex;
 exports.getAllTrafficPlans = getAllTrafficPlans;
+exports.css = css;
+exports.js = js;
+exports.assetPath = assetPath;

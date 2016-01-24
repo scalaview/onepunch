@@ -23,10 +23,7 @@ var fs        = require('fs');
 var app = express();
 var admin = express();
 var OAuth = require('wechat-oauth');
-var handlebars = require('express-handlebars').create({
-  defaultLayout: 'main',
-  helpers: helpers
-});
+
 var Payment = require('wechat-pay').Payment;
 var initConfig = {
   partnerKey: config.partnerKey,
@@ -37,13 +34,26 @@ var initConfig = {
 };
 var payment = new Payment(initConfig);
 var models  = require('./models');
-
-app.engine('handlebars', handlebars.engine);
-app.set('view engine', 'handlebars');
-
 app.set('port', process.env.PORT || 3000);
 app.enable('verbose errors');
 app.use(express.static(__dirname + '/public'));
+connectAssets = require("connect-assets")({
+  paths: [
+    __dirname + '/public/javascript',
+    __dirname + '/public/stylesheets',
+    __dirname + '/public/images',
+    __dirname + '/public/bower_components'
+  ]
+});
+app.use(connectAssets);
+
+var handlebars = require('express-handlebars').create({
+  defaultLayout: 'main',
+  helpers: helpers
+});
+
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
 
 var wechatConfig = {
   token: config.token,
