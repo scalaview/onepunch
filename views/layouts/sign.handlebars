@@ -4,19 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>星客万维</title>
-  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="/stylesheets/admin.css">
-
-  <script data-main="/javascript/main" src="/bower_components/jquery/dist/jquery.min.js"></script>
-  <script data-main="/javascript/main" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script data-main="/javascript/main" src="/javascript/base.js"></script>
-  <script type="text/javascript" src="/bower_components/handlebars/handlebars.min.js"></script>
-
+  {{{css "admin"}}}
 </head>
 <body>
+  {{{js "admin"}}}
   <div class="container-fluid">
-
     <div class="row">
       {{#if info}}
         {{ successTips info }}
