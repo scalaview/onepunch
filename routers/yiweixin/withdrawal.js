@@ -321,7 +321,7 @@ app.get("/awards", requireLogin, function(req, res) {
             models.AffiliateConfig.loadConfig(models, trafficPlan, function(configs){
               for (var i = 0; i < config.max_depth; i++) {
                 if(configs[i]){
-                  result.push({name: level[i], value: (configs[i].percent * trafficPlan.cost).toFixed(2) })
+                  result.push({name: level[i], value: (0.01 * configs[i].percent * trafficPlan.cost).toFixed(2) })
                 }else{
                   result.push({name: level[i], value: 0.00})
                 }
@@ -334,7 +334,7 @@ app.get("/awards", requireLogin, function(req, res) {
           }else{
             for (var i = 0; i < config.max_depth; i++) {
               if(defaultConfigs[i]){
-                result.push({name: level[i], value: (defaultConfigs[i].percent * trafficPlan.cost).toFixed(2) })
+                result.push({name: level[i], value: (0.01 * defaultConfigs[i].percent * trafficPlan.cost).toFixed(2) })
               }else{
                 result.push({name: level[i], value: 0.00})
               }
