@@ -5,6 +5,7 @@ var helpers = require("../../helpers")
 var async = require("async")
 var config = require("../../config")
 var requireLogin = helpers.requireLogin
+var _ = require('lodash')
 
 app.get('/profile', requireLogin, function(req, res) {
   var customer = req.customer
@@ -238,6 +239,61 @@ app.get('/salary', requireLogin, function(req, res) {
   })
 })
 
+app.get('/orders', requireLogin, function(req, res) {
+  var customer = req.customer
 
+  async.waterfall([function(next) {
+    customer.getExtractOrders().then(function(extractOrders){
+      next(null, extractOrders)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(extractOrders, next){
+    var trafficPlanIds = extractOrders.map(function(o, i){
+      if(o.exchangerType == "TrafficPlan"){
+        return o.exchangerId
+      }
+    }).compact()
+    trafficPlanIds = _.union(trafficPlanIds)
+    next(null, extractOrders, trafficPlanIds)
+  }, function(extractOrders, trafficPlanIds, next) {
+    models.TrafficPlan.findAll({
+      where: {
+        id: trafficPlanIds
+      }
+    }).then(function(trafficPlans){
+      next(null, extractOrders, trafficPlans)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(extractOrders, trafficPlans, next){
+    for (var i = 0; i < extractOrders.length; i++) {
+      for (var j = 0; j < trafficPlans.length; j++) {
+        if(trafficPlans[j].id == extractOrders[i].exchangerId){
+          extractOrders[i].trafficPlan = trafficPlans[j]
+          break
+        }
+      };
+    };
+    next(null, extractOrders, trafficPlans)
+  }, function(extractOrders, trafficPlans, next){
+    var list = customer.getAncestry()
+    if(list.length > 0){
+      models.Customer.findById(list[list.length - 1]).then(function(parent) {
+        next(null, extractOrders, trafficPlans, parent)
+      })
+    }else{
+      next(null, extractOrders, trafficPlans, {})
+    }
+  }], function(err, extractOrders, trafficPlans, parent){
+    if(err){
+      console.log(err)
+      res.redirect('/500')
+    }else{
+      res.render("yiweixin/flowhistories/myorders", { extractOrders: extractOrders, customer: customer, parent: parent })
+    }
+  })
+
+})
 
 module.exports = app;
