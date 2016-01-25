@@ -91,6 +91,7 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         models.Customer.hasMany(models.FlowHistory, { foreignKey: 'customerId' })
         models.Customer.hasMany(models.Order, { foreignKey: 'customerId' })
+        models.Customer.hasMany(models.ExtractOrder, { foreignKey: 'customerId' })
       }
     }),
     instanceMethods: _.merge(concern.instanceMethods, {
