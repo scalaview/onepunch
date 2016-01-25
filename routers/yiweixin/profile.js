@@ -176,69 +176,13 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
         next(null)
       }
     }, function(outnext){
-      models.Coupon.findAll({
-        where: {
-          isActive: true,
-          expiredAt: {
-            $gt: (new Date()).begingOfDate()
-          }
-        },
-        order: [
-                ['updatedAt', 'DESC']
-               ]
-      }).then(function(coupons) {
+      models.Coupon.getAllActive(models).then(function(coupons) {
         outnext(null, coupons)
       }).catch(function(err) {
         outnext(err)
       })
     }, function(coupons, outnext) {
-      models.TrafficGroup.findAll({
-        where: {
-          providerId: providerId,
-          display: true
-        },
-        order: [
-          ['sortNum', 'ASC'],
-          ['id', 'ASC']
-         ]
-      }).then(function(trafficgroups) {
-        async.map(trafficgroups, function(trafficgroup, next) {
-          trafficgroup.getTrafficPlans({
-            where: {
-              display: true
-            },
-            order: [
-              ['sortNum', 'ASC'],
-              ['id', 'ASC']
-            ]
-          }).then(function(trafficplans) {
-            var data = null
-            if(trafficplans.length > 0){
-              if(coupons.length > 0){
-                trafficplans = applyCoupon(coupons, trafficplans, customer)
-              }
-              data = {
-                name: trafficgroup.name,
-                trafficplans: trafficplans
-              }
-            }
-            next(null, data)
-          }).catch(function(err) {
-            next(err)
-          })
-        }, function(err, result) {
-          if(err){
-            outnext(err)
-          }else{
-            var data = []
-            for (var i = 0; i < result.length; i++) {
-              if(result[i])
-                data.push(result[i])
-            };
-            outnext(null, data)
-          }
-        })
-      })
+      models.TrafficPlan.getTrafficPlanByGroup(models, providerId, customer, coupons, outnext)
     }], function(err, result) {
       if(err){
         console.log(err)
@@ -295,24 +239,5 @@ app.get('/salary', requireLogin, function(req, res) {
 })
 
 
-function applyCoupon(coupons, trafficPlans, customer){
-  for (var j = trafficPlans.length - 1; j >= 0; j--) {
-    for (var i = coupons.length - 1; i >= 0; i--) {
-      if(coupons[i].trafficPlanId == trafficPlans[j].id){
-        if(trafficPlans[j].coupon === undefined){
-          trafficPlans[j].coupon = coupons[i]
-        }else if(trafficPlans[j].coupon.updatedAt < coupons[i].updatedAt){
-          trafficPlans[j].coupon = coupons[i]
-        }
-      }
-    };
-    var cost = helpers.discount(customer, trafficPlans[j])
-    if(cost != trafficPlans[j].cost){
-      trafficPlans[j].withOutDiscount = trafficPlans[j].cost
-      trafficPlans[j].cost = cost
-    }
-  };
-  return trafficPlans
-}
 
 module.exports = app;

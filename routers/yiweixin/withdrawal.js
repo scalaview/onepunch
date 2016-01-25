@@ -274,4 +274,94 @@ app.get('/withdrawals', requireLogin, function(req, res) {
 
 })
 
+app.get("/awards", requireLogin, function(req, res) {
+  var customer = req.customer
+
+  async.waterfall([function(next) {
+    if(customer.levelId){
+      models.Level.findById(customer.levelId).then(function(level) {
+        if(level.discount >= (config.blacklist || 3.00 )){
+          res.json({ err: 4, msg: "服务器维护中" })
+          return
+        }else{
+          customer.level = level
+          next(null)
+        }
+      })
+    }else{
+      next(null)
+    }
+  }, function(next) {
+    models.Coupon.getAllActive(models).then(function(coupons) {
+      next(null, coupons)
+    }).catch(function(err) {
+      next(err)
+    })
+  }, function(coupons, next) {
+    models.TrafficPlan.getTrafficPlanByGroup(models, Object.keys(models.TrafficPlan.ProviderName), customer, coupons, next)
+  }, function(data, next) {
+    models.AffiliateConfig.loadConfig(models, null, function(configs){
+      next(null, data, configs)
+    }, function(err){
+      next(err)
+    })
+  }, function(data, defaultConfigs, pass){
+    var allPlans = []
+    for (var i = 0; i < data.length; i++) {
+      allPlans = allPlans.concat(data[i].trafficplans)
+    };
+
+    async.each(allPlans, function(trafficPlan, next) {
+      models.AffiliateConfig.existeConfig(models, trafficPlan,
+        function(count){
+          var result = [],
+              level = ["A", "B", "C"]
+
+          if(count > 0){
+            models.AffiliateConfig.loadConfig(models, trafficPlan, function(configs){
+              for (var i = 0; i < config.max_depth; i++) {
+                if(configs[i]){
+                  result.push({name: level[i], value: (configs[i].percent * trafficPlan.cost).toFixed(2) })
+                }else{
+                  result.push({name: level[i], value: 0.00})
+                }
+              };
+              trafficPlan.awards = result
+              next(null, trafficPlan)
+            }, function(err) {
+              next(err)
+            })
+          }else{
+            for (var i = 0; i < config.max_depth; i++) {
+              if(defaultConfigs[i]){
+                result.push({name: level[i], value: (defaultConfigs[i].percent * trafficPlan.cost).toFixed(2) })
+              }else{
+                result.push({name: level[i], value: 0.00})
+              }
+            };
+            trafficPlan.awards = result
+            next(null, trafficPlan)
+          }
+        }, function(err) {
+          pass(err)
+        })
+    }, function(err) {
+      if(err){
+        pass(err)
+      }else{
+        pass(null, data)
+      }
+    })
+  }], function(err, data) {
+    if(err){
+      console.log(err)
+      res.redirect("/500")
+    }else{
+      res.render('yiweixin/withdrawal/award', { trafficgroups: data })
+
+    }
+  })
+
+})
+
 module.exports = app;

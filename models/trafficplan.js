@@ -75,6 +75,53 @@ module.exports = function(sequelize, DataTypes) {
       },
       syncDataSource: function(phone) {
         return new DataSource(phone)
+      },
+      getTrafficPlanByGroup: function(models, providerId, customer, coupons, pass){
+        models.TrafficGroup.findAll({
+          where: {
+            providerId: providerId,
+            display: true
+          },
+          order: [
+            ['sortNum', 'ASC'],
+            ['id', 'ASC']
+           ]
+        }).then(function(trafficgroups) {
+          async.map(trafficgroups, function(trafficgroup, next) {
+            trafficgroup.getTrafficPlans({
+              where: {
+                display: true
+              },
+              order: [
+                ['sortNum', 'ASC'],
+                ['id', 'ASC']
+              ]
+            }).then(function(trafficplans) {
+              var data = null
+              if(trafficplans.length > 0){
+                trafficplans = helpers.applyCoupon(coupons, trafficplans, customer)
+                data = {
+                  name: trafficgroup.name,
+                  trafficplans: trafficplans
+                }
+              }
+              next(null, data)
+            }).catch(function(err) {
+              next(err)
+            })
+          }, function(err, result) {
+            if(err){
+              pass(err)
+            }else{
+              var data = []
+              for (var i = 0; i < result.length; i++) {
+                if(result[i])
+                  data.push(result[i])
+              };
+              pass(null, data)
+            }
+          })
+        })
       }
     },
     instanceMethods: {

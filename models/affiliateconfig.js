@@ -26,39 +26,42 @@ module.exports = function(sequelize, DataTypes) {
       },
       loadConfig: function(models, trafficPlan, successCallBack, errCallBack) {
         async.waterfall([function(next) {
-          models.AffiliateConfig.count({
-            where: {
-              trafficPlanId: trafficPlan.id,
-              percent: {
-                $gt: 0
+          var params = {
+                          trafficPlanId: {
+                            $eq: null
+                          },
+                          level: {
+                            $lte: maxDepth
+                          },
+                          percent: {
+                            $gt: 0
+                          }
+                        }
+          if(trafficPlan){
+            models.AffiliateConfig.count({
+              where: {
+                trafficPlanId: trafficPlan.id,
+                percent: {
+                  $gt: 0
+                }
               }
-            }
-          }).then(function(c) {
-            if(c > 0){
-              var params = {
-                              trafficPlanId: trafficPlan.id,
-                              level: {
-                                $lte: maxDepth
-                              },
-                              percent: {
-                                $gt: 0
+            }).then(function(c) {
+              if(c > 0){
+                var params = {
+                                trafficPlanId: trafficPlan.id,
+                                level: {
+                                  $lte: maxDepth
+                                },
+                                percent: {
+                                  $gt: 0
+                                }
                               }
-                            }
-            }else{
-              var params = {
-                              trafficPlanId: {
-                                $eq: null
-                              },
-                              level: {
-                                $lte: maxDepth
-                              },
-                              percent: {
-                                $gt: 0
-                              }
-                            }
-            }
+              }
+              next(null, params)
+            })
+          }else{
             next(null, params)
-          })
+          }
         }, function(params, next) {
           models.AffiliateConfig.findAll({
             where: params,
@@ -76,6 +79,20 @@ module.exports = function(sequelize, DataTypes) {
           }else{
             successCallBack(configs)
           }
+        })
+      },
+      existeConfig: function(models, trafficPlan, successCallBack, errCallBack){
+         models.AffiliateConfig.count({
+          where: {
+            trafficPlanId: trafficPlan.id,
+            percent: {
+              $gt: 0
+            }
+          }
+        }).then(function(c) {
+          successCallBack(c)
+        }).catch(function(err){
+          errCallBack(err)
         })
       }
     }

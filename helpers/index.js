@@ -801,6 +801,26 @@ function assetPath() {
   return new handlebars.SafeString(assetPath);
 };
 
+function applyCoupon(coupons, trafficPlans, customer){
+  for (var j = trafficPlans.length - 1; j >= 0; j--) {
+    for (var i = coupons.length - 1; i >= 0; i--) {
+      if(coupons[i].trafficPlanId == trafficPlans[j].id){
+        if(trafficPlans[j].coupon === undefined){
+          trafficPlans[j].coupon = coupons[i]
+        }else if(trafficPlans[j].coupon.updatedAt < coupons[i].updatedAt){
+          trafficPlans[j].coupon = coupons[i]
+        }
+      }
+    };
+    var cost = discount(customer, trafficPlans[j])
+    if(cost != trafficPlans[j].cost){
+      trafficPlans[j].withOutDiscount = trafficPlans[j].cost
+      trafficPlans[j].cost = cost
+    }
+  };
+  return trafficPlans
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -846,3 +866,4 @@ exports.getAllTrafficPlans = getAllTrafficPlans;
 exports.css = css;
 exports.js = js;
 exports.assetPath = assetPath;
+exports.applyCoupon = applyCoupon;
