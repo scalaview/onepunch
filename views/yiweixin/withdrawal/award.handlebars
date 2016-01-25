@@ -1,0 +1,32 @@
+<div class="hd">
+    <h4 class="page_title">分销奖励参考</h4>
+</div>
+
+<div class="container-fluid">
+  {{#each trafficgroups}}
+    <div class="weui_cells_title">{{name}}</div>
+    <div class="weui_cells">
+      {{#each trafficplans}}
+        <div class="weui_cell">
+          <div class="weui_cell_bd weui_cell_primary">
+            <div class="row">
+              <span class="weui_btn weui_btn_plain_primary col-lg-12 col-xs-12 weui_btn_mini exchanger">
+                {{#if withOutDiscount }}
+                  {{name}} <strike>{{withOutDiscount}}元</strike> <font size="3" color="red"><b>{{cost}}元</b></font>
+                {{else}}
+                  {{name}} <b>{{cost}}元</b>
+                {{/if}}
+              </span>
+            </div>
+            <div class="row" style="margin-top: 10px">
+              <div class="col-xs-3 col-lg-12">提成:</div>
+              {{#each awards}}
+                <div class="col-xs-3 col-lg-12">{{name}} {{value}}</div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{/each}}
+</div>
