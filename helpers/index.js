@@ -821,6 +821,24 @@ function applyCoupon(coupons, trafficPlans, customer){
   return trafficPlans
 }
 
+function orderStyle(extractorder){
+  switch(extractorder.state)
+  {
+  case models.ExtractOrder.STATE.UNPAID:
+    return "panel-warning"
+  case models.ExtractOrder.STATE.FAIL:
+    return "panel-warning"
+  case models.ExtractOrder.STATE.FINISH:
+    return "panel-warning"
+  case models.ExtractOrder.STATE.REFUNDED:
+    return "panel-warning"
+  case models.ExtractOrder.STATE.REFUNDED:
+    return "panel-warning"
+  default:
+    return "panel-info"
+  }
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -867,3 +885,4 @@ exports.css = css;
 exports.js = js;
 exports.assetPath = assetPath;
 exports.applyCoupon = applyCoupon;
+exports.orderStyle = orderStyle;
