@@ -48,11 +48,11 @@
         <div class="weui_cell">
           <div class="weui_cell_bd weui_cell_primary">
               <a class="weui_btn weui_btn_primary exchanger" data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}">
-                \{{#if withOutDiscount }}
+                \{{#if-lt cost withOutDiscount }}
                   \{{name}} <strike>\{{withOutDiscount}}元</strike> <font size="3" color="red"><b>\{{cost}}元</b></font>
                 \{{else}}
                   \{{name}} <b>\{{cost}}元</b>
-                \{{/if}}
+                \{{/if-lt}}
               </a>
           </div>
         </div>

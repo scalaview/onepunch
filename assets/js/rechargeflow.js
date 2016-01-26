@@ -1,5 +1,12 @@
 ﻿var cusBalance = 0;
 var lastSubmitdate = new Date().getTime();
+
+Handlebars.registerHelper('if-lt', function(a, b) {
+  var options = arguments[arguments.length - 1];
+  if (a < b) { return options.fn(this); }
+  else { return options.inverse(this); }
+});
+
 //页面加载
 $(document).ready(function () {
   applylimit()
