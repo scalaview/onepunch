@@ -178,6 +178,7 @@ function getCarrier(phone, successCallback){
 function getTrafficplan(source, catName){
   if(!source) return
   var template = Handlebars.compile(source);
+  showLoadingToast();
   $.ajax({
     url: '/getTrafficplans',
     dataType: 'JSON',
@@ -193,6 +194,7 @@ function getTrafficplan(source, catName){
         var err_html = err_template({msg: data.msg})
         $(".no_data").html(err_html)
         $(".no_data").show()
+        hideLoadingToast();
       }
     }else{
       $(".no_data").hide()
@@ -201,9 +203,11 @@ function getTrafficplan(source, catName){
         window.plans = html
       }
       $(".llb").html(html)
+      hideLoadingToast();
     }
   }).fail(function(err){
     console.log(err)
+    hideLoadingToast();
     showDialog("服务器错误")
   })
 }
