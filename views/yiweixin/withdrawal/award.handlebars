@@ -19,11 +19,11 @@
             <div class="weui_cell_bd weui_cell_primary">
               <div class="row">
                 <span class="weui_btn weui_btn_plain_primary col-lg-12 col-xs-12 weui_btn_mini exchanger">
-                  {{#if-lt cost withOutDiscount }}
+                  {{#iflt cost withOutDiscount }}
                     {{name}} <strike>{{withOutDiscount}}元</strike> <font size="3" color="red"><b>{{cost}}元</b></font>
                   {{else}}
                     {{name}} <b>{{cost}}元</b>
-                  {{/if-lt}}
+                  {{/iflt}}
                 </span>
               </div>
               <div class="row" style="margin-top: 10px; font-size: 11px;">
