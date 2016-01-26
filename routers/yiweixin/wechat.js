@@ -49,19 +49,18 @@ app.use('/wechat', wechat(wechatConfig, function (req, res, next) {
               content: "欢迎使用"
             }
           }).spread(function(template) {
-            var content = template.content
-            next(null, content)
+            next(null, template)
           }).catch(function(err) {
             next(err)
           })
         }
       })
-    }], function(err, content) {
+    }], function(err, reply) {
       if(err){
         console.log(err)
         res.reply('欢迎使用')
       }else{
-        res.reply(content)
+        res.reply(reply.content)
       }
     })
 
