@@ -56,12 +56,12 @@ app.use('/wechat', wechat(wechatConfig, function (req, res, next) {
           })
         }
       })
-    }], function(err, reply) {
+    }], function(err, content) {
       if(err){
         console.log(err)
         res.reply('欢迎使用')
       }else{
-        res.reply(reply.content)
+        res.reply(content)
       }
     })
 
