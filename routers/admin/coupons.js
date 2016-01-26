@@ -5,33 +5,27 @@ var helpers = require("../../helpers")
 var async = require("async")
 
 admin.get("/coupons", function(req, res) {
-  async.waterfall([function(next) {
-    models.TrafficPlan.findAll().then(function(trafficPlans) {
-      next(null, trafficPlans)
+  async.waterfall([function(next){
+    models.Coupon.findAndCountAll({
+      limit: req.query.perPage || 15,
+      offset: helpers.offset(req.query.page, req.query.perPage || 15)
+    }).then(function(result) {
+      next(null, result)
     }).catch(function(err) {
       next(err)
     })
-  }, function(trafficPlans, next){
-    models.Coupon.findAndCountAll().then(function(result) {
-      var coupons = result.rows
-      for (var i = coupons.length - 1; i >= 0; i--) {
-        for (var j = trafficPlans.length - 1; j >= 0; j--) {
-          if(trafficPlans[j].id == coupons[i].trafficPlanId){
-            coupons[i].trafficPlan = trafficPlans[j]
-          }
-        };
-      };
-      next(null, trafficPlans, result)
-    }).catch(function(err) {
-      next(err)
-    })
-  }], function(err, trafficPlans, result) {
+  }], function(err, result) {
     if(err){
       console.log(err)
     }else{
       result = helpers.setPagination(result, req)
-      res.render("admin/coupons/index", {
-        coupons: result
+      helpers.getAllTrafficPlans(true, function(err, trafficPlanCollection, trafficPlanOptions) {
+        trafficPlanOptions["class"] = "select2 col-lg-4 col-xs-4 disabled"
+        res.render('admin/coupons/index', {
+          coupons: result,
+          trafficPlanCollection: trafficPlanCollection,
+          trafficPlanOptions: trafficPlanOptions
+        })
       })
     }
   })
