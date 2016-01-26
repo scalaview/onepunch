@@ -839,6 +839,13 @@ function orderStyle(extractorder){
   }
 }
 
+
+function iflt(a, b) {
+  var options = arguments[arguments.length - 1];
+  if (a < b) { return options.fn(this); }
+  else { return options.inverse(this); }
+};
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -886,3 +893,4 @@ exports.js = js;
 exports.assetPath = assetPath;
 exports.applyCoupon = applyCoupon;
 exports.orderStyle = orderStyle;
+exports.iflt = iflt;
