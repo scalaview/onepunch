@@ -46,6 +46,11 @@ app.get('/myaccount', requireLogin, function(req, res) {
   })
 })
 
+app.get('/myticket', requireLogin, function(req, res) {
+  var customer = req.customer
+  res.redirect("/myticket/" + helpers.toHex(customer.id))
+})
+
 app.get('/myticket/:id', function(req, res) {
   var id = new Buffer(req.params.id, "hex").toString("utf8")
   async.waterfall([function(next){
