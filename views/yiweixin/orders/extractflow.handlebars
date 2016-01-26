@@ -38,6 +38,7 @@
 
 {{> alertmodal }}
 {{> extractConfirm }}
+{{> loading }}
 
 <script id="trafficplans-template" type="text/x-handlebars-template">
 \{{#each trafficgroups}}
@@ -47,7 +48,7 @@
       \{{#each trafficplans}}
         <div class="weui_cell">
           <div class="weui_cell_bd weui_cell_primary">
-              <a class="weui_btn weui_btn_primary exchanger" data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}">
+              <a class="weui_btn weui_btn_primary exchanger" data-name="\{{name}}" style="font-size: 16px;" data-value="\{{id}}" data-cost="\{{cost}}">
                 \{{#if-lt cost withOutDiscount }}
                   \{{name}} <strike>\{{withOutDiscount}}元</strike> <font size="3" color="red"><b>\{{cost}}元</b></font>
                 \{{else}}
