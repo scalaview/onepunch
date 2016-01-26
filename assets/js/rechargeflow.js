@@ -93,7 +93,7 @@ function givenTo(){
 
 function mobileBlur(successCallback){
   //手机号码失去焦点事件
-  $("#mobile").bind("blur", function () {
+  $("#mobile").bind("change", function () {
       var mobile = $.trim($(this).val());
       if ($.trim(mobile) == "") {
           $(".correct").hide();
@@ -152,6 +152,7 @@ function isNumber(content) {
 }
 
 function getCarrier(phone, successCallback){
+  showLoadingToast();
   $.ajax({
     url: 'https://tcc.taobao.com/cc/json/mobile_tel_segment.htm',
     method: 'GET',
@@ -160,6 +161,7 @@ function getCarrier(phone, successCallback){
       tel: phone
     }
   }).done(function(result){
+    hideLoadingToast();
     // areaVid: "30517"carrier: "广东移动"catName: "中国移动"ispVid: "3236139"mts: "1382846"province: "广东"
     if(result.catName){
       $("#phone-detail").html(result.catName + ' ' + result.carrier).data("provider", result.carrier).show()
@@ -168,6 +170,7 @@ function getCarrier(phone, successCallback){
       showDialog("请输入正确的手机号码");
     }
   }).fail(function(err) {
+    hideLoadingToast();
     showDialog("服务器错误")
   })
 }
