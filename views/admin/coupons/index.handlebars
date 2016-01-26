@@ -34,7 +34,7 @@
               {{#each coupons.rows}}
                 <tr>
                   <td>{{ name }}</td>
-                  <td>{{ dataPlan.name }}</td>
+                  <td>{{#if trafficPlanId }} {{ selectTag ../../trafficPlanOptions ../../trafficPlanCollection trafficPlanId }} {{/if}}</td>
                   <td>{{ this.discount }}</td>
                   <td>{{ extend }}</td>
                   <td>{{ ignoreLevel }}</td>
