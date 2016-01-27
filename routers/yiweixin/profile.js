@@ -243,7 +243,11 @@ app.get('/orders', requireLogin, function(req, res) {
   var customer = req.customer
 
   async.waterfall([function(next) {
-    customer.getExtractOrders().then(function(extractOrders){
+    customer.getExtractOrders({
+      order:[
+        ['updatedAt', 'DESC']
+      ]
+    }).then(function(extractOrders){
       next(null, extractOrders)
     }).catch(function(err){
       next(err)
