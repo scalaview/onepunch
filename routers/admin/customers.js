@@ -53,7 +53,7 @@ admin.get("/customers/:id", function(req, res) {
       console.log(err)
       res.send(500)
     }else{
-      var levelOptions = { name: 'levelId', class: 'select2 col-xs-12 col-lg-12' }
+      var levelOptions = { name: 'levelId', class: 'select2 col-xs-12 col-lg-12', includeBlank: true }
       res.render("admin/customers/show", {
           customer: customer,
           levelCollection: levelCollection,
@@ -84,7 +84,7 @@ admin.post("/customer/:id", function(req, res) {
     }
 
     customer.updateAttributes({
-      levelId: req.body.levelId,
+      levelId: req.body.levelId ? req.body.levelId : null,
       allowGiven: allowGiven
     }).then(function(customer) {
       next(null, customer)
