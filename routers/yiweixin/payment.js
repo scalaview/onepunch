@@ -112,14 +112,10 @@ app.post('/pay', requireLogin, function(req, res) {
         next(err)
       })
     }, function(paymentMethod, trafficPlan, next){
-      var discount = 1.00
 
-      if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
-        discount = trafficPlan.coupon.discount
-      }else if(customer.level && customer.level.discount > 0){
-        discount = customer.level.discount
-      }
-      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < (trafficPlan.cost * discount)){
+      var total = helpers.discount(customer, trafficPlan)
+
+      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < total){
         res.json({ err: 1, msg: "分销奖励不足" })
         return
       }
@@ -134,7 +130,7 @@ app.post('/pay', requireLogin, function(req, res) {
         customerId: customer.id,
         chargeType: chargetype,
         paymentMethodId: paymentMethod.id,
-        total: trafficPlan.cost * discount
+        total: total
       }).save().then(function(extractOrder) {
         next(null, paymentMethod, trafficPlan, extractOrder)
       }).catch(function(err) {
