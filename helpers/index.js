@@ -263,7 +263,11 @@ function taskLink(task) {
 
 function discount(customer, trafficPlan){
   var discount = 1.00
-  if(trafficPlan.coupon && (trafficPlan.coupon.ignoreLevel || customer.level == undefined ) && trafficPlan.coupon.discount > 0){
+  if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
+    discount = trafficPlan.coupon.discount
+  }else if(customer.level != undefined && customer.level.discount > 0 && trafficPlan.coupon && !trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
+    discount = trafficPlan.coupon.discount * customer.level.discount
+  }else if(customer.level == undefined && trafficPlan.coupon && !trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
     discount = trafficPlan.coupon.discount
   }else if(customer.level != undefined && customer.level.discount > 0){
     discount = customer.level.discount
