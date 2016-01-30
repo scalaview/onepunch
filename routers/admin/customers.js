@@ -173,21 +173,24 @@ admin.get('/contribution', function(req, res) {
         next(null, customer)
         return
       }
-      var list = []
-      for (var i = 0; i < maxDepth; i++) {
-        list.push( originList[i] )
+      var list_c =[];
+      var list = [];
+      for (var i = 0; i < originList.length; i++) {
+        list_c.push( originList[i] )
       };
 
-      list = list.compact()
+      list_c = list_c.compact();
+      var list_length = maxDepth>originList.length?originList.length:maxDepth;
+      list = list_c.slice(0,list_length);
 
       models.Customer.findAll({
-        where: [ 'id IN (?)', list ],
+        where: [ 'id IN (?)', list_c ],
         order: [
           ["ancestryDepth", "DESC"]
         ]
       }).then(function(ancestries) {
-
-        for (var i = 0; i < ancestries.length; i++) {
+        var ancestries_length = maxDepth>ancestries.length?ancestries.length:maxDepth;
+        for (var i = 0; i < ancestries_length; i++) {
           customer['parent_'+i] = ancestries[i]
         };
 
