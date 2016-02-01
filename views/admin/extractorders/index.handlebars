@@ -60,8 +60,10 @@
                 <th>状 态</th>
                 <th>花 费</th>
                 <th>成 本</th>
+                <th>微信支付</th>
                 <th>获得流量</th>
                 <th>创建时间</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
@@ -72,9 +74,15 @@
                     <td>{{ stateName }}</td>
                     <td>{{ total }}</td>
                     <td>{{ cost }}</td>
+                    <td>{{ transactionId }}</td>
                     <td>{{ value }} M</td>
                     <td>
                       {{ strftime createdAt }}
+                    </td>
+                    <td>
+                      <a href="/admin/extractorders/{{id}}/edit" class="list-group-item">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
                     </td>
                 </tr>
               {{/each}}

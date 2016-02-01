@@ -180,11 +180,14 @@ admin.get("/extractorders/:id/edit", function(req, res){
       outnext(null, extractOrder, trafficPlanCollection)
     })
   }], function(err, extractOrder, trafficPlanCollection) {
-    var trafficPlanOptions = { name: 'trafficPlanId', id: 'trafficPlanId', class: 'select2 col-lg-12 col-xs-12' }
+    var trafficPlanOptions = { name: 'trafficPlanId', id: 'trafficPlanId', class: 'select2 col-lg-12 col-xs-12' },
+        stateOptions = { name: 'state', id: 'state', class: 'select2 col-lg-12 col-xs-12' }
     res.render("admin/extractorders/edit", {
       extractOrder: extractOrder,
       trafficPlanOptions: trafficPlanOptions,
       trafficPlanCollection: trafficPlanCollection,
+      stateCollection: models.ExtractOrder.STATEARRAY,
+      stateOptions: stateOptions,
       path: '/admin/extractOrder/'+extractOrder.id
     })
   })
@@ -217,7 +220,10 @@ admin.post("/extractorder/:id", function(req, res) {
       phone: req.body.phone,
       cost: req.body.cost,
       value: trafficPlan.value,
-      extend: req.body.extend
+      extend: req.body.extend,
+      state: req.body.state,
+      transactionId: req.body.transactionId,
+      taskid: req.body.taskid
     }).then(function(extractOrder) {
       next(null, extractOrder)
     }).catch(function(err) {

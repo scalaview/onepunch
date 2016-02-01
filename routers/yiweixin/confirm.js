@@ -460,7 +460,7 @@ app.post('/liuliangshopconfirm', function(req, res){
       order = body.order
       console.log(body)
 
-  if(notify_type !== 'recharge_result' || code !== 0 ){
+  if(notify_type !== 'recharge_result'){
     res.json({status: 0, msg: "error"})
     return
   }

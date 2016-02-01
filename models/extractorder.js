@@ -296,5 +296,7 @@ module.exports = function(sequelize, DataTypes) {
     FINISH: 6
   }
 
+  ExtractOrder.STATEARRAY = Object.keys(ExtractOrder.STATE).map(function(k) { return [ExtractOrder.STATE[k], k] });
+
   return ExtractOrder;
 };
