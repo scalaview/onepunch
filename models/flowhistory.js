@@ -30,31 +30,31 @@ module.exports = function(sequelize, DataTypes) {
         models.FlowHistory.belongsTo(models.Order, {
           foreignKey: 'typeId',
           scope: {
-            sourceable: 'Order'
+            type: 'Order'
           }
         });
         models.FlowHistory.belongsTo(models.ExtractOrder, {
           foreignKey: 'typeId',
           scope: {
-            sourceable: 'ExtractOrder'
+            type: 'ExtractOrder'
           }
         });
         models.FlowHistory.belongsTo(models.Apk, {
           foreignKey: 'typeId',
           scope: {
-            sourceable: 'Apk'
+            type: 'Apk'
           }
         });
         models.FlowHistory.belongsTo(models.Customer, {
           foreignKey: 'typeId',
           scope: {
-            sourceable: 'Customer'
+            type: 'Customer'
           }
         });
         models.FlowHistory.belongsTo(models.Withdrawal, {
           foreignKey: 'typeId',
           scope: {
-            sourceable: 'Withdrawal'
+            type: 'Withdrawal'
           }
         });
       },

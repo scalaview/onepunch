@@ -219,19 +219,19 @@ module.exports = function(sequelize, DataTypes) {
         models.ExtractOrder.belongsTo(models.TrafficPlan, {
           foreignKey: 'exchangerId',
           scope: {
-            sourceable: 'TrafficPlan'
+            exchangerType: 'TrafficPlan'
           }
         });
         models.ExtractOrder.belongsTo(models.FlowTask, {
           foreignKey: 'exchangerId',
           scope: {
-            sourceable: 'FlowTask'
+            exchangerType: 'FlowTask'
           }
         });
         models.ExtractOrder.belongsTo(models.Customer, {
           foreignKey: 'customerId',
           scope: {
-            sourceable: 'Customer'
+            exchangerType: 'Customer'
           }
         });
         models.ExtractOrder.ChongRecharger = new ChongRecharger(models, config.chong[process.env.NODE_ENV || "development"].client_id, config.chong[process.env.NODE_ENV || "development"].client_secret, recharger.storeCallback, recharger.accessCallback)
