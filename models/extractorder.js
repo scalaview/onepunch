@@ -249,7 +249,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       stateName: function(){
         if(this.state === ExtractOrder.STATE.INIT){
-          return "待处理"
+          return "等待付款"
         }else if(this.state === ExtractOrder.STATE.SUCCESS){
           return "充值任务提交成功"
         }else if(this.state === ExtractOrder.STATE.FAIL){
