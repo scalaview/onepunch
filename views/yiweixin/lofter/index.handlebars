@@ -1,0 +1,74 @@
+<div class="g-body">
+  {{#each movies.rows }}
+    <div class="g-mdl">
+      <div class="g-bd">
+        <div class="g-bdc">
+          <div class="g-bdcc">
+            <div class="g-bdc">
+              <div class="g-bdcc">
+                <div class="m-photo m-photo-full img-responsive">
+                  <div class="photo">
+                    <img src="{{cover.large}}" onerror="this.src='http://www.lofter.com/mobile/src/images/defaultphoto.png';">
+                  </div>
+                </div>
+                <div class="m-cnt">
+                  <h2 class="title">{{title}}</h2>
+                  <div class="text">
+                     <div class="ztag">
+                        <blockquote>
+                           <p>{{ subSummary summary 100}}</p>
+                        </blockquote>
+                     </div>
+                  </div>
+                </div>
+                <div class="m-oprt">
+                  <div class="tags">
+                    <span class="w-icn w-icn-bq">标签：</span>
+                    {{#each genres }}
+                      <a href="#">{{name}}</a>
+                    {{/each}}
+                  </div>
+                  <div class="oprt">
+                    <div class="oprta">
+                      <em>
+                        <a>热度({{ ratings_count }})</a>
+                      </em>
+                    </div>
+                    <div class="oprtb">
+                      <em>
+                        <a class="w-icn w-icn-zz">转载</a>
+                      </em>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-list">
+                  <div class="list f-dn">
+                    <div class="m-add f-dn" id="mj-actcmtcon-171289297">
+                      <div class="w-ipt w-ipt-area">
+                        <textarea id="mj-actcmttxt-171289297" placeholder="评论…" maxlength="200"></textarea>
+                        <span class="area"><span class="areain"></span></span>
+                      </div>
+                      <div class="addbtn">
+                        <div class="tbu"><span id="mj-actcmtsync-171289297" onclick="mb.g.track.syncCmt('171289297','m');" class="w-check"></span><label onclick="mb.g.track.syncCmt('171289297','m');">同时评论给原作者</label></div>
+                        <button id="mj-actcmtpub-171289297" type="submit" class="w-mbtn">发布</button>
+                      </div>
+                    </div>
+                    <div>
+                      <ul id="mj-actcon-171289297"></ul>
+                    </div>
+                    <div class="more f-dn"> <a id="mj-actmore-171289297" class="w-bbtn4">查看更多</a> </div>
+                  </div>
+                </div>
+                <div class="m-oprt f-dn">
+                  <div class="oprt">
+                    <div class="close"><a id="mj-acthide-171289297">收起</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>

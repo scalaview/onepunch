@@ -850,6 +850,14 @@ function iflt(a, b) {
   else { return options.inverse(this); }
 };
 
+function subSummary(text, size){
+  if(text.length <= size){
+    return text
+  }else{
+    return text.substring(0, size) + "..."
+  }
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -898,3 +906,4 @@ exports.assetPath = assetPath;
 exports.applyCoupon = applyCoupon;
 exports.orderStyle = orderStyle;
 exports.iflt = iflt;
+exports.subSummary = subSummary;

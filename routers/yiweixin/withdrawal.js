@@ -8,7 +8,6 @@ var _ = require('lodash')
 var WechatAPI = require('wechat-api');
 var requireLogin = helpers.requireLogin
 var images = require("images");
-// var api = new WechatAPI(config.appId, config.appSecret);
 
 var api = helpers.API
 

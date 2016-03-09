@@ -8,7 +8,6 @@ var OAuth = require('wechat-oauth');
 var config = require("../../config")
 var wechat = require('wechat')
 var WechatAPI = require('wechat-api');
-// var api = new WechatAPI(config.appId, config.appSecret);
 
 var api = helpers.API
 

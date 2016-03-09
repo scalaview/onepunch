@@ -9,3 +9,12 @@
 .dtb_distribution .customer em {
     margin-top: 0px;
 }
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.fixer-container {
+  float: left;
+  position: relative;
+  left: 40%;
+}
