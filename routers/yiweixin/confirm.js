@@ -441,8 +441,6 @@ function sendRefundNotice(customer, extractOrder, resean){
       console.log(result)
     }
   })
-
-
 }
 
 app.post('/liuliangshopconfirm', function(req, res){

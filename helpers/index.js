@@ -31,6 +31,10 @@ String.prototype.renderTemplate = function(options){
 
 String.prototype.format = String.prototype.renderTemplate
 
+String.prototype.capitalize = function () {
+  return this.toString()[0].toUpperCase() + this.toString().slice(1);
+}
+
 String.prototype.present = function(){
   if(this !== undefined){
     if(this instanceof Array){

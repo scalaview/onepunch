@@ -1,0 +1,165 @@
+<style type="text/css">
+.min_padding {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+</style>
+<div class="page slideIn panel">
+    <div class="bd">
+        <div class="weui_panel weui_panel_access">
+            <div class="weui_panel_bd">
+                <a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
+                  <video id="really-cool-video" class="video-js vjs-default-skin" controls
+                   preload="auto" width="640" height="264" poster="/really-cool-video-poster.jpg"
+                   data-setup='{}'>
+                    <source src="http://play.g3proxy.lecloud.com/vod/v2/MTM2LzEzLzM5L2JjbG91ZC8xMDAxNzIvdmVyXzAwXzIyLTMxNTkyNjI3Ni1hdmMtNzAwMDAwLWFhYy05ODQxOS03NjQyNTEwLTc3MzU3NDU0MC05ZGViZGJjOWVlNTQwZThjZDMyMDI5Yjc4YzNiMGNjNC0xNDI4ODM1ODU0MjU1Lm1wNA==?b=809&mmsid=29487720&tm=1457587212&key=cce04b1551966ad5d8104fc0b4cc96b3&platid=2&splatid=203&playid=0&tss=no&vtype=28&cvid=563685765941&payff=0&pip=d97469420b99643f13684c26f2d3a327&tag=mobile&sign=bcloud_100172&termid=2&pay=0&ostype=android&hwtype=un" type="video/mp4">
+                  </video>
+                </a>
+            </div>
+            <a id="showActionSheet" class="weui_panel_ft" href="javascript:void(0);">内容介绍</a>
+        </div>
+
+        <div class="weui_media_box weui_media_text min_padding ">
+          <ul class="weui_media_info">
+            <i class="weui_media_info_meta glyphicon glyphicon-tags" ></i>
+            {{#each movie.genres}}
+              <li class="weui_media_info_meta">#{{name}}</li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <div class="weui_panel weui_panel_access">
+            <div class="weui_panel_hd">视频列表</div>
+            <div class="weui_panel_bd">
+              <div class="container">
+                <div class="row weui_media_box weui_media_text">
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">1</a>
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="weui_panel weui_panel_access">
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <div class="weui_uploader">
+                <div class="weui_uploader_hd weui_cell">
+                  <div class="weui_cell_bd weui_cell_primary">演员</div>
+                </div>
+                <div class="weui_uploader_bd">
+                  <ul class="weui_uploader_files">
+                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
+                        <div class="weui_uploader_status_content">
+                            <i class="weui_icon_warn"></i>
+                        </div>
+                    </li>
+                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
+                        <div class="weui_uploader_status_content">50%</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="weui_panel weui_panel_access">
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <div class="weui_uploader">
+                <div class="weui_uploader_hd weui_cell">
+                  <div class="weui_cell_bd weui_cell_primary">导演</div>
+                </div>
+                <div class="weui_uploader_bd">
+                  <ul class="weui_uploader_files">
+                    {{#each movie.directors}}
+                      <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                    {{/each}}
+                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
+                        <div class="weui_uploader_status_content">
+                            <i class="weui_icon_warn"></i>
+                        </div>
+                    </li>
+                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
+                        <div class="weui_uploader_status_content">50%</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+<div id="actionSheet_wrap">
+        <div class="weui_mask_transition" id="mask"></div>
+        <div class="weui_actionsheet" id="weui_actionsheet">
+            <div class="weui_actionsheet_menu">
+                <div class="weui_actionsheet_cell" style="text-align: left">
+                  <div class="bd">
+                    <article class="weui_article">
+                        <section>
+                            <h2 class="title">章标题</h2>
+                            <section>
+                                <h3>影片信息</h3>
+                                <p>
+                                  导演：<br>
+                                  主演：<br>
+                                  类型：<br>
+                                  原名：<br>
+                                  上映：<br>
+                                  地区：<br>
+                                  评分：<br>
+                                </p>
+                            </section>
+                            <section>
+                                <h3>影片简介</h3>
+                                <p></p>
+                            </section>
+                        </section>
+                    </article>
+                </div>
+
+                </div>
+            <div class="weui_actionsheet_action">
+                <div class="weui_actionsheet_cell" id="actionsheet_cancel">取消</div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+$(function(){
+  $("#showActionSheet").click(function(){
+    var mask = $('#mask');
+    var weuiActionsheet = $('#weui_actionsheet');
+    weuiActionsheet.addClass('weui_actionsheet_toggle');
+    mask.show().addClass('weui_fade_toggle').one('click', function () {
+        hideActionSheet(weuiActionsheet, mask);
+    });
+    $('#actionsheet_cancel').one('click', function () {
+        hideActionSheet(weuiActionsheet, mask);
+    });
+    weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
+
+    function hideActionSheet(weuiActionsheet, mask) {
+        weuiActionsheet.removeClass('weui_actionsheet_toggle');
+        mask.removeClass('weui_fade_toggle');
+        weuiActionsheet.on('transitionend', function () {
+            mask.hide();
+        }).on('webkitTransitionEnd', function () {
+            mask.hide();
+        })
+    }
+  })
+})
+</script>
