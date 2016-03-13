@@ -862,6 +862,10 @@ function subSummary(text, size){
   }
 }
 
+function inc(value){
+  return parseInt(value) + 1;
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -911,3 +915,4 @@ exports.applyCoupon = applyCoupon;
 exports.orderStyle = orderStyle;
 exports.iflt = iflt;
 exports.subSummary = subSummary;
+exports.inc = inc;

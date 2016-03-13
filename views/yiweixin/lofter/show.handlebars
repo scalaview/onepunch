@@ -3,6 +3,10 @@
   padding-top: 1px;
   padding-bottom: 1px;
 }
+.content_section {
+  overflow-y: auto;
+  max-height: 460px;
+}
 </style>
 <div class="page slideIn panel">
     <div class="bd">
@@ -10,13 +14,13 @@
             <div class="weui_panel_bd">
                 <a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
                   <video id="really-cool-video" class="video-js vjs-default-skin" controls
-                   preload="auto" width="640" height="264" poster="/really-cool-video-poster.jpg"
+                   preload="auto" width="640" height="264" poster="{{#each movie.images}}{{#if @first}}{{medium}}{{/if}}{{/each}}"
                    data-setup='{}'>
-                    <source src="http://play.g3proxy.lecloud.com/vod/v2/MTM2LzEzLzM5L2JjbG91ZC8xMDAxNzIvdmVyXzAwXzIyLTMxNTkyNjI3Ni1hdmMtNzAwMDAwLWFhYy05ODQxOS03NjQyNTEwLTc3MzU3NDU0MC05ZGViZGJjOWVlNTQwZThjZDMyMDI5Yjc4YzNiMGNjNC0xNDI4ODM1ODU0MjU1Lm1wNA==?b=809&mmsid=29487720&tm=1457587212&key=cce04b1551966ad5d8104fc0b4cc96b3&platid=2&splatid=203&playid=0&tss=no&vtype=28&cvid=563685765941&payff=0&pip=d97469420b99643f13684c26f2d3a327&tag=mobile&sign=bcloud_100172&termid=2&pay=0&ostype=android&hwtype=un" type="video/mp4">
+                    <source src="{{bilibiliMovie.download_url}}" type="video/mp4">
                   </video>
                 </a>
             </div>
-            <a id="showActionSheet" class="weui_panel_ft" href="javascript:void(0);">内容介绍</a>
+            <a id="showActionContent" class="weui_panel_ft" href="javascript:void(0);">内容介绍</a>
         </div>
 
         <div class="weui_media_box weui_media_text min_padding ">
@@ -33,13 +37,9 @@
             <div class="weui_panel_bd">
               <div class="container">
                 <div class="row weui_media_box weui_media_text">
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">1</a>
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
-                  <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary">2</a>
+                  {{#each medias}}
+                    <a href="/lofter/{{ ../bilibiliMovie.id }}?media_id={{id}}" class="weui_btn weui_btn_mini weui_btn_primary">{{ inc @index }}</a>
+                  {{/each}}
                 </div>
               </div>
             </div>
@@ -53,17 +53,9 @@
                 </div>
                 <div class="weui_uploader_bd">
                   <ul class="weui_uploader_files">
-                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
-                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
-                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
-                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
-                        <div class="weui_uploader_status_content">
-                            <i class="weui_icon_warn"></i>
-                        </div>
-                    </li>
-                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
-                        <div class="weui_uploader_status_content">50%</div>
-                    </li>
+                    {{#each movie.casts}}
+                      <li class="weui_uploader_file" style="background-image:url({{ image.medium }})"></li>
+                    {{/each}}
                   </ul>
                 </div>
               </div>
@@ -81,18 +73,8 @@
                 <div class="weui_uploader_bd">
                   <ul class="weui_uploader_files">
                     {{#each movie.directors}}
-                      <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
+                      <li class="weui_uploader_file" style="background-image:url({{ image.medium }})"></li>
                     {{/each}}
-                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
-                    <li class="weui_uploader_file" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)"></li>
-                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
-                        <div class="weui_uploader_status_content">
-                            <i class="weui_icon_warn"></i>
-                        </div>
-                    </li>
-                    <li class="weui_uploader_file weui_uploader_status" style="background-image:url(http://shp.qpic.cn/weixinsrc_pic/pScBR7sbqjOBJomcuvVJ6iacVrbMJaoJZkFUIq4nzQZUIqzTKziam7ibg/)">
-                        <div class="weui_uploader_status_content">50%</div>
-                    </li>
                   </ul>
                 </div>
               </div>
@@ -102,44 +84,47 @@
     </div>
 </div>
 <div id="actionSheet_wrap">
-        <div class="weui_mask_transition" id="mask"></div>
-        <div class="weui_actionsheet" id="weui_actionsheet">
-            <div class="weui_actionsheet_menu">
-                <div class="weui_actionsheet_cell" style="text-align: left">
-                  <div class="bd">
-                    <article class="weui_article">
-                        <section>
-                            <h2 class="title">章标题</h2>
-                            <section>
-                                <h3>影片信息</h3>
-                                <p>
-                                  导演：<br>
-                                  主演：<br>
-                                  类型：<br>
-                                  原名：<br>
-                                  上映：<br>
-                                  地区：<br>
-                                  评分：<br>
-                                </p>
-                            </section>
-                            <section>
-                                <h3>影片简介</h3>
-                                <p></p>
-                            </section>
-                        </section>
-                    </article>
-                </div>
-
-                </div>
-            <div class="weui_actionsheet_action">
-                <div class="weui_actionsheet_cell" id="actionsheet_cancel">取消</div>
+  <div class="weui_mask_transition" id="mask"></div>
+  <div class="weui_actionsheet" id="weui_actionsheet">
+    <div class="weui_actionsheet_menu">
+      <div class="weui_actionsheet_cell" style="text-align: left">
+        <div class="bd">
+          <article class="weui_article" style="padding-bottom: 5px;">
+            <div class="row">
+              <div class="col-xs-8">
+                <div class="title"><font size="4">{{movie.title}}</font></div>
+              </div>
+              <div class="col-xs-4">
+                <a class="pull-right" id="actionsheet_cancel">关闭</a>
+              </div>
             </div>
-        </div>
+            <section class="content_section" style="margin-bottom: 0px;">
+              <section>
+                  <h2>影片信息</h2>
+                  <p>
+                    导演：{{#each movie.directors}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                    主演：{{#each movie.casts}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                    类型：{{#each movie.genres}}#{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                    原名：{{movie.original_title}}<br>
+                    上映：{{movie.year}}<br>
+                    地区：{{#each movie.countries}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                    评分：{{movie.rate}}<br>
+                  </p>
+              </section>
+              <section>
+                <h2>影片简介</h2>
+                <p>{{movie.summary}}</p>
+              </section>
+            </section>
+          </article>
+      </div>
     </div>
+  </div>
+</div>
 
 <script type="text/javascript">
 $(function(){
-  $("#showActionSheet").click(function(){
+  $("#showActionContent").click(function(){
     var mask = $('#mask');
     var weuiActionsheet = $('#weui_actionsheet');
     weuiActionsheet.addClass('weui_actionsheet_toggle');

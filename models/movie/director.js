@@ -9,7 +9,13 @@ module.exports = function(sequelize, DataTypes) {
         models.Director.belongsToMany(models.Movie, {
           through: 'douban_movies_directors',
           foreignKey: { name: "director_id", fieldName: "director_id" }
-        })
+        });
+        models.Director.hasMany(models.Image, {
+          foreignKey: "item_id",
+          scope: {
+            item_type: 'Celebrity'
+          }
+        });
       }
     }
   });

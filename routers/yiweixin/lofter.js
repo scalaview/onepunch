@@ -24,11 +24,11 @@ app.get('/lofter', function(req, res) {
     }).catch(function(err){
       next(err)
     })
-  }, movieWithGenres(movies, pass)
-  , movieWithImages(movies, pass)], function(err, movies){
+  }, movieWithGenres
+  , movieWithImages], function(err, movies){
     if(err){
       console.log(err)
-      res.redicrect('/500')
+      res.redirect('/500')
     }else{
       res.render('yiweixin/lofter/index', { movies: movies, layout: 'lofter' })
     }
@@ -39,13 +39,42 @@ app.get('/lofter', function(req, res) {
 
 app.get('/lofter/:id', function(req, res) {
   async.waterfall([function(next){
-    models.Movie.findById(req.params.id).then(function(movie) {
-      next(null, movie)
+    models.BilibiliMovie.findById(req.params.id).then(function(bilibiliMovie) {
+      next(null, bilibiliMovie)
     }).catch(function(err){
       next(err)
     })
-  }, function(movie, pass){
-    async.each(["countries", "genres", "directors", "casts", "bilibiliMovies", "images"], function(func, next) {
+  }, function(bilibiliMovie, next){
+    models.BilibiliMedia.findAll({
+      where: {
+        avid: bilibiliMovie.avid,
+        display: true
+      }
+    }).then(function(medias){
+      bilibiliMovie.medias = medias || []
+      if(medias.length > 0){
+        medias[0].getDownloadUrl().then(function(download_url){
+          bilibiliMovie.download_url = download_url
+          next(null, bilibiliMovie)
+        }).catch(function(err){
+          next(null, bilibiliMovie)
+        })
+      }
+    }).catch(function(err){
+      next(err)
+    })
+  } ,function(bilibiliMovie, next){
+    bilibiliMovie.getMovie({
+      where: {
+        display: true
+      }
+    }).then(function(movie) {
+      next(null, bilibiliMovie, movie)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(bilibiliMovie, movie, pass){
+    async.each(["countries", "genres", "directors", "casts", "images"], function(func, next) {
       movie["get" + func.capitalize()]().then(function(result){
         movie[func] = result || []
         next(null, movie)
@@ -54,35 +83,41 @@ app.get('/lofter/:id', function(req, res) {
       if(err){
         pass(err)
       }else{
-        pass(null, movie)
+        pass(null, bilibiliMovie, movie)
       }
     })
-  }, function(movie, next){
-    celebrityWithImages(movie.casts, next)
-  }, function(){
-
-  }], function(err, movie){
+  }, function(bilibiliMovie, movie, next){
+    celebrityWithImages(movie.casts, next, bilibiliMovie, movie)
+  }, function(casts, bilibiliMovie, movie, next){
+    celebrityWithImages(movie.directors, next, bilibiliMovie, movie)
+  }], function(err, directors, bilibiliMovie, movie){
     if(err){
       console.log(err)
-      res.redicrect('/500')
+      res.redirect('/500')
     }else{
-      res.render('yiweixin/lofter/show', { movie: movie })
+      res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: bilibiliMovie, medias: bilibiliMovie.medias })
     }
   })
 })
 
 
 function celebrityWithImages(celebrities, pass){
+  var bilibiliMovie = arguments[2],
+      movie = arguments[3]
   async.each(celebrities, function(celebrity, next) {
     celebrity.getImages().then(function(images){
       celebrity.images = images || []
+      celebrity.image = celebrity.images[0]
+      if(images.length > 0){
+        celebrity.image = celebrity.images[0]
+      }
       next(null, celebrity)
     })
   }, function(err){
     if(err){
       pass(err)
     }else{
-      pass(null, celebrities)
+      pass(null, celebrities, bilibiliMovie, movie)
     }
   })
 }
