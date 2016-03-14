@@ -102,6 +102,10 @@ module.exports = function(sequelize, DataTypes) {
             }
           })
         }
+      },
+      getJJDownloadUrl: function(){
+        var media = this
+        return "http://www.bilibilijj.com/Files/DownLoad/"+ media.cid +".mp4/www.bilibilijj.com.mp4?mp3=true";
       }
     }
   });

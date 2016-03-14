@@ -13,6 +13,7 @@ $(document).ready(function () {
   extractConfirm()
   givenTo()
   withdrawal()
+  player()
   $(".correct").html("");
   $(".correct").hide();
   var m = $("#mobile").val();
@@ -435,5 +436,30 @@ function changePayment(){
 function applylimit(){
   $(".applylimit").click(function(){
     showDialog("分销奖励未超过100元，无法提现")
+  })
+}
+
+function player(){
+  $("#showActionContent").click(function(){
+    var mask = $('#mask');
+    var weuiActionsheet = $('#weui_actionsheet');
+    weuiActionsheet.addClass('weui_actionsheet_toggle');
+    mask.show().addClass('weui_fade_toggle').one('click', function () {
+        hideActionSheet(weuiActionsheet, mask);
+    });
+    $('#actionsheet_cancel').one('click', function () {
+        hideActionSheet(weuiActionsheet, mask);
+    });
+    weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
+
+    function hideActionSheet(weuiActionsheet, mask) {
+        weuiActionsheet.removeClass('weui_actionsheet_toggle');
+        mask.removeClass('weui_fade_toggle');
+        weuiActionsheet.on('transitionend', function () {
+            mask.hide();
+        }).on('webkitTransitionEnd', function () {
+            mask.hide();
+        })
+    }
   })
 }

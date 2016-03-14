@@ -17,15 +17,14 @@ app.get('/lofter', function(req, res) {
       limit: req.query.perPage || 15,
       offset: helpers.offset(req.query.page || 1, req.query.perPage || 15),
       order: [
-        ['createdAt', 'DESC']
+        ['createdAt']
       ]
     }).then(function(movies) {
       next(null, movies)
     }).catch(function(err){
       next(err)
     })
-  }, movieWithGenres
-  , movieWithImages], function(err, movies){
+  }, movieWithGenres, movieWithImages, movieWithMedias], function(err, movies){
     if(err){
       console.log(err)
       res.redirect('/500')
@@ -33,7 +32,6 @@ app.get('/lofter', function(req, res) {
       res.render('yiweixin/lofter/index', { movies: movies, layout: 'lofter' })
     }
   })
-
 })
 
 
@@ -53,12 +51,28 @@ app.get('/lofter/:id', function(req, res) {
     }).then(function(medias){
       bilibiliMovie.medias = medias || []
       if(medias.length > 0){
-        medias[0].getDownloadUrl().then(function(download_url){
-          bilibiliMovie.download_url = download_url
+        var target = medias[0]
+        if(req.query.media_id){
+          for (var i = 0; i < medias.length; i++) {
+            if(medias[i].id == req.query.media_id){
+              target = medias[i]
+              break;
+            }
+          };
+        }
+        if(config.usebilibili){
+          target.getDownloadUrl().then(function(download_url){
+            next(null, bilibiliMovie)
+          }).catch(function(err){
+            next(null, bilibiliMovie)
+          })
+        }else{
+          bilibiliMovie.download_url = target.getJJDownloadUrl()
+          console.log(bilibiliMovie.download_url)
           next(null, bilibiliMovie)
-        }).catch(function(err){
-          next(null, bilibiliMovie)
-        })
+        }
+      }else{
+        next(null, bilibiliMovie)
       }
     }).catch(function(err){
       next(err)
@@ -96,6 +110,40 @@ app.get('/lofter/:id', function(req, res) {
       res.redirect('/500')
     }else{
       res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: bilibiliMovie, medias: bilibiliMovie.medias })
+    }
+  })
+})
+
+app.get('/movie/:id', function(req, res) {
+  async.waterfall([function(next){
+    models.Movie.findById(req.params.id).then(function(movie){
+      next(null, movie)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(movie, pass){
+    async.each(["countries", "genres", "directors", "casts", "images"], function(func, next) {
+      movie["get" + func.capitalize()]().then(function(result){
+        movie[func] = result || []
+        next(null, movie)
+      })
+    }, function(err){
+      if(err){
+        pass(err)
+      }else{
+        pass(null, movie)
+      }
+    })
+  }, function(movie, next){
+    celebrityWithImages(movie.casts, next, null, movie)
+  }, function(casts, bilibiliMovie, movie, next){
+    celebrityWithImages(movie.directors, next, null, movie)
+  }], function(err, directors, bilibiliMovie, movie){
+    if(err){
+      console.log(err)
+      res.redirect('/500')
+    }else{
+      res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: {}, medias: [] })
     }
   })
 })
@@ -145,6 +193,31 @@ function movieWithImages(movies, pass){
       movie.images = images || []
       if(images.length > 0){
         movie.cover = images[0]
+      }
+      next(null, movie)
+    })
+  }, function(err){
+    if(err){
+      pass(err)
+    }else{
+      pass(null, movies)
+    }
+  })
+}
+
+
+
+function movieWithMedias(movies, pass){
+  async.each(movies.rows, function(movie, next){
+    models.BilibiliMovie.findAll({
+      where: {
+        douban_id: movie.douban_id,
+        display: true
+      }
+    }).then(function(bmovies) {
+      movie.bilibiliMovies = bmovies || []
+      if(bmovies.length > 0){
+        movie.bilibiliMovie = bmovies[0]
       }
       next(null, movie)
     })

@@ -64,7 +64,7 @@ module.exports = function(sequelize, DataTypes) {
           through: 'douban_movies_casts',
           foreignKey: { name: "movie_id", fieldName: "movie_id" }
         });
-        models.Movie.hasMany(models.BilibiliMovie, { foreignKey: "douban_id" });
+        models.Movie.hasMany(models.BilibiliMovie, { as: "bmovies", foreignKey: "douban_id", targetKey: 'douban_id' });
         models.Movie.hasMany(models.Image, {
           foreignKey: "item_id",
           scope: {
