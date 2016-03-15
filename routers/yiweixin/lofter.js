@@ -9,6 +9,11 @@ var config = require("../../config")
 
 app.get('/lofter', function(req, res) {
 
+  if(!req.query.page){
+    res.render('yiweixin/lofter/index', { layout: 'lofter', next_url: "/lofter?page=1" });
+    return
+  }
+
   async.waterfall([function(next) {
     var params = {
     }
@@ -27,9 +32,21 @@ app.get('/lofter', function(req, res) {
   }, movieWithGenres, movieWithImages, movieWithMedias], function(err, movies){
     if(err){
       console.log(err)
-      res.redirect('/500')
+      if (req.accepts('json')) {
+        res.json({ error: 500 })
+      }else{
+        res.redirect('/500')
+      }
     }else{
-      res.render('yiweixin/lofter/index', { movies: movies, layout: 'lofter' })
+      res.format({
+        json: function(){
+          res.json({ movies: movies.rows, next_url: helpers.nextUrl(movies.count, req.query.page || 1, req.query.perPage || 15, req.query) })
+        },
+
+        'default': function() {
+          res.status(406).send('Not Acceptable');
+        }
+      });
     }
   })
 })

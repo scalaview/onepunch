@@ -7,6 +7,14 @@ Handlebars.registerHelper('if-lt', function(a, b) {
   else { return options.inverse(this); }
 });
 
+Handlebars.registerHelper('subSummary', function(text, size) {
+  if(text.length <= size){
+    return text
+  }else{
+    return text.substring(0, size) + "..."
+  }
+});
+
 //页面加载
 $(document).ready(function () {
   applylimit()

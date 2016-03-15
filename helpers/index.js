@@ -866,6 +866,17 @@ function inc(value){
   return parseInt(value) + 1;
 }
 
+
+function nextUrl(total, currentPage, perPage, query){
+  var totalpages = (total % perPage) == 0 ? (total / perPage) : parseInt(total / perPage) + 1
+  if(total <= perPage || totalpages <= currentPage){
+    return null
+  }
+  query["page"] = parseInt(currentPage) + 1
+  return addParams('/lofter', query)
+}
+
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -916,3 +927,4 @@ exports.orderStyle = orderStyle;
 exports.iflt = iflt;
 exports.subSummary = subSummary;
 exports.inc = inc;
+exports.nextUrl = nextUrl;

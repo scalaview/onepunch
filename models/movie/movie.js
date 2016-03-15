@@ -43,6 +43,15 @@ module.exports = function(sequelize, DataTypes) {
       display: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+      },
+      bilibiliMovie: {
+        type: DataTypes.VIRTUAL
+      },
+      cover: {
+        type: DataTypes.VIRTUAL
+      },
+      genres: {
+        type: DataTypes.VIRTUAL
       }
   }, {
     tableName: 'douban_movies',

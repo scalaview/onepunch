@@ -169,17 +169,23 @@ app.get('/500', function(req, res, next){
 app.use(function(req, res, next){
   res.status(404);
 
-  if (req.accepts('html')) {
-    res.render('404', { layout: false, url: req.url });
-    return;
-  }
+  res.format({
+    html: function(){
+      res.render('404', { layout: false, url: req.url });
+      return
+    },
 
-  if (req.accepts('json')) {
-    res.send({ error: 'Not found' });
-    return;
-  }
+    json: function(){
+      res.send({ error: 'Not found' });
+      return
+    },
 
-  res.type('txt').send('Not found');
+    'default': function() {
+      res.status(406).send('Not Acceptable');
+      return
+    }
+  });
+
 });
 
 app.use(function(err, req, res, next){
