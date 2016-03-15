@@ -876,6 +876,12 @@ function nextUrl(total, currentPage, perPage, query){
   return addParams('/lofter', query)
 }
 
+function if_eq(a, b, opts) {
+  if(a == b) // Or === depending on your needs
+    return opts.fn(this);
+  else
+    return opts.inverse(this);
+}
 
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
@@ -928,3 +934,4 @@ exports.iflt = iflt;
 exports.subSummary = subSummary;
 exports.inc = inc;
 exports.nextUrl = nextUrl;
+exports.if_eq = if_eq;

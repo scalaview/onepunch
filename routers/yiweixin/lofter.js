@@ -42,7 +42,6 @@ app.get('/lofter', function(req, res) {
         json: function(){
           res.json({ movies: movies.rows, next_url: helpers.nextUrl(movies.count, req.query.page || 1, req.query.perPage || 15, req.query) })
         },
-
         'default': function() {
           res.status(406).send('Not Acceptable');
         }
@@ -67,12 +66,14 @@ app.get('/lofter/:id', function(req, res) {
       }
     }).then(function(medias){
       bilibiliMovie.medias = medias || []
+      bilibiliMovie.select_index = 0
       if(medias.length > 0){
         var target = medias[0]
         if(req.query.media_id){
           for (var i = 0; i < medias.length; i++) {
             if(medias[i].id == req.query.media_id){
               target = medias[i]
+              bilibiliMovie.select_index = i
               break;
             }
           };

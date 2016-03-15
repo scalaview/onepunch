@@ -24,14 +24,13 @@
             {{/each}}
           </ul>
         </div>
-
         <div class="weui_panel weui_panel_access">
             <div class="weui_panel_hd">视频列表</div>
             <div class="weui_panel_bd">
               <div class="container">
                 <div class="row weui_media_box weui_media_text">
                   {{#each medias}}
-                    <a href="/lofter/{{ ../bilibiliMovie.id }}?media_id={{id}}" class="weui_btn weui_btn_mini weui_btn_primary">{{ inc @index }}</a>
+                    <a href="/lofter/{{ ../bilibiliMovie.id }}?media_id={{id}}" class="weui_btn weui_btn_mini {{#if_eq ../bilibiliMovie.select_index @index }}weui_btn_plain_primary{{else}}weui_btn_primary{{/if_eq}}">{{ inc @index }}</a>
                   {{/each}}
                 </div>
               </div>
@@ -82,7 +81,7 @@
     <div class="weui_actionsheet_menu">
       <div class="weui_actionsheet_cell" style="text-align: left">
         <div class="bd">
-          <article class="weui_article" style="padding-bottom: 5px;">
+          <article class="weui_article" style="padding-bottom: 20px;">
             <div class="row">
               <div class="col-xs-8">
                 <div class="title"><font size="4">{{movie.title}}</font></div>

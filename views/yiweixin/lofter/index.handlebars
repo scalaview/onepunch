@@ -1,25 +1,10 @@
-<style type="text/css">
-.glyphicon-refresh-animate {
-    -animation: spin .7s infinite linear;
-    -webkit-animation: spin2 .7s infinite linear;
-}
-
-@-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
-}
-
-@keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
-}
-</style>
-
 <div class="g-body">
+  <div id="lazy-loading" class="row" style="margin-top: 10px">
+    <button class="btn btn-lg col-xs-12">
+      <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="font-size: 60px;"></span>
+    </button>
+  </div>
 </div>
-<button id="lazy-loading" class="btn btn-lg col-xs-12" style="display:none; margin-bottom: 80px">
-  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-</button>
 <a id="nextUrl" class="hide" href="{{next_url}}"></a>
 <script id="movies-template" type="text/x-handlebars-template">
 \{{#each movies }}
@@ -73,51 +58,4 @@
     </div>
   </div>
 \{{/each}}
-</script>
-
-<script type="text/javascript">
-function ajaxLoadData(url){
-  $.ajax({
-    url: url,
-    dataType: 'JSON',
-    method: "GET"
-  }).done(function(data){
-    $(".g-body").append(window.movies_template(data))
-    $("#nextUrl").attr("href", data.next_url)
-    $("#lazy-loading").hide()
-    $(window).bind('scroll', bindScroll);
-  }).fail(function(err){
-    console.log(err)
-    $("#lazy-loading").hide()
-  })
-}
-
-function loadMore()
-{
-  if(!window.movies_template){
-    var source = $("#movies-template").html()
-    window.movies_template = Handlebars.compile(source);
-  }
-  console.log("More loaded");
-
-  var url = $("#nextUrl").attr("href")
-  if(url){
-    $("#lazy-loading").show()
-    ajaxLoadData(url)
-  }
-}
-
-function bindScroll(){
-  if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-    $(window).unbind('scroll');
-    loadMore();
-  }
-}
-
-
-$(function(){
-  loadMore()
-  $(window).scroll(bindScroll);
-})
-
 </script>

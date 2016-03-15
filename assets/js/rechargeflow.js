@@ -37,6 +37,10 @@ $(document).ready(function () {
     getTrafficplan(source, "all")
     submitIsEnable(true);
   }
+  if($("#movies-template").html() !== undefined && $("#movies-template").html() !== ''){
+    loadMore()
+    $(window).scroll(bindScroll);
+  }
   mobileBlur(function(result) {
     var source   = $("#trafficplans-template").html();
     if(source !== undefined && source !== ''){
@@ -470,4 +474,45 @@ function player(){
         })
     }
   })
+}
+
+function ajaxLoadData(url){
+  $.ajax({
+    url: url,
+    dataType: 'JSON',
+    method: "GET"
+  }).done(function(data){
+    var loading = $("#lazy-loading")
+    $("#lazy-loading").remove()
+    $(".g-body").append(window.movies_template(data))
+    $(".g-body").append(loading)
+    $("#nextUrl").attr("href", data.next_url)
+    $("#lazy-loading").hide()
+    $(window).bind('scroll', bindScroll);
+  }).fail(function(err){
+    console.log(err)
+    $("#lazy-loading").hide()
+  })
+}
+
+function loadMore()
+{
+  if(!window.movies_template){
+    var source = $("#movies-template").html()
+    window.movies_template = Handlebars.compile(source);
+  }
+  console.log("More loaded");
+
+  var url = $("#nextUrl").attr("href")
+  if(url){
+    $("#lazy-loading").show()
+    ajaxLoadData(url)
+  }
+}
+
+function bindScroll(){
+  if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+    $(window).unbind('scroll');
+    loadMore();
+  }
 }
