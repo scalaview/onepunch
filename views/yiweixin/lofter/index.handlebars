@@ -1,3 +1,4 @@
+<div class="g-detail"></div>
 <div class="g-body">
   <div id="lazy-loading" class="row" style="margin-top: 10px">
     <button class="btn btn-lg col-xs-12">
@@ -8,12 +9,12 @@
 <a id="nextUrl" class="hide" href="{{next_url}}"></a>
 <script id="movies-template" type="text/x-handlebars-template">
 \{{#each movies }}
-  <div class="g-mdl">
+  <div id="douban-\{{douban_id}}" class="g-mdl" >
     <div class="g-bd">
       <div class="g-bdc">
         <div class="g-bdcc">
           <div class="g-bdc">
-            <a href="\{{#if bilibiliMovie.id}}/lofter/\{{bilibiliMovie.id}}\{{else}}/movie/\{{id}}\{{/if}}">
+            <a class="movie-link" href="\{{#if bilibiliMovie.id}}/lofter/\{{bilibiliMovie.id}}\{{else}}/movie/\{{id}}\{{/if}}">
               <div class="g-bdcc">
                 <div class="m-photo m-photo-full img-responsive">
                   <div class="photo">
@@ -21,6 +22,9 @@
                   </div>
                 </div>
                 <div class="m-cnt">
+                  <div class="author">
+                    豆瓣评分: <font color="green">\{{rate}}</font>
+                  </div>
                   <h2 class="title">\{{title}}</h2>
                   <div class="text">
                      <div class="ztag">
@@ -34,7 +38,7 @@
                   <div class="tags">
                     <span class="w-icn w-icn-bq">标签：</span>
                     \{{#each genres }}
-                      <a href="#">{{name}}</a>
+                      <a href="#">\{{name}}</a>
                     \{{/each}}
                   </div>
                   <div class="oprt">

@@ -21,7 +21,6 @@ $(document).ready(function () {
   extractConfirm()
   givenTo()
   withdrawal()
-  player()
   $(".correct").html("");
   $(".correct").hide();
   var m = $("#mobile").val();
@@ -38,6 +37,7 @@ $(document).ready(function () {
     submitIsEnable(true);
   }
   if($("#movies-template").html() !== undefined && $("#movies-template").html() !== ''){
+    popstateBack()
     loadMore()
     $(window).scroll(bindScroll);
   }
@@ -451,31 +451,6 @@ function applylimit(){
   })
 }
 
-function player(){
-  $("#showActionContent").click(function(){
-    var mask = $('#mask');
-    var weuiActionsheet = $('#weui_actionsheet');
-    weuiActionsheet.addClass('weui_actionsheet_toggle');
-    mask.show().addClass('weui_fade_toggle').one('click', function () {
-        hideActionSheet(weuiActionsheet, mask);
-    });
-    $('#actionsheet_cancel').one('click', function () {
-        hideActionSheet(weuiActionsheet, mask);
-    });
-    weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
-
-    function hideActionSheet(weuiActionsheet, mask) {
-        weuiActionsheet.removeClass('weui_actionsheet_toggle');
-        mask.removeClass('weui_fade_toggle');
-        weuiActionsheet.on('transitionend', function () {
-            mask.hide();
-        }).on('webkitTransitionEnd', function () {
-            mask.hide();
-        })
-    }
-  })
-}
-
 function ajaxLoadData(url){
   $.ajax({
     url: url,
@@ -495,14 +470,43 @@ function ajaxLoadData(url){
   })
 }
 
+
+function popstateBack(){
+  window.addEventListener('popstate', function(e){
+    var character = e.state;
+    if(character == null){
+      $(".g-body").show()
+      $('.g-detail').empty()
+    } else if (character.detail){
+      $(".g-body").show()
+      $('.g-detail').html(character.data)
+    }
+    $(window).bind('scroll', bindScroll);
+  })
+
+  $(document).on("click", "a.movie-link", function(e){
+    e.preventDefault();
+    var url = $(this).attr("href");
+    if(url != (location.pathname + location.search) ){
+      $('.g-detail').load(url + ' .page', function(){
+        videojs("#really-cool-video").load();
+        $(".g-body").hide()
+        history.pushState({ data: $('.g-detail').html(), detail: true }, null, url);
+        $(window).unbind('scroll');
+        $("body").scrollTop(0)
+      });
+    }
+    e.stopPropagation();
+  })
+
+}
+
 function loadMore()
 {
   if(!window.movies_template){
     var source = $("#movies-template").html()
     window.movies_template = Handlebars.compile(source);
   }
-  console.log("More loaded");
-
   var url = $("#nextUrl").attr("href")
   if(url){
     $("#lazy-loading").show()
