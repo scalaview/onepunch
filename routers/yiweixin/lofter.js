@@ -19,8 +19,8 @@ app.get('/lofter', requireLogin, function(req, res) {
     }
     models.Movie.findAndCountAll({
       where: params,
-      limit: req.query.perPage || 15,
-      offset: helpers.offset(req.query.page || 1, req.query.perPage || 15),
+      limit: req.query.perPage || 5,
+      offset: helpers.offset(req.query.page || 1, req.query.perPage || 5),
       order: [
         ['createdAt']
       ]
@@ -40,7 +40,7 @@ app.get('/lofter', requireLogin, function(req, res) {
     }else{
       res.format({
         json: function(){
-          res.json({ movies: movies.rows, next_url: helpers.nextUrl(movies.count, req.query.page || 1, req.query.perPage || 15, req.query) })
+          res.json({ movies: movies.rows, next_url: helpers.nextUrl(movies.count, req.query.page || 1, req.query.perPage || 5, req.query) })
         },
         'default': function() {
           res.status(406).send('Not Acceptable');

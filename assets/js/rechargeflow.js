@@ -456,6 +456,8 @@ function ajaxLoadData(url){
     dataType: 'JSON',
     method: "GET"
   }).done(function(data){
+    data.index = true
+    history.pushState(data, null, url);
     var loading = $("#lazy-loading")
     $("#lazy-loading").remove()
     $(".g-body").append(window.movies_template(data))
@@ -469,14 +471,32 @@ function ajaxLoadData(url){
   })
 }
 
+
+function popstateBack(){
+  window.addEventListener('popstate', function(e){
+    var character = e.state;
+
+    if (character.index) {
+      var movies = character.movies
+      $(window).unbind('scroll');
+      var prepare_delete = $("#douban-" + movies[movies.length - 1].douban_id).nextAll(".g-mdl")
+      $("body").scrollTop($(".g-body")[0].scrollHeight - prepare_delete.height() * movies.length - 1500 );
+      $("#douban-" + movies[movies.length - 1].douban_id).nextAll(".g-mdl").remove()
+      $("#nextUrl").attr("href", character.next_url)
+      $(window).bind('scroll', bindScroll);
+    } else {
+      console.log("error")
+    }
+  })
+}
+
 function loadMore()
 {
   if(!window.movies_template){
     var source = $("#movies-template").html()
     window.movies_template = Handlebars.compile(source);
   }
-  console.log("More loaded");
-
+  popstateBack()
   var url = $("#nextUrl").attr("href")
   if(url){
     $("#lazy-loading").show()
