@@ -37,6 +37,7 @@ $(document).ready(function () {
     submitIsEnable(true);
   }
   if($("#movies-template").html() !== undefined && $("#movies-template").html() !== ''){
+    popstateBack()
     loadMore()
     $(window).scroll(bindScroll);
   }
@@ -469,14 +470,43 @@ function ajaxLoadData(url){
   })
 }
 
+
+function popstateBack(){
+  window.addEventListener('popstate', function(e){
+    var character = e.state;
+    if(character == null){
+      $(".g-body").show()
+      $('.g-detail').empty()
+    } else if (character.detail){
+      $(".g-body").show()
+      $('.g-detail').html(character.data)
+    }
+    $(window).bind('scroll', bindScroll);
+  })
+
+  $(document).on("click", "a.movie-link", function(e){
+    e.preventDefault();
+    var url = $(this).attr("href");
+    if(url != (location.pathname + location.search) ){
+      $('.g-detail').load(url + ' .page', function(){
+        videojs("#really-cool-video").load();
+        $(".g-body").hide()
+        history.pushState({ data: $('.g-detail').html(), detail: true }, null, url);
+        $(window).unbind('scroll');
+        $("body").scrollTop(0)
+      });
+    }
+    e.stopPropagation();
+  })
+
+}
+
 function loadMore()
 {
   if(!window.movies_template){
     var source = $("#movies-template").html()
     window.movies_template = Handlebars.compile(source);
   }
-  console.log("More loaded");
-
   var url = $("#nextUrl").attr("href")
   if(url){
     $("#lazy-loading").show()
