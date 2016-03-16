@@ -10,7 +10,7 @@ var config = require("../../config")
 app.get('/lofter', requireLogin, function(req, res) {
 
   if(!req.query.page){
-    res.render('yiweixin/lofter/index', { layout: 'lofter', next_url: "/lofter?page=1" });
+    res.render('yiweixin/lofter/index', { next_url: "/lofter?page=1" });
     return
   }
 
@@ -127,7 +127,7 @@ app.get('/lofter/:id', requireLogin, function(req, res) {
       console.log(err)
       res.redirect('/500')
     }else{
-      res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: bilibiliMovie, medias: bilibiliMovie.medias })
+      res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: bilibiliMovie, medias: bilibiliMovie.medias, title: movie.title })
     }
   })
 })
@@ -161,7 +161,7 @@ app.get('/movie/:id', function(req, res) {
       console.log(err)
       res.redirect('/500')
     }else{
-      res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: {}, medias: [] })
+      res.render('yiweixin/lofter/show', { movie: movie, bilibiliMovie: {}, medias: [], title: movie.title })
     }
   })
 })

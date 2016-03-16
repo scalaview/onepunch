@@ -13,7 +13,7 @@
                   </video>
                 </a>
             </div>
-            <a id="showActionContent" class="weui_panel_ft" href="javascript:void(0);">内容介绍</a>
+            <a class="weui_panel_ft" href="javascript:void(0);">内容介绍</a>
         </div>
 
         <div class="weui_media_box weui_media_text min_padding ">
@@ -24,6 +24,7 @@
             {{/each}}
           </ul>
         </div>
+
         <div class="weui_panel weui_panel_access">
             <div class="weui_panel_hd">视频列表</div>
             <div class="weui_panel_bd">
@@ -36,6 +37,31 @@
               </div>
             </div>
         </div>
+
+        <div class="weui_panel weui_panel_access">
+            <article class="weui_article">
+              <div class="title"><font size="6">{{movie.title}}</font></div>
+              <section style="margin-bottom: 0px;">
+                <section>
+                    <h1>影片信息</h1>
+                    <p>
+                      导演：{{#each movie.directors}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      主演：{{#each movie.casts}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      类型：{{#each movie.genres}}#{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      原名：{{movie.original_title}}<br>
+                      上映：{{movie.year}}<br>
+                      地区：{{#each movie.countries}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      评分：{{movie.rate}}<br>
+                    </p>
+                </section>
+                <section>
+                  <h1>影片简介</h1>
+                  <p>{{movie.summary}}</p>
+                </section>
+              </section>
+            </article>
+        </div>
+
         <div class="weui_panel weui_panel_access">
           <div class="weui_cell">
             <div class="weui_cell_bd weui_cell_primary">
@@ -74,42 +100,4 @@
           </div>
         </div>
     </div>
-</div>
-<div id="actionSheet_wrap">
-  <div class="weui_mask_transition" id="mask"></div>
-  <div class="weui_actionsheet" id="weui_actionsheet">
-    <div class="weui_actionsheet_menu">
-      <div class="weui_actionsheet_cell" style="text-align: left">
-        <div class="bd">
-          <article class="weui_article" style="padding-bottom: 20px;">
-            <div class="row">
-              <div class="col-xs-8">
-                <div class="title"><font size="4">{{movie.title}}</font></div>
-              </div>
-              <div class="col-xs-4">
-                <a class="pull-right" id="actionsheet_cancel">关闭</a>
-              </div>
-            </div>
-            <section class="content_section" style="margin-bottom: 0px;">
-              <section>
-                  <h2>影片信息</h2>
-                  <p>
-                    导演：{{#each movie.directors}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
-                    主演：{{#each movie.casts}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
-                    类型：{{#each movie.genres}}#{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
-                    原名：{{movie.original_title}}<br>
-                    上映：{{movie.year}}<br>
-                    地区：{{#each movie.countries}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
-                    评分：{{movie.rate}}<br>
-                  </p>
-              </section>
-              <section>
-                <h2>影片简介</h2>
-                <p>{{movie.summary}}</p>
-              </section>
-            </section>
-          </article>
-      </div>
-    </div>
-  </div>
 </div>
