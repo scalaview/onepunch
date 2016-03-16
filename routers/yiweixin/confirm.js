@@ -6,7 +6,6 @@ var async = require("async")
 var requireLogin = helpers.requireLogin
 var config = require("../../config")
 var WechatAPI = require('wechat-api');
-// var api = new WechatAPI(config.appId, config.appSecret);
 
 var api = helpers.API
 
@@ -442,8 +441,6 @@ function sendRefundNotice(customer, extractOrder, resean){
       console.log(result)
     }
   })
-
-
 }
 
 app.post('/liuliangshopconfirm', function(req, res){

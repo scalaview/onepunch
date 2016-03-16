@@ -39,7 +39,9 @@ var config = {
                     'client_id': '',
                     'client_secret': ''
                   }
-                }
+                },
+                "bilibili_appkey": "",
+                "usebilibili": false
               };
 
 module.exports = config;

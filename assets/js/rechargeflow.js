@@ -7,12 +7,21 @@ Handlebars.registerHelper('if-lt', function(a, b) {
   else { return options.inverse(this); }
 });
 
+Handlebars.registerHelper('subSummary', function(text, size) {
+  if(text.length <= size){
+    return text
+  }else{
+    return text.substring(0, size) + "..."
+  }
+});
+
 //页面加载
 $(document).ready(function () {
   applylimit()
   extractConfirm()
   givenTo()
   withdrawal()
+  player()
   $(".correct").html("");
   $(".correct").hide();
   var m = $("#mobile").val();
@@ -27,6 +36,10 @@ $(document).ready(function () {
   if(source !== undefined && source !== ''){
     getTrafficplan(source, "all")
     submitIsEnable(true);
+  }
+  if($("#movies-template").html() !== undefined && $("#movies-template").html() !== ''){
+    loadMore()
+    $(window).scroll(bindScroll);
   }
   mobileBlur(function(result) {
     var source   = $("#trafficplans-template").html();
@@ -436,4 +449,70 @@ function applylimit(){
   $(".applylimit").click(function(){
     showDialog("分销奖励未超过100元，无法提现")
   })
+}
+
+function player(){
+  $("#showActionContent").click(function(){
+    var mask = $('#mask');
+    var weuiActionsheet = $('#weui_actionsheet');
+    weuiActionsheet.addClass('weui_actionsheet_toggle');
+    mask.show().addClass('weui_fade_toggle').one('click', function () {
+        hideActionSheet(weuiActionsheet, mask);
+    });
+    $('#actionsheet_cancel').one('click', function () {
+        hideActionSheet(weuiActionsheet, mask);
+    });
+    weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
+
+    function hideActionSheet(weuiActionsheet, mask) {
+        weuiActionsheet.removeClass('weui_actionsheet_toggle');
+        mask.removeClass('weui_fade_toggle');
+        weuiActionsheet.on('transitionend', function () {
+            mask.hide();
+        }).on('webkitTransitionEnd', function () {
+            mask.hide();
+        })
+    }
+  })
+}
+
+function ajaxLoadData(url){
+  $.ajax({
+    url: url,
+    dataType: 'JSON',
+    method: "GET"
+  }).done(function(data){
+    var loading = $("#lazy-loading")
+    $("#lazy-loading").remove()
+    $(".g-body").append(window.movies_template(data))
+    $(".g-body").append(loading)
+    $("#nextUrl").attr("href", data.next_url)
+    $("#lazy-loading").hide()
+    $(window).bind('scroll', bindScroll);
+  }).fail(function(err){
+    console.log(err)
+    $("#lazy-loading").hide()
+  })
+}
+
+function loadMore()
+{
+  if(!window.movies_template){
+    var source = $("#movies-template").html()
+    window.movies_template = Handlebars.compile(source);
+  }
+  console.log("More loaded");
+
+  var url = $("#nextUrl").attr("href")
+  if(url){
+    $("#lazy-loading").show()
+    ajaxLoadData(url)
+  }
+}
+
+function bindScroll(){
+  if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+    $(window).unbind('scroll');
+    loadMore();
+  }
 }

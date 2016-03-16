@@ -9,3 +9,20 @@
 .dtb_distribution .customer em {
     margin-top: 0px;
 }
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.fixer-container {
+  float: left;
+  position: relative;
+  left: 40%;
+}
+.min_padding {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+.content_section {
+  overflow-y: auto;
+  max-height: 460px;
+}

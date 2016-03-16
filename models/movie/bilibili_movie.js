@@ -42,8 +42,8 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'douban_bilibili_movies',
     classMethods: {
       associate: function(models) {
-        models.BilibiliMovie.belongsTo(models.Movie, { foreignKey: 'douban_id' });
-        models.BilibiliMovie.hasMany(models.BilibiliMedia, { foreignKey: 'avid' });
+        models.BilibiliMovie.belongsTo(models.Movie, { foreignKey: 'douban_id', targetKey: 'douban_id' });
+        models.BilibiliMovie.hasMany(models.BilibiliMedia, {  as: 'medias', foreignKey: 'avid' });
         models.BilibiliMovie.belongsToMany(models.Genre, {
           through: 'douban_bilibili_genres',
           foreignKey: { name: "bilibili_id", fieldName: "bilibili_id" }

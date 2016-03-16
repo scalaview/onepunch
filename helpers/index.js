@@ -31,6 +31,10 @@ String.prototype.renderTemplate = function(options){
 
 String.prototype.format = String.prototype.renderTemplate
 
+String.prototype.capitalize = function () {
+  return this.toString()[0].toUpperCase() + this.toString().slice(1);
+}
+
 String.prototype.present = function(){
   if(this !== undefined){
     if(this instanceof Array){
@@ -850,6 +854,35 @@ function iflt(a, b) {
   else { return options.inverse(this); }
 };
 
+function subSummary(text, size){
+  if(text.length <= size){
+    return text
+  }else{
+    return text.substring(0, size) + "..."
+  }
+}
+
+function inc(value){
+  return parseInt(value) + 1;
+}
+
+
+function nextUrl(total, currentPage, perPage, query){
+  var totalpages = (total % perPage) == 0 ? (total / perPage) : parseInt(total / perPage) + 1
+  if(total <= perPage || totalpages <= currentPage){
+    return null
+  }
+  query["page"] = parseInt(currentPage) + 1
+  return addParams('/lofter', query)
+}
+
+function if_eq(a, b, opts) {
+  if(a == b) // Or === depending on your needs
+    return opts.fn(this);
+  else
+    return opts.inverse(this);
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -898,3 +931,7 @@ exports.assetPath = assetPath;
 exports.applyCoupon = applyCoupon;
 exports.orderStyle = orderStyle;
 exports.iflt = iflt;
+exports.subSummary = subSummary;
+exports.inc = inc;
+exports.nextUrl = nextUrl;
+exports.if_eq = if_eq;
