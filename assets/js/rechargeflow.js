@@ -477,7 +477,7 @@ function popstateBack(){
     if(character == null){
       $(".g-body").show()
       if(window.bodyscrollTop){
-        $("body").scrollTop(window.bodyscrollTop)
+        $("body").scrollTop(window.bodyscrollTop + 50)
       }
       $('.g-detail').empty()
     } else if (character.detail){
