@@ -473,8 +473,6 @@ function ajaxLoadData(url){
 
 function popstateBack(){
   window.addEventListener('popstate', function(e){
-    alert(e.state)
-
     var character = e.state;
     if(character == null){
       $(".g-body").show()
@@ -494,9 +492,8 @@ function popstateBack(){
         videojs("#really-cool-video").load();
         $(".g-body").hide()
         history.pushState({ data: $('.g-detail').html(), detail: true }, null, url);
-        alert(history.state)
         $(window).unbind('scroll');
-        $("body").scrollTop(0)
+        // $("body").scrollTop(0)
       });
     }
     e.stopPropagation();
