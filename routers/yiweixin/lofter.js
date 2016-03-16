@@ -7,7 +7,7 @@ var requireLogin = helpers.requireLogin
 var config = require("../../config")
 
 
-app.get('/lofter', function(req, res) {
+app.get('/lofter', requireLogin, function(req, res) {
 
   if(!req.query.page){
     res.render('yiweixin/lofter/index', { layout: 'lofter', next_url: "/lofter?page=1" });
@@ -51,7 +51,7 @@ app.get('/lofter', function(req, res) {
 })
 
 
-app.get('/lofter/:id', function(req, res) {
+app.get('/lofter/:id', requireLogin, function(req, res) {
   async.waterfall([function(next){
     models.BilibiliMovie.findById(req.params.id).then(function(bilibiliMovie) {
       next(null, bilibiliMovie)
