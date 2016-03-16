@@ -476,6 +476,9 @@ function popstateBack(){
     var character = e.state;
     if(character == null){
       $(".g-body").show()
+      if(window.bodyscrollTop){
+        $("body").scrollTop(window.bodyscrollTop)
+      }
       $('.g-detail').empty()
     } else if (character.detail){
       $(".g-body").show()
@@ -493,6 +496,7 @@ function popstateBack(){
         $(".g-body").hide()
         history.pushState({ data: $('.g-detail').html(), detail: true }, null, url);
         $(window).unbind('scroll');
+        window.bodyscrollTop = $("body").scrollTop()
         $("body").scrollTop(0)
       });
     }
