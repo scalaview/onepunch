@@ -1,22 +1,28 @@
-<div class="navbar navbar-default navbar-fixed-bottom">
-  <div class="container">
-    <div class="navbar-header">
-      <div class="row">
-        <div class="col-lg-4 col-xs-4 nopadding">
-          <a class="col-lg-12 col-xs-12 navbar-brand" href="/extractflow/">
-            <span class="glyphicon glyphicon-shopping-cart fixer-container" aria-hidden="true"></span>
-          </a>
-        </div>
-        <div class="col-lg-4 col-xs-4 nopadding">
-          <a class="col-lg-12 col-xs-12 navbar-brand" href="{{#if customer }}/myticket/{{ toHex customer.id }}{{else}}#{{/if}}">
-            <span class="glyphicon glyphicon-qrcode fixer-container" aria-hidden="true"></span>
-          </a>
-        </div>
-        <div class="col-lg-4 col-xs-4 nopadding">
-          <a class="col-lg-12 col-xs-12  navbar-brand" href="/myaccount">
-            <span class="glyphicon glyphicon-user fixer-container" aria-hidden="true"></span>
-          </a>
-        </div>
-      </div>
-    </div>
+<div class="navbar-default navbar-fixed-bottom">
+  <div class="weui_tabbar">
+      <a href="/extractflow/" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-shopping-cart fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+      <a href="{{#if customer }}/myticket/{{ toHex customer.id }}{{else}}#{{/if}}" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-qrcode fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+      <a href="/lofter/" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-film fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+      <a href="/myaccount" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-user fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+  </div>
 </div>
