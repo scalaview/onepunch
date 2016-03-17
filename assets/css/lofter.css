@@ -303,3 +303,19 @@
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
 }
+
+@font-face {
+  font-family: 'VideoJS';
+  src: url('http://vjs.zencdn.net/f/1/vjs.eot');
+  src: url('http://vjs.zencdn.net/f/1/vjs.eot?#iefix') format('embedded-opentype'),
+    url('http://vjs.zencdn.net/f/1/vjs.woff') format('woff'),
+    url('http://vjs.zencdn.net/f/1/vjs.ttf') format('truetype');
+}
+
+.m-oprt .oprt .oprtb em {
+  font-size: 30px;
+}
+
+.m-oprt .oprt .oprtb em .glyphicon{
+  font-size: 25px;
+}

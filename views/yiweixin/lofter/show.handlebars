@@ -6,7 +6,7 @@
             <div class="weui_panel_bd">
                 <a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
                   <video id="really-cool-video" class="video-js col-xs-12 vjs-default-skin" controls
-                   preload="auto" style="max-height: 300px" poster="{{#each movie.images}}{{#if @first}}{{medium}}{{/if}}{{/each}}"
+                   preload="auto" width="640" height="280" poster="{{#each movie.images}}{{#if @first}}{{medium}}{{/if}}{{/each}}"
                    data-setup='{"language":"zh"}'>
                     <source src="{{bilibiliMovie.download_url}}" type="video/mp4">
                   </video>
