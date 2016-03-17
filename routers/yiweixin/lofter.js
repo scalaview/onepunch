@@ -80,6 +80,8 @@ app.get('/lofter/:id', requireLogin, function(req, res) {
         }
         if(config.usebilibili){
           target.getDownloadUrl().then(function(download_url){
+            console.log(download_url)
+            bilibiliMovie.download_url = download_url
             next(null, bilibiliMovie)
           }).catch(function(err){
             next(null, bilibiliMovie)
