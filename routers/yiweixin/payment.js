@@ -120,20 +120,47 @@ app.post('/pay', requireLogin, function(req, res) {
         return
       }
 
-      models.ExtractOrder.build({
-        exchangerType: trafficPlan.className(),
-        exchangerId: trafficPlan.id,
-        phone: req.body.phone,
-        cost: trafficPlan.purchasePrice ,
-        value: trafficPlan.value,
-        bid: trafficPlan.bid,
-        customerId: customer.id,
-        chargeType: chargetype,
-        paymentMethodId: paymentMethod.id,
-        total: total
-      }).save().then(function(extractOrder) {
-        next(null, paymentMethod, trafficPlan, extractOrder)
-      }).catch(function(err) {
+      models.ExtractOrder.findOne({
+        where: {
+          state: models.ExtractOrder.STATE.INIT,
+          exchangerType: trafficPlan.className(),
+          exchangerId: trafficPlan.id,
+          phone: req.body.phone,
+          customerId: customer.id,
+          chargeType: chargetype,
+          paymentMethodId: paymentMethod.id
+        }
+      }).then(function(extractOrder) {
+        if(extractOrder){
+          extractOrder.updateAttributes({
+            cost: trafficPlan.purchasePrice,
+            value: trafficPlan.value,
+            bid: trafficPlan.bid,
+            total: total
+          }).then(function(extractOrder){
+            next(null, paymentMethod, trafficPlan, extractOrder)
+          }).catch(function(err){
+            next(err)
+          })
+        }else{
+           models.ExtractOrder.build({
+            exchangerType: trafficPlan.className(),
+            exchangerId: trafficPlan.id,
+            phone: req.body.phone,
+            cost: trafficPlan.purchasePrice,
+            value: trafficPlan.value,
+            bid: trafficPlan.bid,
+            customerId: customer.id,
+            chargeType: chargetype,
+            paymentMethodId: paymentMethod.id,
+            total: total
+          }).save().then(function(extractOrder) {
+            next(null, paymentMethod, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }
+      }).catch(function(err){
         next(err)
       })
     }], function(error, paymentMethod, trafficPlan, extractOrder){
