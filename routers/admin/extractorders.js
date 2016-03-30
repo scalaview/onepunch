@@ -1,9 +1,10 @@
 var express = require('express');
 var admin = express.Router();
-var models  = require('../../models')
-var helpers = require("../../helpers")
+var models  = require(process.env.PWD + '/models')
+var helpers = require(process.env.PWD + "/helpers")
 var async = require("async")
 var _ = require('lodash')
+var config = require(process.env.PWD + "/config")
 
 admin.get("/extractorders", function(req, res) {
   var result;
@@ -188,6 +189,7 @@ admin.get("/extractorders/:id/edit", function(req, res){
       trafficPlanCollection: trafficPlanCollection,
       stateCollection: models.ExtractOrder.STATEARRAY,
       stateOptions: stateOptions,
+      failState: models.ExtractOrder.STATE.FAIL,
       path: '/admin/extractOrder/'+extractOrder.id
     })
   })
@@ -239,5 +241,50 @@ admin.post("/extractorder/:id", function(req, res) {
     res.redirect("/admin/extractorders/" + extractOrder.id + "/edit")
   })
 })
+
+
+admin.post("/extractorder/:id/refund", function(req, res){
+  async.waterfall([function(next){
+    models.ExtractOrder.findById(req.params.id).then(function(extractOrder) {
+      next(null, extractOrder)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(extractOrder, next){
+    if(extractOrder.state == models.ExtractOrder.STATE.FAIL){
+      var payment = helpers.payment,
+          refund = {
+            out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id,
+            out_refund_no: "refund_" + config.token + "_" + extractOrder.phone + "_" + extractOrder.id,
+            total_fee: extractOrder.total * 100,
+            refund_fee: extractOrder.total * 100
+          }
+      console.log(refund)
+      payment.refund(refund, function(err, result){
+        if(err){
+          next(err)
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.REFUNDED
+          }).then(function(extractOrder){
+            next(null, extractOrder)
+          }).catch(function(err){
+            next(err)
+          })
+        }
+      });
+    }else{
+      next(new Error("no permission"))
+    }
+  }], function(err, extractOrder){
+    if(err){
+      console.log(err)
+      res.json({err: 1, message: err.message})
+    }else{
+      res.json({message: "refund success"})
+    }
+  })
+})
+
 
 module.exports = admin;

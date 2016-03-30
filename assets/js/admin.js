@@ -89,4 +89,29 @@ $(function(){
     }
   })
 
+  $(".cry").click(function(e){
+    e.preventDefault();
+    var r = confirm("Do you want to cry ?");
+    if(r == true){
+      var $this = $(this),
+          _id = $this.data("id")
+      $.ajax({
+        url: '/admin/extractorder/' + _id + '/refund',
+        dataType: 'JSON',
+        method: "POST"
+      }).done(function(data){
+        if(!data.err){
+          toastr.success(data.message)
+          $this.remove()
+        }else{
+          toastr.error(data.message)
+        }
+      }).fail(function(err){
+        console.log(err)
+        toastr.error('服务器错误')
+      })
+    }
+    e.stopPropagation();
+  })
+
 })
