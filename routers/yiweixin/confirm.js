@@ -339,6 +339,7 @@ function confirmOrder(params, isDone, msg, pass){
       var status = models.ExtractOrder.STATE.FAIL
       if(isDone){
         status = models.ExtractOrder.STATE.FINISH
+        bindCustomerPhone(customer, extractorder.phone)
         next(null, extractorder, status)
       }else{
         if(customer){
@@ -393,6 +394,18 @@ function confirmOrder(params, isDone, msg, pass){
         }
         pass(null)
     })
+}
+
+function bindCustomerPhone(customer, phone, pass){
+  if(!customer.phone){
+    customer.updateAttributes({
+      phone: phone,
+      bindPhone: true
+    }).then(function(customer){
+    }).catch(function(err){
+      console.log(err)
+    })
+  }
 }
 
 function sendRefundNotice(customer, extractOrder, resean){
