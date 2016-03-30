@@ -90,7 +90,8 @@ app.get('/register', function(req, res) {
       province: userInfo.province,
       country: userInfo.country,
       headimgurl: userInfo.headimgurl,
-      bindPhone: true
+      subscribeTime: new Date(parseInt(userInfo.subscribe_time) * 1000),
+      isSubscribe: true
     }).save().then(function(customer){
       if(customer){
         customer.updateAttributes({

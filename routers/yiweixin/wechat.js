@@ -169,7 +169,6 @@ function subscribe(message, res){
 
       models.Customer.build({
         password: '1234567',
-        phone: Math.round((new Date().valueOf() * Math.random())) + '',
         username: result.nickname,
         wechat: result.openid,
         sex: result.sex + '',
