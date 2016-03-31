@@ -38,7 +38,7 @@
               {{#each customers.rows}}
                 <tr>
                     <td>{{ customer.phone }}</td>
-                    <td><img src="{{customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ username }}</td>
+                    <td><img src="{{customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ customer.username }}</td>
                     {{#each result}}
                     <td>{{#if count }} {{ count }}  {{else}} 0 {{/if}} 人</td>
                     {{/each}}
