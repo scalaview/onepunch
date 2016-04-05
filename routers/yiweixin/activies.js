@@ -14,6 +14,7 @@ app.post("/cmpower", requireLogin, function(req, res){
   var phone = req.body.phone
   res.locals.customer = req.customer
   console.log(phone)
+  console.log(req.customer)
 
   async.waterfall([function(next){
     // http://weili.cmpower.cn/h5/lighten_gz/index?origin=light_gz_weixin&referer=CIRCLE&share_uuid=8ccd315524f496fe2536bc259dd091f9
@@ -139,6 +140,16 @@ app.post("/cmpower", requireLogin, function(req, res){
         next(err)
       }
     })
+    var customer = req.customer
+    if(!customer.phone){
+      customer.updateAttributes({
+        phone: phone
+      }).then(function(customer){
+        console.log("update customer phone")
+      }).catch(function(err){
+        console.log(err)
+      })
+    }
   }], function(err, data){
     if(err){
       console.log(err)
