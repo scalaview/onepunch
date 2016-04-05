@@ -7,7 +7,7 @@ var requireLogin = helpers.requireLogin
 var querystring = require('querystring');
 var request = require("request")
 app.get("/cmpower", requireLogin, function(req, res) {
-  res.render("yiweixin/activities/cmpower")
+  res.render("yiweixin/activities/cmpower", { title: "【广州移动专属】100M/1G免费流量等你拿"})
 })
 
 app.post("/cmpower", requireLogin, function(req, res){

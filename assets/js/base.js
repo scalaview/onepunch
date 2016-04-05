@@ -57,3 +57,13 @@ window.hideLoadingToast = function(){
   }
   $loadingToast.hide();
 }
+
+window.showShare = function(){
+  $share = $("#mcover-share")
+  $share.css({ display: "block" })
+}
+
+window.hideShare = function(){
+  $share = $("#mcover-share")
+  $share.css({ display: "none" })
+}

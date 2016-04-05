@@ -1088,3 +1088,20 @@ table{
 .text-center {
     text-align: center;
 }
+
+#mcover-share {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0, 0, 0, 0.7);
+    display:none;
+    z-index:20000;} #mcover-share img {
+    position:fixed;
+    right:18px;
+    top:5px;
+    width:260px;
+    height:180px;
+    z-index:999;
+}
