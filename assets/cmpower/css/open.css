@@ -1,5 +1,5 @@
-.wrapper{width: 100%;overflow: hidden;position: relative;}
-.open-body{width: 100%;overflow: hidden;}
+.wrapper{width: 100%;height: 100%;overflow: hidden;position: relative;}
+.open-body{width: 100%;height: 800px;overflow: hidden;}
 .open-body .bg{position: absolute;z-index: 1;background:url(/images/cmpower/light.png) 0px 0px no-repeat;background-size:452px auto;width:452px;height:510px; max-height:100%; left:50%;margin-left:-226px;top:-25px;}
 .open-body .bg.rotate{-webkit-animation: rotate 10s  infinite  linear;}
 .open-has{position: relative;z-index: 2;height:450px;width: 320px;margin:0px auto;}
