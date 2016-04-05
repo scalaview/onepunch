@@ -123,7 +123,7 @@ app.post("/cmpower", requireLogin, function(req, res){
         console.log(result)
         // { code: 0, msg: '返回数据', data: { user_type: 3, award_id: 1 } }
         if(result.code == 0){
-          switch(result.data.user_type) {
+          switch(result.data.award_id) {
                   case 1: next(null, {code: 1, msg: "获得100M流量"});
                   case 2: next(null, {code: 1, msg: "获得1G流量"});
                   case 3: next(null, {code: 1, msg: "半年期南方都市报报纸"});
