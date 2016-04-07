@@ -14,7 +14,6 @@ app.post("/cmpower", requireLogin, function(req, res){
   var phone = req.body.phone
   res.locals.customer = req.customer
   console.log(phone)
-  console.log(req.customer)
 
   async.waterfall([function(next){
     // http://weili.cmpower.cn/h5/lighten_gz/index?origin=light_gz_weixin&referer=CIRCLE&share_uuid=8ccd315524f496fe2536bc259dd091f9
