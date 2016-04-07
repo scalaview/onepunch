@@ -90,7 +90,7 @@ app.get('/register', function(req, res) {
       province: userInfo.province,
       country: userInfo.country,
       headimgurl: userInfo.headimgurl,
-      subscribeTime: new Date(parseInt(userInfo.subscribe_time) * 1000),
+      subscribeTime: new Date(),
       isSubscribe: true
     }).save().then(function(customer){
       if(customer){
