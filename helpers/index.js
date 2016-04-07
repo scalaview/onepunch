@@ -883,6 +883,10 @@ function if_eq(a, b, opts) {
     return opts.inverse(this);
 }
 
+function ip(req){
+  return (req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress)
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -935,3 +939,4 @@ exports.subSummary = subSummary;
 exports.inc = inc;
 exports.nextUrl = nextUrl;
 exports.if_eq = if_eq;
+exports.ip = ip;

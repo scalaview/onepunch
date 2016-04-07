@@ -170,14 +170,13 @@ app.post('/pay', requireLogin, function(req, res) {
       }else{
         //TODO salary
         if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
-          var ipstr = req.ip.split(':'),
-          ip = ipstr[ipstr.length -1]
-
+          var ip = helpers.ip(req),
+              total_amount = Math.round(extractOrder.total * 100)
           var orderParams = {
             body: '流量套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
-            out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id,
-            total_fee:  Math.round(extractOrder.total * 100),
+            out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id + "_" + total_amount,
+            total_fee: total_amount,
             spbill_create_ip: ip,
             openid: customer.wechat,
             trade_type: 'JSAPI'
