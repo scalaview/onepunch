@@ -253,7 +253,7 @@ admin.post("/extractorder/:id/refund", function(req, res){
   }, function(extractOrder, next){
     if(extractOrder.state == models.ExtractOrder.STATE.FAIL){
       var payment = helpers.payment,
-          total_amount = Math.round(extractOrder.total * 100),
+          total_amount = Math.round(extractOrder.total * 100).toFixed(0),
           refund = {
             out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id,
             out_refund_no: "refund_" + config.token + "_" + extractOrder.phone + "_" + extractOrder.id + "_" + total_amount,

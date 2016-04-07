@@ -171,7 +171,7 @@ app.post('/pay', requireLogin, function(req, res) {
         //TODO salary
         if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
           var ip = helpers.ip(req),
-              total_amount = Math.round(extractOrder.total * 100)
+              total_amount = Math.round(extractOrder.total * 100).toFixed(0)
           var orderParams = {
             body: '流量套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
