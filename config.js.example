@@ -40,6 +40,9 @@ var config = {
                     'client_secret': ''
                   }
                 },
+                yiliuliang': '',
+                'yiliuliang_user': '',
+                'yiliuliang_pwd': '',
                 "bilibili_appkey": "",
                 "usebilibili": false
               };
