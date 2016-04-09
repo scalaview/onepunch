@@ -165,14 +165,13 @@ module.exports = function(sequelize, DataTypes) {
     '华沃红包': 2,
     '华沃广东': 3,
     '华沃全国': 4,
-    '曦和流量': 5
+    '曦和流量': 5,
+    '易流量': 6
   }
 
   TrafficPlan.PROVIDERARRAY = Object.keys(TrafficPlan.Provider).map(function(k) { return [TrafficPlan.Provider[k], k] });
 
   TrafficPlan.TYPEARRAY = Object.keys(TrafficPlan.TYPE).map(function(k) { return [TrafficPlan.TYPE[k], k] });
-
-
 
   return TrafficPlan;
 };
