@@ -4,7 +4,7 @@ var helpers = require("../helpers")
 var config = require("../config")
 var crypto = require('crypto')
 
-var ChongRecharger = function(models, client_id, client_secret, storeCallback, accessCallback){
+function ChongRecharger(models, client_id, client_secret, storeCallback, accessCallback){
   this.models = models
   this.client_id = client_id
   this.client_secret = client_secret
