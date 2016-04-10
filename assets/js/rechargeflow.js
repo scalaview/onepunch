@@ -280,6 +280,7 @@ function extractConfirm(){
 }
 
 function wechatPayment(phone, flowId){
+  showLoadingToast()
   $.ajax({
         url: '/pay',
         method: "POST",
@@ -291,6 +292,7 @@ function wechatPayment(phone, flowId){
           phone: phone
         }
       }).done(function(payargs) {
+        hideLoadingToast()
         if(payargs.err){
           showDialog(payargs.msg)
         }else if(choose.data('id') == "balance"){
@@ -308,6 +310,7 @@ function wechatPayment(phone, flowId){
           showDialog(payargs.msg)
         }
       }).fail(function(err) {
+        hideLoadingToast()
         console.log(err)
         showDialog("服务器繁忙")
       })
