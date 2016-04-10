@@ -491,7 +491,7 @@ app.post('/liuliangshopconfirm', function(req, res){
 
 app.get("/yiliuliangconfirm", function(req, res){
   var transactionId = req.query.transactionID,
-      result = req.query.transactionID,
+      result = req.query.result,
       resultDesc = req.query.resultDesc,
       phone = req.query.phone
 
