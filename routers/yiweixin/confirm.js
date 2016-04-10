@@ -498,7 +498,8 @@ app.get("/yiliuliangconfirm", function(req, res){
   console.log({
     transactionId: transactionId,
     result: result,
-    resultDesc: resultDesc
+    resultDesc: resultDesc,
+    phone: phone
   })
 
   confirmOrder({
