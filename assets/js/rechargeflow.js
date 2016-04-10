@@ -305,7 +305,7 @@ function wechatPayment(phone, flowId){
             }
           });
         }else{
-          alert(payargs.msg)
+          showDialog(payargs.msg)
         }
       }).fail(function(err) {
         console.log(err)
