@@ -524,6 +524,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.errmsg))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['易流量']){
+        if(data.retcode == 0){
+          extractOrder.updateAttributes({
+            taskid: data.OrderID,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.Message))
+        }
       }else{
         if(data.state == 1){
           extractOrder.updateAttributes({

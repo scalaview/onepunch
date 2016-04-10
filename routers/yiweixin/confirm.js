@@ -489,4 +489,30 @@ app.post('/liuliangshopconfirm', function(req, res){
   })
 })
 
+app.get("/yiliuliangconfirm", function(req, res){
+  var transactionId = req.query.transactionID,
+      result = req.query.transactionID,
+      resultDesc = req.query.resultDesc,
+      phone = req.query.phone
+
+  console.log({
+    transactionId: transactionId,
+    result: result,
+    resultDesc: resultDesc
+  })
+
+  confirmOrder({
+    state: models.ExtractOrder.STATE.SUCCESS,
+    phone: phone,
+    taskid: transactionId
+  }, result == 0, resultDesc, function(err){
+    if(err){
+      console.log(err)
+      res.json({status: 1, msg: "success"})
+    }else{
+      res.json({status: 1, msg: "success"})
+    }
+  })
+})
+
 module.exports = app;
