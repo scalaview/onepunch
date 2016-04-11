@@ -10,6 +10,10 @@ var payment = helpers.payment;
 var maxDepth = config.max_depth
 var _ = require('lodash')
 
+app.get('/extractflow', requireLogin, function(req, res){
+  res.render('yiweixin/orders/extractflow', { customer: req.customer })
+})
+
 app.post('/pay', requireLogin, function(req, res) {
     var customer = req.customer,
         chargetype = (req.body.chargetype == "balance" ) ? models.Customer.CHARGETYPE.BALANCE : models.Customer.CHARGETYPE.SALARY
@@ -149,7 +153,7 @@ app.post('/pay', requireLogin, function(req, res) {
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
             }).then(function(extractOrder){
-              autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
+              autoCharge(extractOrder, trafficPlan, function(err){
                 if(err){
                   console.log(err)
                   // refund

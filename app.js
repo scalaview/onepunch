@@ -1,8 +1,5 @@
 var express = require('express')
 var config = require("./config")
-var myUtil = require("./my_util")
-var menu = require("./menu")
-var sign = require("./sign")
 var bodyParser = require('body-parser')
 var jsonParser = bodyParser.json()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -61,18 +58,6 @@ var wechatConfig = {
   appid: config.appId,
   encodingAESKey: config.aesKey
 }
-
-var token = function(callback){
-    if(accessToken != null && !accessToken.isExpired()){
-      callback()
-    }else{
-      myUtil.getAccessToken(function(data){
-        accessToken = data
-        console.log(accessToken)
-        callback()
-      })
-    }
-  }
 
 app.use(express.query());
 app.use(cookieParser())
