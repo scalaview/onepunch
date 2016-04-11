@@ -33,9 +33,7 @@ admin.get("/extractorders", function(req, res) {
       next(err)
     })
   }, function(extractOrders, outnext) {
-    var i = 0
     async.map(extractOrders, function(extractOrder, next) {
-      i = i + 1
       extractOrder.getExchanger().then(function(exchanger){
         extractOrder.exchanger = exchanger
         if(exchanger.className() === "TrafficPlan"){
@@ -43,6 +41,21 @@ admin.get("/extractorders", function(req, res) {
         }else if(exchanger.className() === "FlowTask"){
           extractOrder.flowtask = exchanger
         }
+        next(null, extractOrder)
+      }).catch(function(err) {
+        next(err)
+      })
+    }, function(err, extractOrders){
+      if(err){
+        outnext(err)
+      }else{
+        outnext(null, extractOrders)
+      }
+    })
+  }, function(extractOrders, outnext) {
+    async.map(extractOrders, function(extractOrder, next) {
+      extractOrder.getCustomer().then(function(customer){
+        extractOrder.customer = customer
         next(null, extractOrder)
       }).catch(function(err) {
         next(err)
