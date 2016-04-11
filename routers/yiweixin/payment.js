@@ -10,56 +10,8 @@ var payment = helpers.payment;
 var maxDepth = config.max_depth
 var _ = require('lodash')
 
-app.get('/payment', requireLogin, function(req, res) {
-  var customer = req.customer
-  async.waterfall([function(next){
-    if(customer.levelId !== undefined){
-        models.Level.findById(customer.levelId).then(function(level) {
-          customer.level = level
-        })
-      }
-      next(null, customer)
-  }, function(customer, next) {
-    models.Coupon.findAll({
-      where: {
-        isActive: true,
-        expiredAt: {
-          $gt: (new Date()).begingOfDate()
-        }
-      },
-      order: [
-              ['updatedAt', 'DESC']
-             ]
-    }).then(function(coupons) {
-      next(null, coupons)
-    }).catch(function(err) {
-      next(err)
-    })
-  }], function(err, coupons) {
-    if(err){
-      console.log(err)
-    }else{
-      models.TrafficPlan.allOptions(function(trafficPlans){
-
-        for (var i = coupons.length - 1; i >= 0; i--) {
-          for (var j = trafficPlans.length - 1; j >= 0; j--) {
-            if(coupons[i].trafficPlanId == trafficPlans[j].id){
-              if(trafficPlans[j].coupon === undefined){
-                trafficPlans[j].coupon = coupons[i]
-              }else if(trafficPlans[j].coupon.updatedAt < coupons[i].updatedAt){
-                trafficPlans[j].coupon = coupons[i]
-              }
-            }
-          };
-        };
-        res.render('yiweixin/orders/payment', { customer: customer, trafficPlans: trafficPlans })
-      }, function(err) {
-        console.log(err)
-      })
-    }
-  })
-
-
+app.get('/extractflow', requireLogin, function(req, res){
+  res.render('yiweixin/orders/extractflow', { customer: req.customer })
 })
 
 app.post('/pay', requireLogin, function(req, res) {
@@ -201,7 +153,7 @@ app.post('/pay', requireLogin, function(req, res) {
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
             }).then(function(extractOrder){
-              autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
+              autoCharge(extractOrder, trafficPlan, function(err){
                 if(err){
                   console.log(err)
                   // refund
