@@ -81,7 +81,7 @@ app.get('/register', function(req, res) {
       next(null, accessToken, openid, userInfo)
     });
   }, function(accessToken, openid, userInfo, next) {
-    models.Customer.build({
+    models.Customer.create({
       password: '1234567',
       username: userInfo.nickname,
       wechat: openid,
@@ -92,7 +92,7 @@ app.get('/register', function(req, res) {
       headimgurl: userInfo.headimgurl,
       subscribeTime: new Date(),
       isSubscribe: true
-    }).save().then(function(customer){
+    }).then(function(customer){
       if(customer){
         customer.updateAttributes({
           lastLoginAt: new Date()

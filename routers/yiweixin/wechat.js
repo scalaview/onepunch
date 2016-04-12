@@ -24,7 +24,7 @@ app.use('/wechat', wechat(wechatConfig, function (req, res, next) {
   var message = req.weixin;
   console.log(message)
 
-  if(message.Event === 'subscribe' && message.EventKey.indexOf('qrscene_') != -1 ) { // scan and subscribe
+  if(message.Event === 'subscribe') { // scan and subscribe
     subscribe(message, res)
   }else if (message.Event === 'unsubscribe') {
     unsubscribe(message, res)
@@ -129,8 +129,11 @@ function unsubscribe(message, res) {
 
 
 function subscribe(message, res){
-  var customerId = message.EventKey.replace('qrscene_', ''),
+  var customerId = null,
       openid = message.FromUserName
+  if(message.EventKey.indexOf('qrscene_') != -1 ){
+    customerId = message.EventKey.replace('qrscene_', '')
+  }
 
   async.waterfall([function(next) {
     models.Customer.findOne({
@@ -161,13 +164,17 @@ function subscribe(message, res){
       }
     });
   }, function(result, next) {
-    models.Customer.findById(customerId).then(function(customer) {
-      next(null, customer, result)
-    })
+    if(customerId){
+      models.Customer.findById(customerId).then(function(customer) {
+        next(null, customer, result)
+      })
+    }else{
+      next(null, null, result)
+    }
   }, function(recommend, result, next) {
       // new customer
 
-      models.Customer.build({
+      models.Customer.create({
         password: '1234567',
         username: result.nickname,
         wechat: result.openid,
@@ -179,7 +186,7 @@ function subscribe(message, res){
         subscribeTime: new Date(),
         isSubscribe: true,
         ancestry: recommend
-      }).save().then(function(customer) {
+      }).then(function(customer) {
         next(null, customer, recommend)
       }).catch(function(err) {
         next(err)
@@ -198,7 +205,9 @@ function subscribe(message, res){
         }
       }).spread(function(template) {
         var content = template.content.format({ username: newCustomer.username, id: newCustomer.id })
-        sendSubscribeNotice(newCustomer, recommend)
+        if(recommend){
+          sendSubscribeNotice(newCustomer, recommend)
+        }
 
         res.reply(content)
       }).catch(function(err) {
