@@ -16,7 +16,10 @@ admin.get('/customers', function(req, res) {
   models.Customer.findAndCountAll({
     where: params,
     limit: req.query.perPage || 15,
-    offset: helpers.offset(req.query.page, req.query.perPage || 15)
+    offset: helpers.offset(req.query.page, req.query.perPage || 15),
+    order: [
+        ['createdAt', 'DESC']
+      ]
   }).then(function(customers) {
     var result = helpers.setPagination(customers, req)
     res.render('admin/customers/index', { customers: result, query: req.query })

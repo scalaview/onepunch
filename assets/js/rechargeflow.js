@@ -255,31 +255,38 @@ function extractConfirm(){
     $("#mask").show()
   })
 
-  $(".sure").click(function(){
-    var selectedFlow = $(".llb a.exchanger.choose")
+  $(".sure").on("click", paymentConfirm)
+}
+
+function paymentConfirm(){
+  var selectedFlow = $(".llb a.exchanger.choose")
         phone = $.trim($("#mobile").val()),
         flowId = selectedFlow.data("value"),
         source   = $("#trafficplans-template").html(),
         choose = $("#chooseMoney .weui_btn.selected")
 
-    if(source === undefined || source == ''){
-      return
-    }
+  if(source === undefined || source == ''){
+    return
+  }
 
-    if(choose.data('id') === undefined || choose.data('id') == ''){
-      return
-    }
+  if(choose.data('id') === undefined || choose.data('id') == ''){
+    return
+  }
 
-    if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
-      wechatPayment(phone, flowId)
-    }else{
-      showDialog("请输入电话和选择正确的套餐")
-    }
-  })
-
+  if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
+    $(".sure").unbind("click")
+    wechatPayment(phone, flowId, function(){
+      $(".sure").on("click", paymentConfirm)
+    })
+  }else{
+    showDialog("请输入电话和选择正确的套餐")
+  }
 }
 
-function wechatPayment(phone, flowId){
+
+
+function wechatPayment(phone, flowId, opt){
+  showLoadingToast()
   $.ajax({
         url: '/pay',
         method: "POST",
@@ -291,6 +298,10 @@ function wechatPayment(phone, flowId){
           phone: phone
         }
       }).done(function(payargs) {
+        if(opt){
+          opt()
+        }
+        hideLoadingToast()
         if(payargs.err){
           showDialog(payargs.msg)
         }else if(choose.data('id') == "balance"){
@@ -308,6 +319,7 @@ function wechatPayment(phone, flowId){
           showDialog(payargs.msg)
         }
       }).fail(function(err) {
+        hideLoadingToast()
         console.log(err)
         showDialog("服务器繁忙")
       })
@@ -341,66 +353,6 @@ function RegistEvent() {
   });
   $("#buylist a:eq(0)").click()
 }
-
-
-function paymentConfirm(){
-
-  $("#pay-now").click(function() {
-    var selectedFlow = $(".llb a.selected");
-    var flowId = selectedFlow.data("id");
-    if (!flowId || flowId == "") {
-        showDialog("请选择流量包");
-        return;
-    }
-
-    var flow = selectedFlow.data("value"),
-        price = selectedFlow.data("price"),
-        flowDiscount = selectedFlow.data('discount');
-    if(flowDiscount != ''){
-      $("#maskmoney").html(flowDiscount.toFixed(2))
-    }else{
-      $("#maskmoney").html(price)
-    }
-    $("#maskflow").html(flow)
-    $("#mask").show()
-  });
-
-  $(".sure").click(function(){
-    var $this = $(this),
-        dataPlanId = $("#txtFlowCount").val()
-    if(dataPlanId !== undefined && dataPlanId !== ''){
-      $.ajax({
-        url: '/pay',
-        method: "GET",
-        dataType: "JSON",
-        data: {
-          dataPlanId: dataPlanId,
-          paymentMethod: 'WechatPay'
-        }
-      }).done(function(payargs) {
-        if(payargs.err){
-          showDialog(payargs.msg)
-        }else{
-          WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
-            if(res.err_msg == "get_brand_wcpay_request:ok"){
-              alert("支付成功");
-              // 这里可以跳转到订单完成页面向用户展示
-              window.location.href = '/profile'
-            }else{
-              alert("支付失败，请重试");
-            }
-          });
-        }
-      }).fail(function(err) {
-        console.log(err)
-        showDialog("服务器繁忙")
-      })
-    }else{
-      showDialog("请输入电话和选择正确的套餐")
-    }
-  })
-}
-
 
 function withdrawal(){
   $("#exchangeAmount").blur(function() {
