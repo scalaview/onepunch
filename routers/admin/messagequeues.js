@@ -48,45 +48,5 @@ admin.get("/messagequeues", function(req, res) {
   })
 })
 
-admin.get('/extractorders/export', function(req, res) {
-  models.ExtractOrder.findAll({
-    where: {
-      state: models.ExtractOrder.STATE.INIT
-    }
-  }).then(function(extractorders) {
-    console.log(extractorders)
-    if(extractorders.length > 0){
-      var results = []
-      async.map(extractorders, function(extractorder, next) {
-        results.push(extractorder.phone + ","+extractorder.value)
-        extractorder.updateAttributes({
-          state: models.ExtractOrder.STATE.SUCCESS
-        }).then(function(extractorder) {
-          next(null, extractorder)
-        })
-      }, function(err, extractorders) {
-        if(err){
-          console.log(err)
-          res.send("error")
-        }else{
-          var filename = "export"+ (new Date).getTime() + ".txt"
-          res.set({
-            "Content-Disposition": 'attachment; filename="'+filename+'"',
-            "Content-Type": "application/octet-stream"
-          })
-          res.send(results.join('\n'));
-        }
-      })
-    }else{
-      var filename = "export"+ (new Date).getTime() + ".txt",
-          results = []
-      res.set({
-            "Content-Disposition": 'attachment; filename="'+filename+'"',
-            "Content-Type": "application/octet-stream"
-          })
-      res.send(results.join('\n'))
-    }
-  })
-})
 
 module.exports = admin;

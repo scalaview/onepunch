@@ -4,8 +4,6 @@ var models  = require('../../models')
 var helpers = require("../../helpers")
 var async = require("async")
 
-
-
 admin.get("/messagetemplates", function(req, res) {
   models.MessageTemplate.findAndCountAll().then(function(messagetemplates) {
     if(messagetemplates){
