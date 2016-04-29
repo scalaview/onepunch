@@ -9,6 +9,7 @@ var DefaultRecharger = recharger.DefaultRecharger
 var Recharger = recharger.Recharger
 var HuawoRecharger = recharger.HuawoRecharger
 var YiliuliangRecharger = recharger.YiliuliangRecharger
+var Xinhaoba = recharger.Xinhaoba
 var config = require("../config")
 var crypto = require('crypto')
 
@@ -95,6 +96,8 @@ module.exports = function(sequelize, DataTypes) {
           return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "http://protchar.cn/liuliangshopconfirm")
         }else if(trafficPlan.type == typeJson['易流量']){
           return new YiliuliangRecharger(this.phone, this.bid)
+        }else if(trafficPlan.type == typeJson['新号吧']){
+          return new Xinhaoba(this.id, this.phone, this.bid, this.value)
         }else{
           return new Recharger(this.phone, this.value)
         }

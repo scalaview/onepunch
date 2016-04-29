@@ -44,7 +44,9 @@ var config = {
                 'yiliuliang_user': '',
                 'yiliuliang_pwd': '',
                 "bilibili_appkey": "",
-                "usebilibili": false
+                "usebilibili": false,
+                "xinhaoba_loginname":,
+                "xinhaoba_apikey":
               };
 
 module.exports = config;
