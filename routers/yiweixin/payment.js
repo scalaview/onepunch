@@ -491,7 +491,7 @@ function sendOrderNotification(extractOrder, customer, pass){
         name: "sendOrderNotice"
       },
       defaults: {
-        content: "您好，您的{{orderName}}订单已经提交充值。30分钟内到账，最长延迟24小时到账。<a href='http://{{hostname}}/spend'>订单详细信息</a>"
+        content: "您好，您的{{orderName}}订单已经提交充值。30分钟内到账，最长延迟24小时到账。<a href='http://{{hostname}}/orders'>订单详细信息</a>"
       }
     }).spread(function(template) {
       var content = template.content.format({
