@@ -9,6 +9,7 @@ var fs        = require('fs');
 var payment = helpers.payment;
 var maxDepth = config.max_depth
 var _ = require('lodash')
+var api = helpers.API
 
 app.get('/extractflow', requireLogin, function(req, res){
   res.render('yiweixin/orders/extractflow', { customer: req.customer })
@@ -230,7 +231,7 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
       next(err)
     }, extractOrder.chargeType)
 
-  }, doOrderTotal, doAffiliate, autoAffiliate], function(err, extractOrder, customer){
+  }, doOrderTotal, doAffiliate, autoAffiliate, sendOrderNotification], function(err, extractOrder, customer){
     if(err){
       res.reply(err)
     }else{
@@ -433,100 +434,89 @@ function doOrderTotal(extractOrder, customer, pass) {
 }
 
 function autoCharge(extractOrder, trafficPlan, next){
-  extractOrder.autoRecharge(trafficPlan).then(function(res, data) {
-      console.log(data)
-      if(trafficPlan.type == models.TrafficPlan.TYPE['空中平台']){  // 正规空中充值
-        if(data.status == 1 || data.status == 2){
+  extractOrder.autoRecharge(trafficPlan).then(function(data) {
+    console.log(data)
+    if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
+      if(data.code == 1){
+        extractOrder.updateAttributes({
+          taskid: data.sysorderid,
+          state: models.ExtractOrder.STATE.SUCCESS
+        }).then(function(extractOrder){
           next(null, trafficPlan, extractOrder)
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.msg))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃红包'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃全国'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃广东']){
-        if(data.code == 1 && data.taskid != 0){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS,
-            taskid: data.taskid
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['曦和流量']){
-        if(data.errcode == 0){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS,
-            taskid: data.order.transaction_id
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.errmsg))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['易流量']){
-        if(data.retcode == 0){
-          extractOrder.updateAttributes({
-            taskid: data.OrderID,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
-        if(data.code == 1){
-          extractOrder.updateAttributes({
-            taskid: data.sysorderid,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
+        }).catch(function(err) {
+          next(err)
+        })
       }else{
-        if(data.state == 1){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.msg))
-        }
+        extractOrder.updateAttributes({
+          state: models.ExtractOrder.STATE.FAIL
+        })
+        next(new Error(data.Message))
       }
+    }else if(trafficPlan.type == models.TrafficPlan.TYPE['龙速']){
+      if(data.resultcode === '0'){
+        extractOrder.updateAttributes({
+          taskid: data.orderid,
+          state: models.ExtractOrder.STATE.SUCCESS
+        }).then(function(extractOrder){
+          next(null, trafficPlan, extractOrder)
+        }).catch(function(err) {
+          next(err)
+        })
+      }else{
+        extractOrder.updateAttributes({
+          state: models.ExtractOrder.STATE.FAIL
+        })
+        next(new Error(data.message))
+      }
+    }else{
+      next(new Error("not found"))
+    }
+  }).catch(function(err){
+    next(err)
+  })
+}
+
+function sendOrderNotification(extractOrder, customer, pass){
+  pass(null, extractOrder, customer)
+
+  async.waterfall([function(next){
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, trafficPlan)
     }).catch(function(err){
       next(err)
-    }).do()
+    })
+  }, function(trafficPlan, next){
+    models.MessageTemplate.findOrCreate({
+      where: {
+        name: "sendOrderNotice"
+      },
+      defaults: {
+        content: "您好，您的{{orderName}}订单已经提交充值。30分钟内到账，最长延迟24小时到账。<a href='http://{{hostname}}/spend'>订单详细信息</a>"
+      }
+    }).spread(function(template) {
+      var content = template.content.format({
+          orderName: trafficPlan.name,
+          hostname: config.hostname
+        })
+      next(null, trafficPlan, content)
+    }).catch(function(err) {
+      next(err)
+    })
+  }, function(trafficPlan, content, next){
+    api.sendText(customer.wechat, content, function(err, result) {
+      if(err){
+        next(err)
+      }else{
+        next(null, result)
+      }
+    });
+  }], function(err, result){
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+    }
+  })
 }
 
 module.exports = app;
