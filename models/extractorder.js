@@ -84,7 +84,7 @@ module.exports = function(sequelize, DataTypes) {
         if(trafficPlan.type == typeJson['新号吧']){
           return new Xinhaoba(this.id, this.phone, this.bid, this.value)
         }else if(trafficPlan.type == typeJson['龙速']){
-          return models.ExtractOrder.Longsu.createOrder(this.bid, this.id, this.phone)
+          return ExtractOrder.Longsu.createOrder(this.bid, this.id, this.phone)
         }
       },
       isPaid: function(){
