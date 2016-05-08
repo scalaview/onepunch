@@ -9,6 +9,7 @@ var fs        = require('fs');
 var payment = helpers.payment;
 var maxDepth = config.max_depth
 var _ = require('lodash')
+var api = helpers.API
 
 app.get('/extractflow', requireLogin, function(req, res){
   res.render('yiweixin/orders/extractflow', { customer: req.customer })
@@ -230,7 +231,7 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
       next(err)
     }, extractOrder.chargeType)
 
-  }, doOrderTotal, doAffiliate, autoAffiliate], function(err, extractOrder, customer){
+  }, doOrderTotal, doAffiliate, autoAffiliate, sendOrderNotification], function(err, extractOrder, customer){
     if(err){
       res.reply(err)
     }else{
@@ -472,6 +473,49 @@ function autoCharge(extractOrder, trafficPlan, next){
     }
   }).catch(function(err){
     next(err)
+  })
+}
+
+function sendOrderNotification(extractOrder, customer, pass){
+  pass(null, extractOrder, customer)
+
+  async.waterfall([function(next){
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, trafficPlan)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(trafficPlan, next){
+    models.MessageTemplate.findOrCreate({
+      where: {
+        name: "sendOrderNotice"
+      },
+      defaults: {
+        content: "您好，您的{{orderName}}订单已经提交充值。30分钟内到账，最长延迟24小时到账。<a href='http://{{hostname}}/spend'>订单详细信息</a>"
+      }
+    }).spread(function(template) {
+      var content = template.content.format({
+          orderName: trafficPlan.name,
+          hostname: config.hostname
+        })
+      next(null, trafficPlan, content)
+    }).catch(function(err) {
+      next(err)
+    })
+  }, function(trafficPlan, content, next){
+    api.sendText(customer.wechat, content, function(err, result) {
+      if(err){
+        next(err)
+      }else{
+        next(null, result)
+      }
+    });
+  }], function(err, result){
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+    }
   })
 }
 
