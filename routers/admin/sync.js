@@ -43,7 +43,6 @@ admin.get('/synclongsu', function(req ,res) {
     if(data.resultcode === '0'){
 
       async.each(data.gettyperesponse.type, function(product, next){
-        console.log()
         if(product.tname.indexOf("话费") != -1){
           next()
           return
