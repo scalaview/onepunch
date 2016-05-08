@@ -97,8 +97,8 @@ admin.get('/kindeditor/filemanager', function (req, res) {
 })
 
 admin.get('/today-profit' ,function(req, res){
-  var begin = (new Date('2016-05-04')).begingOfDate(),
-      end = (new Date('2016-05-04')).endOfDate()
+  var begin = (new Date()).begingOfDate(),
+      end = (new Date()).endOfDate()
   async.waterfall([function(next){
     sequelize.query("SELECT sum(`total`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
       { replacements: { begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
