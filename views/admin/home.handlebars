@@ -21,9 +21,9 @@ $(function(){
     method: "GET"
   }).success(function(result){
     if(!result.code && result.data){
-      $("#total").html(result.data.total)
-      $("#cost").html(result.data.cost)
-      $("#profit").html(result.data.profit)
+      $("#total").html(result.data.total.toFixed(2))
+      $("#cost").html(result.data.cost.toFixed(2))
+      $("#profit").html(result.data.profit.toFixed(2))
     }
   }).fail(function(err){
     console.log(err)
