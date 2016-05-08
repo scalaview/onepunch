@@ -1,1 +1,33 @@
-<h1>Admin Home</h1>
+<div class="list-group">
+  <a href="" class="list-group-item col-lg-4 col-xs-12">
+    <h4 class="list-group-item-heading">总花费</h4>
+    <p id='total' class="list-group-item-text"></p>
+  </a>
+  <a href="" class="list-group-item col-lg-4 col-xs-12">
+    <h4 class="list-group-item-heading">总支出</h4>
+    <p id="cost" class="list-group-item-text"></p>
+  </a>
+  <a href="" class="list-group-item col-lg-4 col-xs-12">
+    <h4 class="list-group-item-heading">总利润</h4>
+    <p id="profit" class="list-group-item-text"></p>
+  </a>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $.ajax({
+    url: "/admin/today-profit",
+    method: "GET"
+  }).success(function(result){
+    if(!result.code && result.data){
+      $("#total").html(result.data.total)
+      $("#cost").html(result.data.cost)
+      $("#profit").html(result.data.profit)
+    }
+  }).fail(function(err){
+    console.log(err)
+  })
+})
+
+</script>

@@ -167,7 +167,8 @@ module.exports = function(sequelize, DataTypes) {
     '华沃全国': 4,
     '曦和流量': 5,
     '易流量': 6,
-    '新号吧': 7
+    '新号吧': 7,
+    '龙速': 8
   }
 
   TrafficPlan.PROVIDERARRAY = Object.keys(TrafficPlan.Provider).map(function(k) { return [TrafficPlan.Provider[k], k] });

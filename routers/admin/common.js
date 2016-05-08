@@ -7,6 +7,7 @@ var fs        = require('fs');
 var _ = require('lodash')
 var async = require("async")
 var config = require("../../config")
+var sequelize = models.sequelize
 
 admin.get('/', function (req, res) {
   res.render('admin/home');
@@ -93,6 +94,43 @@ admin.get('/kindeditor/filemanager', function (req, res) {
         total_count:5,
         file_list: files
       })
+})
+
+admin.get('/today-profit' ,function(req, res){
+  var begin = (new Date('2016-05-04')).begingOfDate(),
+      end = (new Date('2016-05-04')).endOfDate()
+  async.waterfall([function(next){
+    sequelize.query("SELECT sum(`total`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
+      { replacements: { begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
+    ).then(function(result) {
+      if(require.length >= 1){
+        next(null, result[0].sum)
+      }else{
+        next(null, 0)
+      }
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(total, next){
+    sequelize.query("SELECT sum(`cost`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
+      { replacements: { begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
+    ).then(function(result) {
+      if(require.length >= 1){
+        next(null, total, result[0].sum)
+      }else{
+        next(null, 0, 0)
+      }
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, total, totalCost){
+    if(err){
+      console.log(err)
+      res.json({ code: 1, message: "fail" })
+    }else{
+      res.json({ code: 0, data: { total: total, cost: totalCost, profit: total - totalCost } })
+    }
+  })
 })
 
 module.exports = admin;

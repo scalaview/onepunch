@@ -18,7 +18,7 @@ function Xinhaoba(orderId, phone, prodid, num){
 				phone: this.phone,
 				num: this.num
 			})
-  		
+
   		this.check = crypto.createHash('md5').update(checkParams).digest("hex").toLowerCase()
 
 	var params = {
@@ -30,48 +30,25 @@ function Xinhaoba(orderId, phone, prodid, num){
 	    	num: this.num,
 	    	custname: this.phone + "_" + orderId,
 	    	check: this.check
-	    }
+	    },
+    	options = {
+        uri: uri,
+        method: 'GET',
+        qs: params
+      }
+  console.log(options)
 
-	this.options = {
-    uri: uri,
-    method: 'GET',
-    qs: params
-  }
-  console.log(this.options)
-
-  this.then = function(callback){
-    this.successCallback = callback
-    return this
-  }
-
-  this.catch = function(callback){
-   this.errCallback = callback
-   return this
-  }
-
-	this.do = function(){
-
-	  var inerSuccessCallback = this.successCallback;
-	  var inerErrCallback = this.errCallback;
-
-	  request(this.options, function (error, res) {
-	    if (!error && res.statusCode == 200) {
-	      if(inerSuccessCallback){
-	        console.log(res.body)
-	        var data = JSON.parse(res.body.trim())
-	        inerSuccessCallback.call(this, res, data)
-	      }
-	     }else{
-	      if(inerErrCallback){
-	        inerErrCallback.call(this, error)
-	      }
-	     }
-	   });
-
-	   return this
-	 }
- return this
-
+  return new Promise(function(resolve, reject) {
+    request(options, function (error, res, body) {
+      if (!error && res.statusCode == 200) {
+        console.log(body)
+        var data = JSON.parse(body.trim())
+        resolve(data)
+      }else{
+        reject(error)
+      }
+     });
+  })
 }
 
 module.exports.Xinhaoba = Xinhaoba;

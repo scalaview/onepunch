@@ -433,100 +433,46 @@ function doOrderTotal(extractOrder, customer, pass) {
 }
 
 function autoCharge(extractOrder, trafficPlan, next){
-  extractOrder.autoRecharge(trafficPlan).then(function(res, data) {
-      console.log(data)
-      if(trafficPlan.type == models.TrafficPlan.TYPE['空中平台']){  // 正规空中充值
-        if(data.status == 1 || data.status == 2){
+  extractOrder.autoRecharge(trafficPlan).then(function(data) {
+    console.log(data)
+    if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
+      if(data.code == 1){
+        extractOrder.updateAttributes({
+          taskid: data.sysorderid,
+          state: models.ExtractOrder.STATE.SUCCESS
+        }).then(function(extractOrder){
           next(null, trafficPlan, extractOrder)
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.msg))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['华沃红包'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃全国'] || trafficPlan.type == models.TrafficPlan.TYPE['华沃广东']){
-        if(data.code == 1 && data.taskid != 0){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS,
-            taskid: data.taskid
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['曦和流量']){
-        if(data.errcode == 0){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS,
-            taskid: data.order.transaction_id
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.errmsg))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['易流量']){
-        if(data.retcode == 0){
-          extractOrder.updateAttributes({
-            taskid: data.OrderID,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
-        if(data.code == 1){
-          extractOrder.updateAttributes({
-            taskid: data.sysorderid,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
+        }).catch(function(err) {
+          next(err)
+        })
       }else{
-        if(data.state == 1){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.msg))
-        }
+        extractOrder.updateAttributes({
+          state: models.ExtractOrder.STATE.FAIL
+        })
+        next(new Error(data.Message))
       }
-    }).catch(function(err){
-      next(err)
-    }).do()
+    }else if(trafficPlan.type == models.TrafficPlan.TYPE['龙速']){
+      if(data.resultcode === '0'){
+        extractOrder.updateAttributes({
+          taskid: data.orderid,
+          state: models.ExtractOrder.STATE.SUCCESS
+        }).then(function(extractOrder){
+          next(null, trafficPlan, extractOrder)
+        }).catch(function(err) {
+          next(err)
+        })
+      }else{
+        extractOrder.updateAttributes({
+          state: models.ExtractOrder.STATE.FAIL
+        })
+        next(new Error(data.message))
+      }
+    }else{
+      next(new Error("not found"))
+    }
+  }).catch(function(err){
+    next(err)
+  })
 }
 
 module.exports = app;
