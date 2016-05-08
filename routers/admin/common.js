@@ -100,8 +100,8 @@ admin.get('/today-profit' ,function(req, res){
   var begin = (new Date()).begingOfDate(),
       end = (new Date()).endOfDate()
   async.waterfall([function(next){
-    sequelize.query("SELECT sum(`total`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
-      { replacements: { begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
+    sequelize.query("SELECT sum(`total`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state and `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
+      { replacements: { state: models.ExtractOrder.STATE["FINISH"], begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
     ).then(function(result) {
       if(require.length >= 1){
         next(null, result[0].sum)
@@ -112,8 +112,8 @@ admin.get('/today-profit' ,function(req, res){
       next(err)
     })
   }, function(total, next){
-    sequelize.query("SELECT sum(`cost`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
-      { replacements: { begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
+    sequelize.query("SELECT sum(`cost`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
+      { replacements: { state: models.ExtractOrder.STATE["FINISH"], begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
     ).then(function(result) {
       if(require.length >= 1){
         next(null, total, result[0].sum)
