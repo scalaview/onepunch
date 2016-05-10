@@ -16,7 +16,6 @@ function ChongRecharger(models){
   var that = this
 
   this.storeCallback = function(callback){
-    console.log("111")
     that.models.DConfig.findOrCreate({
       where: {
         name: "chongAccessToken"
@@ -25,14 +24,12 @@ function ChongRecharger(models){
         value: "{}"
       }
     }).spread(function(accessToken) {
-    console.log("666")
       if(accessToken.value.present()){
         callback(null, JSON.parse(accessToken.value))
       }else{
         callback(null, {accessToken: "", expireTime: 0})
       }
     }).catch(function(err) {
-    console.log("err")
       callback(err)
     })
   }
@@ -125,7 +122,6 @@ ChongRecharger.prototype.getAccessToken = function(_storeCallback){
 
   return new Promise(function(resolve, reject){
     if(storeCallback){
-    console.log(1111)
       storeCallback(function(err, token){
         if(!err){
 
@@ -169,7 +165,6 @@ ChongRecharger.prototype._getProducts = function(access_token, successCallback, 
           access_token: access_token
         }
       }
-  console.log(options)
   request(options, function (error, res) {
     if (!error && res.statusCode == 200) {
       if(successCallback){
@@ -190,7 +185,6 @@ ChongRecharger.prototype.getProducts = function(){
 
   return new Promise(function(resolve, reject){
     that.getAccessToken().then(function(token){
-      console.log(token)
       that._getProducts(token.accessToken, function(data){
         resolve(data)
       }, function(err){
@@ -221,7 +215,6 @@ ChongRecharger.prototype._rechargeOrder = function(access_token, phone, productI
         method: "POST",
         qs: signParams
       }
-  console.log(options)
   request(options, function (error, res) {
     if (!error && res.statusCode == 200) {
       if(successCallback){
@@ -244,7 +237,6 @@ ChongRecharger.prototype.createOrder = function(phone, productId){
 
   return new Promise(function(resolve, reject){
     that.getAccessToken().then(function(token){
-      console.log(token)
       that._rechargeOrder(token.accessToken, phone, productId, function(data){
         resolve(data)
       }, function(err){
