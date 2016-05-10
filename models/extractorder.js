@@ -6,6 +6,7 @@ var helpers = require("../helpers")
 var recharger = require("../recharger")
 var Xinhaoba = recharger.Xinhaoba
 var Longsu = recharger.Longsu
+var ChongRecharger = recharger.ChongRecharger
 
 var config = require("../config")
 var crypto = require('crypto')
@@ -50,6 +51,7 @@ module.exports = function(sequelize, DataTypes) {
           }
         });
         models.ExtractOrder.Longsu = new Longsu()
+        models.ExtractOrder.ChongRecharger = new ChongRecharger(models)
       }
     },
     instanceMethods: {
@@ -85,6 +87,8 @@ module.exports = function(sequelize, DataTypes) {
           return new Xinhaoba(this.id, this.phone, this.bid, this.value)
         }else if(trafficPlan.type == typeJson['龙速']){
           return ExtractOrder.Longsu.createOrder(this.bid, this.id, this.phone)
+        }else if(trafficPlan.type == typeJson['曦和流量']){
+          return ExtractOrder.ChongRecharger.createOrder(this.phone, this.bid)
         }
       },
       isPaid: function(){
