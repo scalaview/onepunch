@@ -23,6 +23,7 @@
     "select2": "~4.0.0",
     "weui": "*",
     "toastr": "~2.1.2",
-    "video.js": "^5.8.2"
+    "video.js": "^5.8.2",
+    "editable-table": "https://github.com/scalaview/editable-table.git#thumb"
   }
 }

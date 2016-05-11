@@ -183,7 +183,7 @@ admin.post('/trafficplan/:id', function(req, res){
   var params = req.body
   if(params['display'] == 'on'){
     params['display'] = true
-  }else{
+  }else if(params['display'] == 'off'){
     params['display'] = false
   }
   async.waterfall([function(next) {

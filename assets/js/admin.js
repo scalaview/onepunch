@@ -1,4 +1,4 @@
-function ajaxUpdateTrafficplan(_id, params){
+function ajaxUpdateTrafficplan(_id, params, callback){
     $.ajax({
       url: '/admin/trafficplan/' + _id,
       dataType: 'JSON',
@@ -7,14 +7,17 @@ function ajaxUpdateTrafficplan(_id, params){
     }).done(function(data){
       if(!data.err){
         toastr.success(data.message)
+        callback && callback(true)
       }else{
         toastr.error(data.message)
+        callback && callback(false)
       }
     }).fail(function(err){
       console.log(err)
       toastr.error('服务器错误')
+      callback && callback(false)
     })
-  }
+}
 
 $(function(){
   $(".select2").each(function(i, e) {
@@ -51,6 +54,8 @@ $(function(){
 
     if($this.prop("checked")){
       params[$this.attr("name")] = "on"
+    }else{
+      params[$this.attr("name")] = "off"
     }
     ajaxUpdateTrafficplan(_id, params)
   })

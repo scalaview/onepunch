@@ -17,7 +17,7 @@
       <!-- /.panel-heading -->
       <div class="panel-body">
         <div class="table-responsive">
-          <table class="table table-striped">
+          <table id="mainTable" class="table table-striped">
             <thead>
               <tr>
                   <th>标题</th>
@@ -34,11 +34,11 @@
             <tbody>
               {{#each trafficPlans.rows }}
                 <tr>
-                    <td>{{ name }}</td>
-                    <td>{{ apiProvider type }}</td>
-                    <td>{{ cost }}</td>
-                    <td>{{ purchasePrice }}</td>
-                    <td>{{ value }}</td>
+                    <td data-id="{{id}}" data-name="name">{{ name }}</td>
+                    <td data-id="{{id}}" data-name="type" data-disabled="disabled">{{ apiProvider type }}</td>
+                    <td data-id="{{id}}" data-name="cost" data-type="number">{{ cost }}</td>
+                    <td data-id="{{id}}" data-name="purchasePrice" data-type="number">{{ purchasePrice }}</td>
+                    <td data-id="{{id}}" data-name="value" data-type="integer">{{ value }}</td>
                     <td>
                       <label>
                         <input type="checkbox" class="displaySwich" name="display" data-id="{{id}}" {{ isChecked display }} >
@@ -74,3 +74,6 @@
     <!-- /.panel -->
   </div>
 </div>
+<script>
+  $('#mainTable').editableTableWidget().violet()
+</script>
