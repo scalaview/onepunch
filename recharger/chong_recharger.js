@@ -220,7 +220,7 @@ ChongRecharger.prototype._rechargeOrder = function(access_token, phone, productI
       if(successCallback){
         console.log(res.body)
         var data = JSON.parse(res.body)
-        successCallback.call(this, res, data)
+        successCallback.call(this, data)
       }
     }else{
       if(errCallback){
