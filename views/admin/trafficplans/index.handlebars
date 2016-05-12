@@ -1,11 +1,29 @@
 <div class="row">
-  <div class='col-lg-2 pull-right'>
+  <div class='col-lg-2 col-xs-4 pull-right'>
     <a href="/admin/trafficplans/new">
       <button class="btn btn-primary col-lg-12 btn-large">
         <i class="glyphicon glyphicon-plus"></i> 新建
       </button>
     </a>
   </div>
+</div>
+<div class="row">
+  <div class='col-lg-2 col-xs-3'>
+    <a href="/admin/trafficplans">
+      <button class="btn btn-success col-lg-12 btn-large">
+        All
+      </button>
+    </a>
+  </div>
+  {{#each types}}
+    <div class='col-lg-2 col-xs-3'>
+      <a href="/admin/trafficplans?type={{val}}">
+        <button class="btn btn-success col-lg-12 btn-large">
+          {{name}}
+        </button>
+      </a>
+    </div>
+  {{/each}}
 </div>
 <hr>
 <div class="row">
@@ -24,7 +42,7 @@
                   <th>接口提供商</th>
                   <th>花费</th>
                   <th>成本</th>
-                  <th>流量(M)</th>
+                  <th>排序</th>
                   <th>是否显示</th>
                   <th>提供商</th>
                   <th>分组</th>
@@ -38,7 +56,7 @@
                     <td data-id="{{id}}" data-name="type" data-disabled="disabled">{{ apiProvider type }}</td>
                     <td data-id="{{id}}" data-name="cost" data-type="number">{{ cost }}</td>
                     <td data-id="{{id}}" data-name="purchasePrice" data-type="number">{{ purchasePrice }}</td>
-                    <td data-id="{{id}}" data-name="value" data-type="integer">{{ value }}</td>
+                    <td data-id="{{id}}" data-name="sortNum" data-type="integer">{{ sortNum }}</td>
                     <td>
                       <label>
                         <input type="checkbox" class="displaySwich" name="display" data-id="{{id}}" {{ isChecked display }} >
@@ -67,7 +85,7 @@
       </div>
 
       <div class="panel-footer">
-          {{pagination trafficPlans '/admin/trafficplans'}}
+          {{pagination trafficPlans (addParams '/admin/trafficplans' query)}}
       </div>
       <!-- /.panel-body -->
     </div>

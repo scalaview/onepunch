@@ -7,8 +7,16 @@ var async = require("async")
 
 
 admin.get('/trafficplans', function(req, res) {
+  var type = req.query.type
+
+  var params = {}
+  if(type){
+    params['type'] = type
+  }
   async.waterfall([function(next) {
     models.TrafficPlan.findAndCountAll({
+      where: params,
+      order: ["sortNum", "providerId", "id"],
       limit: req.query.perPage || 15,
       offset: helpers.offset(req.query.page, req.query.perPage || 15)
     }).then(function(trafficPlans) {
@@ -41,11 +49,16 @@ admin.get('/trafficplans', function(req, res) {
         providerOptions: providerOptions,
         providerCollection: providerCollection,
         trafficgroupsOptions: trafficgroupsOptions,
-        trafficgroupsCollection: trafficgroupsCollection
+        trafficgroupsCollection: trafficgroupsCollection,
+        types: [{ name: '龙速', val: models.TrafficPlan.TYPE['龙速']},
+                {name: '新号吧', val: models.TrafficPlan.TYPE['新号吧']},
+                { name: '曦和流量', val: models.TrafficPlan.TYPE['曦和流量']}],
+        query: req.query
       })
     }
   })
 })
+
 
 admin.get('/trafficplans/new', function(req, res) {
   async.waterfall([function(next) {
