@@ -16,7 +16,7 @@ admin.get('/trafficplans', function(req, res) {
   async.waterfall([function(next) {
     models.TrafficPlan.findAndCountAll({
       where: params,
-      order: ["sortNum", "providerId", "id"],
+      order: ["type", "providerId", "sortNum", "id"],
       limit: req.query.perPage || 15,
       offset: helpers.offset(req.query.page, req.query.perPage || 15)
     }).then(function(trafficPlans) {
