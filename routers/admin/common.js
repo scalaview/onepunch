@@ -8,6 +8,7 @@ var _ = require('lodash')
 var async = require("async")
 var config = require("../../config")
 var sequelize = models.sequelize
+var api = helpers.API
 
 admin.get('/', function (req, res) {
   res.render('admin/home');
@@ -132,5 +133,82 @@ admin.get('/today-profit' ,function(req, res){
     }
   })
 })
+
+admin.get("/getgroups", function(req, res){
+  api.getGroups(function(err, data){
+    if(err){
+      console.log(err)
+      res.json(err)
+    }else{
+      res.json(data)
+    }
+  });
+})
+
+admin.get("/moveusers", function(req, res){
+  async.waterfall([function(next){
+    models.Customer.findById(1).then(function(customer){
+      next(null, customer)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(customer, next){
+    api.moveUserToGroup(customer.wechat, 100, function(err, result){
+      if(err){
+        next(err)
+      }else{
+        next(null, result)
+      }
+    });
+  }], function(err, result){
+    if(err){
+      console.log(err)
+      res.json(err)
+    }else{
+      res.json(result)
+    }
+
+  })
+})
+
+admin.get("/sendtext", function(req, res){
+  async.waterfall([function(next){
+    models.Customer.findById(1).then(function(customer){
+      next(null, customer)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(customer, next){
+    var articles = [
+      {
+        "title":"Happy Day",
+        "description":"测试",
+        "url":"http://dwz.cn/3iz21k",
+        "picurl":"https://mmbiz.qlogo.cn/mmbiz/qcVLspuLOGAT2HQUkMNXbxpUf0FDtR9qMBE0jgQRScZ8z5XEiadFBlN5U0zI6csw4bDBfvMC5tnHe2qpkx34Tzw/0?wx_fmt=jpeg"
+      },
+      {
+        "title":"Happy Day",
+        "description":"Is Really A Happy Day",
+        "url":"http://dwz.cn/341ioz",
+        "picurl":"https://mmbiz.qlogo.cn/mmbiz/qcVLspuLOGClkia7mFne4DNGhicWE2UnicwvPlZGWxdL9eQRWPcWYD0z3MuwmbrIAibIdowqymrz1XECd9p4Zic6BDw/0?wx_fmt=jpeg"
+      }];
+    api.sendNews(customer.wechat, articles, function(err, result){
+      if(err){
+        next(err)
+      }else{
+        next(null, result)
+      }
+    });
+  }], function(err, result){
+    if(err){
+      console.log(err)
+      res.json(err)
+    }else{
+      res.json(result)
+    }
+
+  })
+})
+
 
 module.exports = admin;
