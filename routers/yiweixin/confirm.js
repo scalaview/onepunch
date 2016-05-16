@@ -44,7 +44,7 @@ function confirmOrder(params, isDone, msg, pass){
           customer.refundTraffic(models, extractorder, msg, function(customer, extractorder, flowHistory) {
 
             // send notice
-            sendRefundNotice(customer, extractorder, msg)
+            // sendRefundNotice(customer, extractorder, msg)
 
             next(null, extractorder, status)
           }, function(err) {

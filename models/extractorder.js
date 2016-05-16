@@ -52,6 +52,7 @@ module.exports = function(sequelize, DataTypes) {
         });
         models.ExtractOrder.Longsu = new Longsu()
         models.ExtractOrder.ChongRecharger = new ChongRecharger(models)
+        models.ExtractOrder.Xinhaoba = new Xinhaoba()
       }
     },
     instanceMethods: {
@@ -84,11 +85,18 @@ module.exports = function(sequelize, DataTypes) {
       autoRecharge: function(trafficPlan){
         var typeJson = trafficPlan.typeJson()
         if(trafficPlan.type == typeJson['新号吧']){
-          return new Xinhaoba(this.id, this.phone, this.bid, this.value)
+          return ExtractOrder.Xinhaoba.createOrder(this.id, this.phone, this.bid, this.value)
         }else if(trafficPlan.type == typeJson['龙速']){
           return ExtractOrder.Longsu.createOrder(this.bid, this.id, this.phone)
         }else if(trafficPlan.type == typeJson['曦和流量']){
           return ExtractOrder.ChongRecharger.createOrder(this.phone, this.bid)
+        }
+      },
+      detail: function(models){
+        var that = this,
+            typeJson = models.TrafficPlan.TYPE
+        if(that.type == typeJson['新号吧']){
+          return ExtractOrder.Xinhaoba.detail(this.id, this.phone, this.bid, this.value)
         }
       },
       isPaid: function(){

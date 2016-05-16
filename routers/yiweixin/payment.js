@@ -89,7 +89,8 @@ app.post('/pay', requireLogin, function(req, res) {
             cost: trafficPlan.purchasePrice,
             value: trafficPlan.value,
             bid: trafficPlan.bid,
-            total: total
+            total: total,
+            type: trafficPlan.type
           }).then(function(extractOrder){
             next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err){
@@ -106,7 +107,8 @@ app.post('/pay', requireLogin, function(req, res) {
             customerId: customer.id,
             chargeType: chargetype,
             paymentMethodId: paymentMethod.id,
-            total: total
+            total: total,
+            type: trafficPlan.type
           }).save().then(function(extractOrder) {
             next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err) {
