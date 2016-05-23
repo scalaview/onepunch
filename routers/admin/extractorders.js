@@ -324,12 +324,12 @@ admin.get("/syncorderdetail", function(req, res){
         detail.then(function(data){
           console.log(data)
           switch(data.code){
-            case 1:
+            case '1':
               extractOrder.updateAttributes({
                 state: models.ExtractOrder.STATE.FINISH
               })
               break;
-            case 20:
+            case '20':
               extractOrder.updateAttributes({
                 state: models.ExtractOrder.STATE.FAIL
               })
@@ -337,6 +337,7 @@ admin.get("/syncorderdetail", function(req, res){
             default:
               console.log("extractOrder: " + extractOrder.id + " sync code: " + data.code + ", " + data.msg)
           }
+          console.log("extractOrder: " + extractOrder.id + " sync code: " + data.code + ", " + data.msg)
           next(null)
         })
       }else{
