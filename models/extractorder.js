@@ -96,7 +96,7 @@ module.exports = function(sequelize, DataTypes) {
         var that = this,
             typeJson = models.TrafficPlan.TYPE
         if(that.type == typeJson['新号吧']){
-          return ExtractOrder.Xinhaoba.detail(this.id, this.phone, this.bid, this.value)
+          return ExtractOrder.Xinhaoba.orderDetail(this.id, this.phone, this.bid, this.value)
         }
       },
       isPaid: function(){
