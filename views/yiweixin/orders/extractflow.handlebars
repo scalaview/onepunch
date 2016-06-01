@@ -45,19 +45,23 @@
   <div>
     <div class="weui_cells_title">\{{name}}</div>
     <div class="weui_cells">
-      \{{#each trafficplans}}
-        <div class="weui_cell">
-          <div class="weui_cell_bd weui_cell_primary">
-              <a class="weui_btn weui_btn_plain_primary exchanger" data-name="\{{name}}" style="font-size: 16px;" data-value="\{{id}}" data-cost="\{{cost}}">
-                \{{#if-lt cost withOutDiscount }}
-                  \{{name}} <strike>\{{withOutDiscount}}元</strike> <font size="3" color="red"><b>\{{cost}}元</b></font>
-                \{{else}}
-                  \{{name}} <b>\{{cost}}元</b>
-                \{{/if-lt}}
-              </a>
+      \{{#eachSlice trafficplans 3 as |collections| }}
+        \{{#each collections as |plans|}}
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              \{{#each plans}}
+                <a class="weui_btn weui_btn_plain_primary exchanger \{{#if @last}}last\{{/if}}" data-name="\{{name}}" style="font-size: 16px;" data-value="\{{id}}" data-cost="\{{cost}}">
+                  \{{#if-lt cost withOutDiscount }}
+                    \{{name}} <strike>\{{withOutDiscount}}元</strike> <div><font size="3" color="red"><b>\{{cost}}元</b></font></div>
+                  \{{else}}
+                    <div>\{{name}} <b>\{{cost}}元</b></div>
+                  \{{/if-lt}}
+                </a>
+              \{{/each}}
+            </div>
           </div>
-        </div>
-      \{{/each}}
+        \{{/each}}
+      \{{/eachSlice}}
     </div>
   </div>
 \{{/each}}

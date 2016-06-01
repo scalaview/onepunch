@@ -224,3 +224,15 @@ body {
     height:180px;
     z-index:999;
 }
+
+.weui_btn.weui_btn_plain_primary.exchanger{
+  display: inline-block;
+  width: 29%;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-right: 5%
+}
+
+.weui_btn.weui_btn_plain_primary.exchanger.last{
+  margin-right: 0px;
+}

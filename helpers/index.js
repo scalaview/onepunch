@@ -72,6 +72,14 @@ Array.prototype.compact = function (array) {
   return result;
 }
 
+Array.prototype.eachSlice = function (size){
+  this.arr = []
+  for (var i = 0, l = this.length; i < l; i += size){
+    this.arr.push(this.slice(i, i + size))
+  }
+  return this.arr
+};
+
 Date.prototype.begingOfDate = function(){
   this.setHours(0,0,0,0);
   return this

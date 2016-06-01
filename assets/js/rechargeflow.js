@@ -15,6 +15,15 @@ Handlebars.registerHelper('subSummary', function(text, size) {
   }
 });
 
+Handlebars.registerHelper('eachSlice', function(array, size) {
+  var arr = [],
+      options = arguments[arguments.length - 1];
+  for (var i = 0, l = array.length; i < l; i += size){
+    arr.push(array.slice(i, i + size))
+  }
+  return options.fn(this, {data: options.data, blockParams: [arr]});
+});
+
 //页面加载
 $(document).ready(function () {
   applylimit()
