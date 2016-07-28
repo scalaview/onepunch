@@ -1,7 +1,7 @@
 //=  require jquery/dist/jquery.min.js
 //=  require bootstrap/dist/js/bootstrap.min.js
 //=  require editable-table/mindmup-editabletable.js
-//=  require kindeditor/kindeditor-min.js
+//=  require kindeditor/kindeditor-all-min.js
 //=  require bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js
 //=  require handlebars/handlebars.min.js
 //=  require select2/dist/js/select2.min.js
