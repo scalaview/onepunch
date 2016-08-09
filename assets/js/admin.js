@@ -38,9 +38,9 @@ function formatData(result){
         data: []
       }
 
-  for(let i=0; i < result.length; i++){
-    let d = result[i]
-    let myDate = new Date(d.date)
+  for(var i=0; i < result.length; i++){
+    var d = result[i]
+    var myDate = new Date(d.date)
     labels.push(myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + myDate.getDate())
     if(d.count >= 10){
       countdatasets.backgroundColor.push('rgba(255, 99, 132, 0.2)')
@@ -55,7 +55,7 @@ function formatData(result){
     profixdatasets.borderColor.push('rgba(153, 102, 255, 1)')
     profixdatasets.data.push(d.profix)
   }
-  let data = {
+  var data = {
     labels: labels,
     datasets: [countdatasets, profixdatasets]
   }
