@@ -19,6 +19,49 @@ function ajaxUpdateTrafficplan(_id, params, callback){
     })
 }
 
+function formatData(result){
+  var labels = [],
+      countdatasets = {
+        label: "订单数目",
+        yAxisID: "y-axis-0",
+        backgroundColor: [],
+        borderColor: [],
+        borderWidth: 1,
+        data: []
+      },
+      profixdatasets = {
+        label: "毛利",
+        yAxisID: "y-axis-1",
+        backgroundColor: [],
+        borderColor: [],
+        borderWidth: 1,
+        data: []
+      }
+
+  for(let i=0; i < result.length; i++){
+    let d = result[i]
+    let myDate = new Date(d.date)
+    labels.push(myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + myDate.getDate())
+    if(d.count >= 10){
+      countdatasets.backgroundColor.push('rgba(255, 99, 132, 0.2)')
+      countdatasets.borderColor.push('rgba(255,99,132,1)')
+      countdatasets.data.push(d.count)
+    }else{
+      countdatasets.backgroundColor.push('rgba(54, 162, 235, 0.2)')
+      countdatasets.borderColor.push('rgba(54, 162, 235, 1)')
+      countdatasets.data.push(d.count)
+    }
+    profixdatasets.backgroundColor.push('rgba(153, 102, 255, 0.2)')
+    profixdatasets.borderColor.push('rgba(153, 102, 255, 1)')
+    profixdatasets.data.push(d.profix)
+  }
+  let data = {
+    labels: labels,
+    datasets: [countdatasets, profixdatasets]
+  }
+  return data
+}
+
 $(function(){
   window.barChart = null
 
@@ -139,7 +182,7 @@ $(function(){
       }
       window.barChart = new Chart($("#myChart"), {
               type: "bar",
-              data: result.result,
+              data: formatData(result.result),
               fill: "false",
               options: {
                 responsive: false,
@@ -148,6 +191,16 @@ $(function(){
                     stacked: true
                   }],
                   yAxes: [{
+                    position: "left",
+                    "id": "y-axis-0",
+                    stacked: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                  },
+                  {
+                    position: "right",
+                    "id": "y-axis-1",
                     stacked: true,
                     ticks: {
                         stepSize: 1

@@ -12,7 +12,7 @@ var sequelize = models.sequelize
 admin.get("/order-report", function(req, res) {
   var timelist = []
   for(var i = 11; i >= 0 ; i --){
-    timelist.push(moment().subtract('months', i).format("YYYY-MM-DD"))
+    timelist.push(moment().subtract('months', i).format("YYYY-MM"))
   }
   res.render("admin/salereport/index", { timelist: timelist })
 })
@@ -33,44 +33,6 @@ admin.get("/sale-report", function(req, res) {
     }).catch(function(err){
       next(err)
     })
-  }, function(result, next){
-    var labels = [],
-        countdatasets = {
-          label: "订单数目",
-          backgroundColor: [],
-          borderColor: [],
-          borderWidth: 1,
-          data: []
-        },
-        profixdatasets = {
-          label: "毛利",
-          backgroundColor: [],
-          borderColor: [],
-          borderWidth: 1,
-          data: []
-        }
-
-    for(let i=0; i < result.length; i++){
-      let d = result[i]
-      labels.push(helpers.strftime(d.date, "YYYY-MM-DD"))
-      if(d.count >= 10){
-        countdatasets.backgroundColor.push('rgba(255, 99, 132, 0.2)')
-        countdatasets.borderColor.push('rgba(255, 99, 132, 0.2)')
-        countdatasets.data.push(d.count)
-      }else{
-        countdatasets.backgroundColor.push('rgba(54, 162, 235, 1)')
-        countdatasets.borderColor.push('rgba(54, 162, 235, 1)')
-        countdatasets.data.push(d.count)
-      }
-      profixdatasets.backgroundColor.push('rgba(153, 102, 255, 1)')
-      profixdatasets.borderColor.push('rgba(153, 102, 255, 1)')
-      profixdatasets.data.push(d.profix)
-    }
-    let data = {
-      labels: labels,
-      datasets: [countdatasets, profixdatasets]
-    }
-    next(null, data)
   }], function(err, result){
     if(err){
       console.log(err)
