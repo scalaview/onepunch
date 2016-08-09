@@ -6,5 +6,6 @@
 //=  require handlebars/handlebars.min.js
 //=  require select2/dist/js/select2.min.js
 //=  require toastr/toastr.min.js
+//=  require chart.js/dist/Chart.js
 //=  require js/admin.js
 //=  require js/violet.js

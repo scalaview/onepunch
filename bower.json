@@ -24,6 +24,7 @@
     "weui": "*",
     "toastr": "~2.1.2",
     "video.js": "^5.8.2",
-    "editable-table": "https://github.com/scalaview/editable-table.git#thumb"
+    "editable-table": "https://github.com/scalaview/editable-table.git#thumb",
+    "chart.js": "npm:chart.js#^2.2.1"
   }
 }

@@ -20,6 +20,8 @@ function ajaxUpdateTrafficplan(_id, params, callback){
 }
 
 $(function(){
+  window.barChart = null
+
   $(".select2").each(function(i, e) {
     var $select2 = $(e).select2({ width: 'resolve' });
     if($(e).find("option").is(":selected") && $(e).find("option:selected").val() != '' ){
@@ -117,6 +119,46 @@ $(function(){
       })
     }
     e.stopPropagation();
+  })
+
+  $(document).on("click", ".timelist", function(){
+    var $this = $(this),
+        $timelist = $(".timelist")
+
+    $(".timelist.btn-primary").removeClass("btn-primary").addClass("btn-default")
+    $this.removeClass("btn-default").addClass("btn-primary")
+    $.ajax({
+      url: "/admin//sale-report",
+      method: "GET",
+      data: {
+        date: $(".timelist.btn-primary").data("date")
+      }
+    }).done(function(result){
+      if(window.barChart){
+        window.barChart.destroy();
+      }
+      window.barChart = new Chart($("#myChart"), {
+              type: "bar",
+              data: result.result,
+              fill: "false",
+              options: {
+                responsive: false,
+                scales: {
+                  xAxes: [{
+                    stacked: true
+                  }],
+                  yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                  }]
+                }
+              }
+          });
+    }).fail(function(err){
+      console.log(err)
+    })
   })
 
 })
