@@ -65,7 +65,6 @@ function Longsu(){
               reject(err)
             }else{
               var resultjson = formatMessage(result.result)
-              console.log(resultjson);
               resolve(resultjson)
             }
           });

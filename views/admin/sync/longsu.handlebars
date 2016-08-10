@@ -1,0 +1,57 @@
+<div class="row">
+
+  <div class="col-lg-12 col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        服务器套餐
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>流量大小</th>
+                <th>提供商</th>
+                <th>话费</th>
+                <th>进货价</th>
+                <th>typeid</th>
+                <th>已经在库</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each plans }}
+                <tr {{#unless is_exists }}class="danger"{{/unless}}>
+                    <td>{{ name }}</td>
+                    <td>{{ value }}</td>
+                    <td>{{ apiProvider type }}</td>
+                    <td>
+                      {{ cost }}
+                    </td>
+                    <td>{{ purchasePrice }}</td>
+                    <td>{{ bid }}</td>
+                    <td>{{ is_exists }}</td>
+                    <td>
+                      <a href="{{#if is_exists }}/admin/trafficplans/{{plan.id}}/edit{{else}}/admin/createlongsu?providerId={{providerId}}&value={{value}}&name={{name}}&cost={{cost}}&type={{type}}&bid={{bid}}&purchasePrice={{purchasePrice}}{{/if}}" {{#unless is_exists }}onclick="return confirm('are you sure?')"{{/unless}}class="list-group-item">
+                        {{#if is_exists }}
+                          <i class="glyphicon glyphicon-eye-open"></i>
+                        {{else}}
+                          <i class="glyphicon glyphicon-refresh"></i>
+                        {{/if}}
+                      </a>
+                    </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+
+      </div>
+      <!-- /.panel-body -->
+    </div>
+  </div>
+
+</div>
