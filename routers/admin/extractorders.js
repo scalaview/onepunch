@@ -352,14 +352,12 @@ admin.get("/syncorderdetail", function(req, res){
     })
   }], function(err){
     if(err){
-      res.json({
-        code: 1, msg: err.message
-      })
+      console.log(err)
+      req.flash('err', err.message)
     }else{
-      res.json({
-        code: 0, msg: "success"
-      })
+      req.flash('info', "sync success")
     }
+    res.redirect('/admin/extractorders')
   })
 })
 
