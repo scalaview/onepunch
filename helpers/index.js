@@ -920,7 +920,7 @@ function orderSuccessNotifiction(customer, order, trafficPlan){
         content: "订单30分钟内到账，最长延迟24小时到账。"
       }
     }).spread(function(template) {
-      next(null, trafficPlan, template.content)
+      next(null, template.content)
     }).catch(function(err) {
       next(err)
     })
