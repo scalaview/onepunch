@@ -905,6 +905,66 @@ function apiProvider(providerId){
   }
 }
 
+function orderSuccessNotifiction(customer, order, trafficPlan){
+  if(!config.orderSuccessTemplateId){
+    return
+  }
+  var templateId = config.orderSuccessTemplateId;
+  var url = "http://" + config.hostname + '/orders';
+  async.waterfall([function(next){
+    models.MessageTemplate.findOrCreate({
+      where: {
+        name: "sendOrderNotice"
+      },
+      defaults: {
+        content: "订单30分钟内到账，最长延迟24小时到账。"
+      }
+    }).spread(function(template) {
+      next(null, trafficPlan, template.content)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, content){
+    if(err){
+      console.log(err)
+    }else{
+      var data = {
+         "first": {
+           "value":"恭喜你购买成功！",
+           "color":"#173177"
+         },
+         "keyword1":{
+           "value": trafficPlan.name,
+           "color":"#173177"
+         },
+         "keyword2": {
+           "value": parseFloat(order.total).toFixed(2),
+           "color":"#173177"
+         },
+         "keyword3": {
+           "value": strftime(new Date, "YYYY年MM月DD日"),
+           "color":"#173177"
+         },
+         "keyword4": {
+           "value": order.id,
+           "color":"#173177"
+         },
+         "remark":{
+           "value": content,
+           "color":"#173177"
+         }
+      };
+      API.sendTemplate(customer.wechat, templateId, url, data, function(err, result){
+        if(err){
+          console.log(err)
+        }else{
+          console.log(result)
+        }
+      });
+    }
+  })
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -959,3 +1019,4 @@ exports.nextUrl = nextUrl;
 exports.if_eq = if_eq;
 exports.ip = ip;
 exports.apiProvider = apiProvider;
+exports.orderSuccessNotifiction = orderSuccessNotifiction;

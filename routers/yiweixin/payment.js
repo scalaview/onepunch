@@ -152,6 +152,7 @@ app.post('/pay', requireLogin, function(req, res) {
           // charge by salary
           customer.reduceTraffic(models, extractOrder, function(){
             res.json({err: 0, msg: '付款成功'})
+            helpers.orderSuccessNotifiction(customer, extractOrder, trafficPlan);
 
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
@@ -217,6 +218,7 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
       next(err)
     })
   }, function(extractOrder, customer, trafficPlan, next) {
+    helpers.orderSuccessNotifiction(customer, extractOrder, trafficPlan);
     //do history
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
@@ -496,6 +498,9 @@ function autoCharge(extractOrder, trafficPlan, next){
 
 function sendOrderNotification(extractOrder, customer, pass){
   pass(null, extractOrder, customer)
+  if(config.orderSuccessTemplateId){
+    return
+  }
 
   async.waterfall([function(next){
     extractOrder.getExchanger().then(function(trafficPlan){

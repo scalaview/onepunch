@@ -18,8 +18,8 @@ var config = {
                 'hostname': '',
                 'maxfileuploadsize': 10240000, // 10m
                 'max_depth': 3,
-                'applylimit': ,
-                'blacklist': ,
+                'applylimit': '',
+                'blacklist': '',
                 'mindiscount': ,
                 'huawo_account': '',
                 'huawo_pwd': '',
@@ -46,7 +46,8 @@ var config = {
                 "bilibili_appkey": "",
                 "usebilibili": false,
                 "xinhaoba_loginname":,
-                "xinhaoba_apikey":
+                "xinhaoba_apikey": '',
+                "orderSuccessTemplateId": ''
               };
 
 module.exports = config;

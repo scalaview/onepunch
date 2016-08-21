@@ -103,7 +103,7 @@ admin.get('/today-profit' ,function(req, res){
     sequelize.query("SELECT sum(`total`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state and `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
       { replacements: { state: models.ExtractOrder.STATE["FINISH"], begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
     ).then(function(result) {
-      if(require.length >= 1){
+      if(result.length >= 1){
         next(null, result[0].sum)
       }else{
         next(null, 0)
@@ -115,7 +115,7 @@ admin.get('/today-profit' ,function(req, res){
     sequelize.query("SELECT sum(`cost`) AS `sum` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state and `ExtractOrder`.`updatedAt` BETWEEN :begin AND :end ",
       { replacements: { state: models.ExtractOrder.STATE["FINISH"], begin: begin, end: end }, type: sequelize.QueryTypes.SELECT }
     ).then(function(result) {
-      if(require.length >= 1){
+      if(result.length >= 1){
         next(null, total, result[0].sum)
       }else{
         next(null, 0, 0)
